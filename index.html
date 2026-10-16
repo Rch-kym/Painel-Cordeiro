@@ -14,11 +14,11 @@
    Marca: azul-marinho e âmbar (a faixa tracejada de estrada).
    Claro: papel azulado, tinta marinho. Escuro: asfalto. O âmbar é só sinal. */
 :root {
-  --fundo:#E9EEF3; --superficie:#FFFFFF; --superficie-2:#F4F7FA; --tinta:#0F2A43; --tinta-2:#506274; --linha:#D3DBE4;
+  --fundo:#F4F0E8; --superficie:#FFFDF8; --superficie-2:#F6F1E6; --tinta:#0F2A43; --tinta-2:#5B6572; --linha:#E6DFD0;
   --ambar:#E8A33D; --ambar-texto:#7C5008; --asfalto:#12283C; --asfalto-linha:rgba(255,255,255,.30);
   --azul:#1F5AA0; --azul-fundo:#E4EDF8;
-  --erro:#B42318; --erro-fundo:#FCE8E5; --alerta:#7C5008; --alerta-fundo:#FDF0D5; --ok:#1B6E44; --ok-fundo:#E1F3E9;
-  --lateral:#0F2A43; --lateral-tinta:#C7D4E1; --sombra:0 1px 2px rgba(15,42,67,.06), 0 6px 20px -8px rgba(15,42,67,.12);
+  --erro:#A92B1F; --erro-fundo:#F9E6E2; --alerta:#A04F0B; --alerta-fundo:#FBEFD9; --ok:#1B6E44; --ok-fundo:#E4F1E7; --barra:#0F2A43;
+  --lateral:#0F2A43; --lateral-tinta:#D5DEE8; --sombra:0 1px 1px rgba(15,42,67,.04);
   --foco:#1F5AA0;
   --f:'Archivo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
 }
@@ -28,7 +28,7 @@
     --ambar:#F0AE45; --ambar-texto:#F0AE45; --asfalto:#040B12; --asfalto-linha:rgba(255,255,255,.22);
     --azul:#86B8EE; --azul-fundo:#12304D;
     --erro:#FF9A8C; --erro-fundo:#3A1A18; --alerta:#F0AE45; --alerta-fundo:#3A2A0E; --ok:#5CCB93; --ok-fundo:#10332A;
-    --lateral:#0A1827; --lateral-tinta:#9AAEC2; --sombra:none; --foco:#86B8EE;
+    --lateral:#0A1827; --lateral-tinta:#9AAEC2; --sombra:none; --foco:#86B8EE; --barra:#86B8EE;
   }
 }
 :root[data-tema="escuro"] {
@@ -36,7 +36,7 @@
   --ambar:#F0AE45; --ambar-texto:#F0AE45; --asfalto:#040B12; --asfalto-linha:rgba(255,255,255,.22);
   --azul:#86B8EE; --azul-fundo:#12304D;
   --erro:#FF9A8C; --erro-fundo:#3A1A18; --alerta:#F0AE45; --alerta-fundo:#3A2A0E; --ok:#5CCB93; --ok-fundo:#10332A;
-  --lateral:#0A1827; --lateral-tinta:#9AAEC2; --sombra:none; --foco:#86B8EE;
+  --lateral:#0A1827; --lateral-tinta:#9AAEC2; --sombra:none; --foco:#86B8EE; --barra:#86B8EE;
 }
 * { box-sizing:border-box; }
 html { -webkit-text-size-adjust:100%; }
@@ -51,16 +51,17 @@ h1, h2, h3 { margin:0; }
 /* ---------- Estrutura ---------- */
 .shell { display:grid; grid-template-columns:240px minmax(0,1fr); min-height:100vh; }
 .lateral { background:var(--lateral); color:#F2F6FA; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; padding:22px 14px 0; }
-.marca { padding:0 8px 22px; }
-.marca b { display:block; font-size:25px; font-weight:900; font-stretch:118%; letter-spacing:-.4px; line-height:1; }
-.marca small { display:block; margin-top:7px; font-size:12px; color:var(--lateral-tinta); }
+.marca { padding:0 8px 26px; display:flex; align-items:center; gap:11px; }
+.marca img { border-radius:10px; flex:none; }
+.marca b { display:block; font-size:19px; font-weight:900; font-stretch:112%; letter-spacing:.5px; line-height:1; }
+.marca small { display:block; margin-top:5px; font-size:10px; letter-spacing:3.2px; color:var(--lateral-tinta); }
 .faixa { height:4px; width:56px; margin-top:12px; background:repeating-linear-gradient(90deg,var(--ambar) 0 12px,transparent 12px 20px); border-radius:2px; }
 #abas { display:flex; flex-direction:column; gap:2px; flex:1; overflow-y:auto; }
 #abas button { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:0; color:var(--lateral-tinta); padding:10px 10px; border-radius:10px; cursor:pointer; font-weight:600; font-size:14.5px; position:relative; }
 #abas button svg { width:20px; height:20px; flex:none; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
 #abas button:hover { background:rgba(255,255,255,.07); color:#fff; }
-#abas button[aria-current="page"] { background:rgba(255,255,255,.11); color:#fff; font-weight:800; }
-#abas button[aria-current="page"]::before { content:""; position:absolute; left:-14px; top:8px; bottom:8px; width:4px; border-radius:0 3px 3px 0; background:var(--ambar); }
+#abas button[aria-current="page"] { background:var(--ambar); color:#0F2A43; font-weight:800; }
+
 .nome-curto { display:none; }
 .lateral-pe { border-top:1px solid rgba(255,255,255,.12); padding:14px 6px 18px; display:flex; flex-direction:column; gap:10px; }
 .eu { display:flex; align-items:center; gap:10px; min-width:0; }
@@ -93,7 +94,8 @@ input:disabled { background:transparent; border-color:transparent; padding-left:
 input::placeholder { color:var(--tinta-2); opacity:.7; }
 .btn { cursor:pointer; font-weight:750; border-radius:10px; border:1px solid var(--linha); padding:9px 15px; background:var(--superficie); font-size:14px; min-height:40px; transition:border-color .15s, background .15s; }
 .btn:hover:not(:disabled) { border-color:var(--tinta); }
-.btn.main { background:var(--tinta); color:var(--superficie); border-color:var(--tinta); }
+.btn.main { background:var(--lateral); color:#fff; border-color:var(--lateral); }
+.btn.main:hover:not(:disabled) { border-color:var(--ambar); }
 .btn.ambar { background:var(--ambar); color:#0F2A43; border-color:var(--ambar); }
 .btn.mini { padding:4px 11px; font-size:13px; min-height:32px; }
 .btn:disabled { opacity:.55; cursor:default; }
@@ -103,7 +105,7 @@ input::placeholder { color:var(--tinta-2); opacity:.7; }
 .busca-in input { padding-left:36px; min-width:260px; width:100%; }
 
 /* ---------- Superfícies ---------- */
-.cartao { background:var(--superficie); border:1px solid var(--linha); border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:var(--sombra); }
+.cartao { background:var(--superficie); border:1px solid var(--linha); border-radius:14px; padding:20px; margin-bottom:16px; box-shadow:var(--sombra); }
 .cartao h2 { font-size:17px; font-weight:800; font-stretch:106%; letter-spacing:-.2px; }
 .cartao-topo { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
 .aviso { padding:11px 14px; border-radius:11px; background:var(--alerta-fundo); color:var(--alerta); font-size:14px; margin-bottom:14px; font-weight:600; }
@@ -179,8 +181,8 @@ input::placeholder { color:var(--tinta-2); opacity:.7; }
 /* ---------- Ritmo do dia ---------- */
 .ritmo { display:flex; align-items:flex-end; gap:5px; height:150px; padding-top:22px; }
 .ritmo > div { flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; position:relative; }
-.ritmo i { display:block; width:100%; border-radius:5px 5px 2px 2px; background:var(--azul); opacity:.55; min-height:3px; }
-.ritmo .pico i { background:var(--ambar); opacity:1; }
+.ritmo i { display:block; width:100%; border-radius:5px 5px 2px 2px; background:var(--barra); min-height:3px; }
+.ritmo .pico i { background:var(--ambar); }
 .ritmo em { font-style:normal; font-size:12px; font-weight:800; position:absolute; top:-1px; }
 .ritmo span { font-size:11.5px; color:var(--tinta-2); height:14px; }
 
@@ -234,6 +236,57 @@ details.det summary { cursor:pointer; font-weight:750; color:var(--azul); paddin
 .campo-senha input { flex:1; padding-right:70px; }
 .campo-senha button { position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:none; font-weight:700; font-size:13px; color:var(--azul); cursor:pointer; padding:6px 8px; }
 
+
+/* ---------- Painel do dia, rotas, fechamento (mockup) ---------- */
+.grupo-nav { margin:16px 10px 6px; font-size:11px; font-weight:800; letter-spacing:1.6px; text-transform:uppercase; color:var(--lateral-tinta); opacity:.65; }
+.sub-seg { margin-bottom:18px; }
+.tiles { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:14px; margin-bottom:16px; }
+.tile { text-align:left; background:var(--superficie); border:1px solid var(--linha); border-radius:14px; padding:16px 18px; display:flex; flex-direction:column; gap:4px; box-shadow:var(--sombra); font:inherit; color:inherit; }
+button.tile { cursor:pointer; transition:border-color .15s; }
+button.tile:hover { border-color:var(--tinta); }
+.tile span { font-size:13.5px; color:var(--tinta-2); }
+.tile b { font-size:clamp(30px,3.4vw,40px); font-weight:850; font-stretch:112%; line-height:1.05; letter-spacing:-1px; }
+.tile small { font-size:12.5px; color:var(--tinta-2); }
+.tile.erro small, .tile.erro b { color:var(--erro); } .tile.alerta small { color:var(--alerta); } .tile.ok small { color:var(--ok); }
+.grade2 { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:16px; align-items:start; }
+.ritmo.alto { height:230px; padding-top:26px; gap:10px; }
+.ritmo.alto em { top:2px; }
+.atencao { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
+.atencao li > * { display:block; width:100%; text-align:left; border:0; border-radius:10px; padding:11px 14px 11px 30px; position:relative; font:inherit; color:inherit; }
+.atencao li > button { cursor:pointer; }
+.atencao li > *::before { content:""; position:absolute; left:13px; top:17px; width:8px; height:8px; border-radius:50%; background:currentColor; }
+.atencao b { display:block; font-size:14.5px; color:var(--tinta); }
+.atencao span { display:block; font-size:12.5px; color:var(--tinta-2); margin-top:1px; }
+.atencao li.erro > * { background:var(--erro-fundo); color:var(--erro); }
+.atencao li.alerta > * { background:var(--alerta-fundo); color:var(--alerta); }
+.atencao li.ok > * { background:var(--ok-fundo); color:var(--ok); }
+td.avanco { width:34%; min-width:140px; }
+.barra-av { display:block; height:8px; border-radius:5px; background:var(--linha); overflow:hidden; }
+.barra-av i { display:block; height:100%; background:var(--barra); border-radius:5px; }
+.grade-rotas { display:grid; grid-template-columns:minmax(0,.9fr) minmax(0,1.6fr); gap:16px; align-items:start; }
+.rota-lista { display:flex; flex-direction:column; gap:10px; }
+.rota-item { display:flex; justify-content:space-between; align-items:center; gap:10px; text-align:left; width:100%; background:var(--superficie); border:1px solid var(--linha); border-radius:11px; padding:11px 14px; cursor:pointer; font:inherit; color:inherit; }
+.rota-item:hover { border-color:var(--tinta-2); }
+.rota-item.sel { background:var(--alerta-fundo); border-color:var(--tinta); }
+.rota-item b { display:block; font-size:14.5px; } .rota-item small { display:block; font-size:12.5px; color:var(--tinta-2); }
+.rota-item em { display:flex; align-items:center; gap:8px; font-style:normal; font-size:12.5px; color:var(--tinta-2); white-space:nowrap; }
+.rota-item em svg { width:16px; height:16px; stroke:var(--ambar-texto); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.rota-item em i { font-style:normal; }
+.chips { display:flex; flex-wrap:wrap; gap:8px; margin-bottom:6px; }
+.chip { background:var(--alerta-fundo); color:var(--tinta); border-radius:20px; padding:4px 12px; font-size:13px; }
+.chip small { color:var(--tinta-2); }
+h3.sec { font-size:14.5px; font-weight:800; margin:18px 0 8px; padding-top:14px; border-top:1px solid var(--linha); }
+h3.sec .sub { font-weight:500; }
+.metricas { display:grid; grid-template-columns:repeat(auto-fill,minmax(150px,1fr)); gap:12px; }
+.metricas > div { background:var(--superficie-2); border-radius:10px; padding:12px 14px; }
+.metricas span { display:block; font-size:12.5px; color:var(--tinta-2); }
+.metricas b { font-size:26px; font-weight:850; font-stretch:110%; letter-spacing:-.5px; }
+.texto-fech { width:100%; resize:vertical; font:13.5px/1.5 ui-monospace,Consolas,monospace; background:var(--alerta-fundo); border-color:transparent; }
+.em-breve { text-align:left; display:inline-block; margin:14px 0 0; color:var(--tinta); }
+@media (max-width:1020px) { .tiles { grid-template-columns:repeat(3,minmax(0,1fr)); } .grade2, .grade-rotas { grid-template-columns:1fr; } }
+@media (max-width:560px) { .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .tile { padding:13px 14px; } }
+@media (max-width:860px) { .grupo-nav { display:none; } }
+
 /* ---------- Celular ---------- */
 @media (max-width:1020px) { .cards { grid-template-columns:repeat(3,minmax(0,1fr)); } .total { grid-column:1 / -1; } }
 @media (max-width:860px) {
@@ -242,7 +295,6 @@ details.det summary { cursor:pointer; font-weight:750; color:var(--azul); paddin
   .marca, .lateral-pe { display:none; }
   #abas { flex-direction:row; justify-content:space-around; overflow-x:auto; padding:4px 4px calc(4px + env(safe-area-inset-bottom)); gap:0; }
   #abas button { flex-direction:column; gap:3px; padding:7px 6px; font-size:11px; justify-content:center; align-items:center; text-align:center; flex:1; min-width:56px; }
-  #abas button[aria-current="page"]::before { left:20%; right:20%; top:0; bottom:auto; width:auto; height:3px; border-radius:0 0 3px 3px; }
   .nome-longo { display:none; } .nome-curto { display:inline; }
   .topo-m { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--lateral); color:#F2F6FA; padding:12px 16px; position:sticky; top:0; z-index:10; }
   .topo-m b { font-size:19px; font-weight:900; font-stretch:118%; }
@@ -289,7 +341,7 @@ details.det summary { cursor:pointer; font-weight:750; color:var(--azul); paddin
 
 <div id="telaApp" class="shell" hidden>
   <aside class="lateral">
-    <div class="marca"><b>Cordeiro</b><small>Painel de operação</small><div class="faixa"></div></div>
+    <div class="marca"><img src="data:image/png;base64,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" alt="" width="40" height="40" /><div><b>CORDEIRO</b><small>TRANSPORTES</small></div></div>
     <nav id="abas" aria-label="Seções"></nav>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
@@ -297,7 +349,7 @@ details.det summary { cursor:pointer; font-weight:750; color:var(--azul); paddin
     </div>
   </aside>
   <div class="coluna">
-    <header class="topo-m"><b>Cordeiro</b><button id="btnSairM" class="btn-lat" type="button">Sair</button></header>
+    <header class="topo-m"><b>CORDEIRO <small style="font-weight:600;font-size:10px;letter-spacing:2.5px;opacity:.8">TRANSPORTES</small></b><button id="btnSairM" class="btn-lat" type="button">Sair</button></header>
     <main id="conteudo"></main>
   </div>
 </div>
@@ -406,6 +458,16 @@ function situacaoRotas(itens, agora) {
   lista.sort((a, b) => (a.estado === b.estado ? 0 : a.estado === 'andamento' ? -1 : 1) || a.rota.localeCompare(b.rota, 'pt-BR', { numeric: true }));
   return lista;
 }
+function textoFechamento(dia, t, lista, rotas, meta, cobAbertas) {
+  const L = [`*Fechamento ${dataBR(dia)}*`, ''];
+  L.push(`Pacotes bipados: ${t.pacotes}` + (meta ? ` (meta ${meta})` : ''));
+  L.push(`Chegadas: ${t.chegada} · Atribuições: ${t.atribuicao}`);
+  L.push(`Erros: ${t.erro} · Divergências: ${t.divergencia} · Repetidos: ${t.repetido}`);
+  if (lista.length) { L.push('', '*Por colaborador*'); for (const o of lista) L.push(`• ${o.nome}: ${o.pacotes}` + (o.erro ? ` (${o.erro} erro${o.erro > 1 ? 's' : ''})` : '')); }
+  if (rotas.length) { L.push('', '*Rotas*'); for (const r of rotas) L.push(`• ${r.rota} — ${r.nome}: ${r.concluida ? 'concluída' : 'não concluída'}`); }
+  if (cobAbertas) L.push('', `Cobranças em aberto: ${cobAbertas}`);
+  return L.join('\n');
+}
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
 /* PURAS:FIM */
 
@@ -414,7 +476,7 @@ function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, 
 const URL_BASE = 'https://vyweddtvpxnmuofmfghz.supabase.co';
 const CHAVE = 'sb_publishable_n2Bs2Hm0cUvcZoecdXdKnA__UmfHe7i';
 const K_SESSAO = 'painelSessao';
-const E = { sessao: null, perfil: null, perfis: new Map(), aba: 'produtividade', meta: null };
+const E = { sessao: null, perfil: null, perfis: new Map(), aba: 'painel', meta: null };
 
 function lerSessaoGuardada() { try { const s = localStorage.getItem(K_SESSAO); return s ? JSON.parse(s) : null; } catch (_) { return null; } }
 function guardarSessao(s) { E.sessao = s; try { if (s) localStorage.setItem(K_SESSAO, JSON.stringify(s)); else localStorage.removeItem(K_SESSAO); } catch (_) {} }
@@ -500,15 +562,27 @@ const ICONES = {
   locais: '<svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
   equipe: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.6a3 3 0 0 1 0 5.8M18 14.8c1.8.7 3 2.4 3 5.2"/></svg>',
 };
+const TODOS = ['dono', 'monitor', 'bipador'], GESTAO = ['dono', 'monitor'];
+ICONES.painel = '<svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="9" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="5" rx="1.5"/><rect x="13.5" y="11.5" width="7" height="9" rx="1.5"/><rect x="3.5" y="15.5" width="7" height="5" rx="1.5"/></svg>';
+ICONES.acareacoes = '<svg viewBox="0 0 24 24"><path d="M4 5.5h16v10H9.5L5.5 19v-3.5H4z"/><path d="M8 9.5h8M8 12.5h5"/></svg>';
+ICONES.motoristas = ICONES.rotas;
+ICONES.bipagem = ICONES.produtividade;
+ICONES.naorecebidos = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5M8.5 11h5"/></svg>';
+ICONES.backlog = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+ICONES.fechamento = '<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 9l2 2 4-4.5M8.5 15.5h7"/></svg>';
 const ABAS = [
-  { id: 'produtividade', nome: 'Produtividade', curto: 'Produção', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'rotas', nome: 'Rotas de hoje', curto: 'Rotas', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'problemas', nome: 'Erros e divergências', curto: 'Ocorrências', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'pacote', nome: 'Pacote', curto: 'Pacote', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'cobrancas', nome: 'Cobranças', curto: 'Cobranças', papeis: ['dono', 'monitor'] },
-  { id: 'locais', nome: 'Locais por rota', curto: 'Locais', papeis: ['dono', 'monitor'] },
-  { id: 'equipe', nome: 'Equipe', curto: 'Equipe', papeis: ['dono'] },
+  { id: 'painel', nome: 'Painel do dia', curto: 'Painel', papeis: TODOS },
+  { id: 'acareacoes', nome: 'Acareações', curto: 'Acareações', papeis: GESTAO },
+  { id: 'motoristas', nome: 'Motoristas e rotas', curto: 'Rotas', papeis: TODOS },
+  { id: 'bipagem', nome: 'Bipagem e histórico', curto: 'Bipagem', papeis: TODOS },
+  { id: 'naorecebidos', nome: 'Não recebidos', curto: 'Não receb.', papeis: GESTAO },
+  { id: 'backlog', nome: 'Backlog', curto: 'Backlog', papeis: GESTAO },
+  { id: 'fechamento', nome: 'Fechamento', curto: 'Fechar', papeis: GESTAO },
+  { id: 'cobrancas', nome: 'Cobranças', curto: 'Cobranças', papeis: GESTAO, grupo: 'Administração' },
+  { id: 'locais', nome: 'Locais por rota', curto: 'Locais', papeis: GESTAO, grupo: 'Administração' },
+  { id: 'equipe', nome: 'Equipe', curto: 'Equipe', papeis: ['dono'], grupo: 'Administração' },
 ];
+const SUBTELAS = { produtividade: 'Produtividade', problemas: 'Erros e divergências', pacote: 'Ficha do pacote' };
 const PAPEL_NOME = { dono: 'Administrador do banco de dados', monitor: 'Monitor', bipador: 'Bipador' };
 
 /* ---------- tema ---------- */
@@ -555,17 +629,34 @@ async function iniciarApp() {
   $('quemSou').textContent = PAPEL_NOME[E.perfil.papel] || E.perfil.papel;
   $('telaApp').hidden = false;
   const lista = ABAS.filter((a) => a.papeis.includes(E.perfil.papel));
-  $('abas').innerHTML = lista.map((a) => `<button type="button" data-aba="${a.id}" aria-current="false">${ICONES[a.id]}<span class="nome-longo">${esc(a.nome)}</span><span class="nome-curto">${esc(a.curto)}</span></button>`).join('');
-  irPara(lista.some((a) => a.id === E.aba) ? E.aba : lista[0].id);
+  let grupoAtual = '';
+  $('abas').innerHTML = lista.map((a) => {
+    const cab = a.grupo && a.grupo !== grupoAtual ? `<div class="grupo-nav">${esc(a.grupo)}</div>` : '';
+    grupoAtual = a.grupo || grupoAtual;
+    return cab + `<button type="button" data-aba="${a.id}" aria-current="false">${ICONES[a.id]}<span class="nome-longo">${esc(a.nome)}</span><span class="nome-curto">${esc(a.curto)}</span></button>`;
+  }).join('');
+  window.ABAS_OK = lista.map((a) => a.id);
+  irPara(window.ABAS_OK.includes(E.aba) || SUBTELAS[E.aba] ? E.aba : lista[0].id);
 }
 function irPara(id, arg) {
+  if (id === 'bipagem') id = E.sub || 'produtividade';
+  if (id === 'rotas') id = 'motoristas';
   E.aba = id;
-  document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === id ? 'page' : 'false'));
-  const mapa = { rotas: telaRotas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
+  const nav = SUBTELAS[id] ? 'bipagem' : id;
+  document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
+  const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
+    acareacoes: () => telaEmBreve('acareacoes'), naorecebidos: () => telaEmBreve('naorecebidos'), backlog: () => telaEmBreve('backlog'),
+    cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
+  if (SUBTELAS[id]) {
+    E.sub = id;
+    $('conteudo').innerHTML = `<div class="seg sub-seg" id="subSeg">${Object.entries(SUBTELAS).map(([k, n]) => `<button type="button" data-sub="${k}" aria-pressed="${k === id}">${n}</button>`).join('')}</div><div id="corpoTela"></div>`;
+    $('subSeg').addEventListener('click', (e) => { const x = e.target.closest('button[data-sub]'); if (x && x.dataset.sub !== E.aba) irPara(x.dataset.sub); });
+  }
   mapa[id](arg);
 }
+function raizTela() { return $('corpoTela') || $('conteudo'); }
 function nomeOperador(id) { const p = E.perfis.get(id); return p ? p.nome : '—'; }
 function baixar(nome, texto) {
   const a = document.createElement('a');
@@ -604,7 +695,7 @@ const estProd = novoEstadoPeriodo('hoje');
 let tokenProd = 0, timerProd = null;
 function telaProdutividade() {
   const so = E.perfil.papel === 'bipador';
-  $('conteudo').innerHTML = cabecalho(so ? 'Meu dia' : 'Produtividade', '<span id="prodRotulo"></span>',
+  raizTela().innerHTML = cabecalho(so ? 'Meu dia' : 'Produtividade', '<span id="prodRotulo"></span>',
     seletorPeriodo(estProd) + '<button class="btn" id="prodAtualizar" type="button">Atualizar</button>') + datasLivres(estProd) + '<div id="prodCorpo"></div>';
   ligarFiltroPeriodo(estProd, () => carregarProdutividade(false));
   $('prodAtualizar').addEventListener('click', () => carregarProdutividade(false));
@@ -676,36 +767,197 @@ async function carregarProdutividade(silencioso) {
   } catch (e) { if (meu === tokenProd && $('prodCorpo') && !silencioso) $('prodCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 
-/* ===================== ROTAS DE HOJE ===================== */
-// Aviso visual de quem está em cada rota. Não trava ninguém: cada colaborador
-// escolhe a rota no app ou na extensão e conclui por lá.
+/* ===================== ÍCONES DE ROTA ===================== */
 const ICO_CADEADO = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
 const ICO_FEITA = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>';
-let timerRotas = null, tokenRotas = 0;
-function telaRotas() {
-  $('conteudo').innerHTML = cabecalho('Rotas de hoje', 'Quem está bipando cada rota. O cadeado é só um aviso: ninguém fica impedido de bipar. Quem termina conclui a rota no app ou na extensão.',
-    '<button class="btn" id="rotasAtualizar" type="button">Atualizar</button>') + '<div id="rotasCorpo">' + esqueleto() + '</div>';
-  $('rotasAtualizar').addEventListener('click', () => carregarRotas(false));
-  clearInterval(timerRotas);
-  timerRotas = setInterval(() => { if (E.aba === 'rotas' && !document.hidden) carregarRotas(true); }, 60000);
-  carregarRotas(false);
+/* ===================== PAINEL DO DIA ===================== */
+let timerPainel = null, tokenPainel = 0;
+function telaPainel() {
+  $('conteudo').innerHTML = cabecalho('Painel do dia', '<span id="pdSub"></span>',
+    '<button class="btn" id="pdHoje" type="button">Hoje</button><button class="btn" id="pdRotas" type="button">Todas as rotas</button><button class="btn main" id="pdCsv" type="button">Exportar relatório</button>') + '<div id="pdCorpo">' + esqueleto() + '</div>';
+  $('pdHoje').addEventListener('click', () => carregarPainel(false));
+  $('pdRotas').addEventListener('click', () => irPara('motoristas'));
+  clearInterval(timerPainel);
+  timerPainel = setInterval(() => { if (E.aba === 'painel' && !document.hidden) carregarPainel(true); }, 60000);
+  carregarPainel(false);
 }
-async function carregarRotas(silencioso) {
-  const meu = ++tokenRotas;
+async function carregarPainel(silencioso) {
+  const meu = ++tokenPainel, hoje = hojeSP();
   try {
-    const itens = await api('GET', '/rest/v1/rotas_hoje?select=rota,operador_id,operador,iniciada_em,atualizada_em,concluida_em&order=iniciada_em.asc');
-    if (meu !== tokenRotas || !$('rotasCorpo')) return;
-    const lista = situacaoRotas(itens || []);
-    const and = lista.filter((r) => r.estado === 'andamento').length, fim = lista.length - and;
-    $('rotasCorpo').innerHTML = lista.length ? `
-      <div class="resumo-rotas"><span class="etq aberta">${and} em andamento</span><span class="etq ok">${fim} concluída${fim === 1 ? '' : 's'}</span><span class="sub" style="align-self:center">Atualizado às ${esc(horaAgora())}</span></div>
-      <div class="rotas-grid">${lista.map((r) => `<section class="rota-cartao ${r.estado === 'concluida' ? 'feita' : ''}">
-        <h3>${r.estado === 'concluida' ? ICO_FEITA : ICO_CADEADO}<span>${esc(r.rota)}</span></h3>
-        ${r.pessoas.map((p) => `<div class="rota-pessoa"><span class="av" aria-hidden="true">${esc(iniciais(p.nome))}</span><div><b>${esc(p.nome)}</b>
-          <span class="sub">${p.concluida ? 'Concluiu às ' + esc(horaCurta(p.concluidaEm)) : 'Desde ' + esc(horaCurta(p.desde)) + (p.parado ? ' · sem bipe há mais de 3 horas' : '')}</span></div></div>`).join('')}
-      </section>`).join('')}</div>`
-      : `<div class="cartao"><div class="vazio"><b>Nenhuma rota em uso hoje</b>As rotas aparecem aqui quando alguém escolhe a rota do dia no app ou na extensão, com a Nuvem Cordeiro ligada.</div></div>`;
-  } catch (e) { if (meu === tokenRotas && $('rotasCorpo') && !silencioso) $('rotasCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+    const f = `dia=eq.${eFiltroSeguro(hoje)}`;
+    const adm = E.perfil.papel !== 'bipador';
+    const [vis, ev, rotas, cob] = await Promise.all([
+      lerTudo('/rest/v1/produtividade_dia?select=dia,operador_id,operador,tipo,pacotes_unicos,total&' + f),
+      lerTudo('/rest/v1/eventos?select=ocorreu_em,tipo&tipo=in.(chegada,atribuicao)&' + f, 12),
+      api('GET', '/rest/v1/rotas_hoje?select=rota,operador_id,operador,iniciada_em,atualizada_em,concluida_em&order=iniciada_em.asc').catch(() => []),
+      adm ? api('GET', '/rest/v1/cobrancas?select=status,prazo_ate&status=in.(aberta,prometida,sem_resposta)').catch(() => []) : Promise.resolve([]),
+    ]);
+    if (meu !== tokenPainel || !$('pdCorpo')) return;
+    const lista = agregar(vis.itens), t = totais(lista);
+    const meta = E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0;
+    const sr = situacaoRotas(rotas || []);
+    const and = sr.filter((r) => r.estado === 'andamento'), feitas = sr.length - and.length;
+    const paradas = sr.filter((r) => r.estado === 'andamento' && r.pessoas.some((p) => p.parado));
+    const vencidas = (cob || []).filter((c) => c.prazo_ate && c.prazo_ate < hoje).length;
+    const ocorr = t.erro + t.divergencia;
+    $('pdSub').textContent = dataExtenso(hoje) + ' · atualizado às ' + horaAgora();
+    const tile = (nome, n, sub, cls, alvo) => `<${alvo ? 'button type="button" data-ir="' + alvo + '"' : 'div'} class="tile ${cls || ''}"><span>${esc(nome)}</span><b>${esc(n)}</b><small>${esc(sub)}</small></${alvo ? 'button' : 'div'}>`;
+    const tiles = [
+      tile('Pacotes bipados', t.pacotes, meta ? 'meta do dia: ' + meta : 'sem meta definida'),
+      tile('Atribuídos', t.atribuicao, t.chegada + ' chegada' + (t.chegada === 1 ? '' : 's')),
+      tile('Ocorrências', ocorr, ocorr ? t.erro + ' erro(s) · ' + t.divergencia + ' divergência(s)' : 'nenhuma hoje', ocorr ? 'erro' : 'ok', 'problemas'),
+      tile('Rotas em andamento', and.length, feitas + ' concluída' + (feitas === 1 ? '' : 's'), paradas.length ? 'alerta' : '', 'motoristas'),
+      adm ? tile('Cobranças abertas', (cob || []).length, vencidas ? vencidas + ' com prazo vencido' : 'nenhuma vencida', vencidas ? 'erro' : '', 'cobrancas')
+          : tile('Repetidos', t.repetido, t.repetido ? 'pacotes bipados de novo' : 'nenhum hoje'),
+    ].join('');
+    const h = porHora(ev.itens), pk = pico(h);
+    let barras = '';
+    if (ev.itens.length) {
+      const de = h.findIndex((v) => v > 0), ate = Math.max(...h.map((v, i) => (v ? i : -1)));
+      const ini = Math.max(0, Math.min(8, de)), fim = Math.min(23, Math.max(17, ate)), mh = Math.max(1, ...h);
+      for (let i = ini; i <= fim; i++) barras += `<div class="${h[i] === pk.valor && pk.valor ? 'pico' : ''}" title="${i}h: ${h[i]} pacotes"><em>${h[i] || ''}</em><i style="height:${Math.round(h[i] / mh * 100)}%"></i><span>${String(i).padStart(2, '0')}h</span></div>`;
+    }
+    const atencao = [];
+    if (t.erro) atencao.push(['erro', `${t.erro} erro${t.erro > 1 ? 's' : ''} de bipagem hoje`, 'Veja quem errou e corrija com a equipe.', 'erro']);
+    if (t.divergencia) atencao.push(['alerta', `${t.divergencia} divergência${t.divergencia > 1 ? 's' : ''} de rota`, 'Pacotes bipados fora da rota esperada.', 'divergencia']);
+    if (paradas.length) atencao.push(['alerta', `${paradas.length} rota${paradas.length > 1 ? 's' : ''} sem bipe há mais de 3 horas`, paradas.map((r) => r.rota).join(', ') + '.', null]);
+    if (vencidas) atencao.push(['erro', `${vencidas} cobrança${vencidas > 1 ? 's' : ''} com prazo vencido`, 'Cobre o motorista ou atualize a situação.', null]);
+    if (meta && t.pacotes >= meta) atencao.push(['ok', 'Meta do dia batida', t.pacotes + ' de ' + meta + ' pacotes.', null]);
+    if (!atencao.length) atencao.push(['ok', 'Nada pendente agora', lista.length ? 'Sem erros, divergências ou rotas paradas.' : 'Ainda não há bipes hoje.', null]);
+    const rotaDe = new Map(); for (const r of sr) for (const p of r.pessoas) if (!rotaDe.has(p.id) || !p.concluida) rotaDe.set(p.id, r.rota);
+    const escala = Math.max(1, meta, ...lista.map((o) => o.pacotes)) * 1.02;
+    const linhas = lista.slice(0, 8).map((o) => `<tr><td><b>${esc(o.nome)}</b></td><td data-r="Rota">${esc(rotaDe.get(o.id) || '—')}</td><td class="n" data-r="Atribuídos">${o.atribuicao}</td><td class="n" data-r="Ocorrências">${o.erro + o.divergencia}</td>
+      <td class="avanco"><span class="barra-av"><i style="width:${(o.pacotes / escala * 100).toFixed(1)}%"></i></span></td></tr>`).join('');
+    $('pdCorpo').innerHTML = `
+      <div class="tiles">${tiles}</div>
+      <div class="grade2">
+        <section class="cartao"><div class="cartao-topo"><h2>Bipagens por hora</h2><span class="sub">Chegada e atribuição${pk.valor ? ' · pico às ' + pk.hora + 'h' : ''}</span></div>
+          ${ev.itens.length ? `<div class="ritmo alto">${barras}</div>` : '<div class="vazio">Sem bipes por enquanto. Os bipes aparecem aqui assim que alguém bipar.</div>'}</section>
+        <section class="cartao"><div class="cartao-topo"><h2>Precisa de atenção</h2></div>
+          <ul class="atencao">${atencao.map(([c, a, b, alvo]) => `<li class="${c}"><${alvo ? 'button type="button" data-ir="' + alvo + '"' : 'div'}><b>${esc(a)}</b><span>${esc(b)}</span></${alvo ? 'button' : 'div'}></li>`).join('')}</ul></section>
+      </div>
+      <section class="cartao"><div class="cartao-topo"><h2>Produtividade por motorista</h2><button class="btn mini" id="pdVer" type="button">Ver todos</button></div>
+        ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Colaborador</th><th>Rota</th><th class="n">Atribuídos</th><th class="n">Ocorrências</th><th>Avanço${meta ? ' (meta ' + meta + ')' : ''}</th></tr></thead><tbody>${linhas}</tbody></table></div>`
+          : '<div class="vazio"><b>Nenhum bipe hoje</b>O ranking aparece assim que alguém bipar com a Nuvem Cordeiro ligada.</div>'}</section>`;
+    document.querySelectorAll('#pdCorpo [data-ir]').forEach((b) => b.addEventListener('click', () => {
+      const a = b.dataset.ir;
+      if (a === 'erro' || a === 'divergencia') { estPro.tipo2 = a; estPro.de = hoje; estPro.ate = hoje; estPro.tipo = 'hoje'; irPara('problemas'); }
+      else irPara(a);
+    }));
+    $('pdVer').addEventListener('click', () => irPara('produtividade'));
+    $('pdCsv').onclick = () => baixar('relatorio-do-dia-' + hoje + '.csv', paraCsv(['Colaborador', 'Rota', 'Chegadas', 'Atribuições', 'Pacotes', 'Erros', 'Divergências', 'Repetidos'],
+      lista.map((o) => [o.nome, rotaDe.get(o.id) || '', o.chegada, o.atribuicao, o.pacotes, o.erro, o.divergencia, o.repetido])));
+  } catch (e) { if (meu === tokenPainel && $('pdCorpo') && !silencioso) $('pdCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+
+/* ===================== MOTORISTAS E ROTAS ===================== */
+let tokenMot = 0, timerMot = null;
+function telaMotoristas() {
+  $('conteudo').innerHTML = cabecalho('Motoristas e rotas', 'Quem está em cada rota hoje, o que a rota cobre e como foi a semana.',
+    '<button class="btn" id="mtAtualizar" type="button">Atualizar</button>' + (E.perfil.papel === 'dono' ? '<button class="btn main" id="mtLocais" type="button">Editar locais das rotas</button>' : '')) + '<div id="mtCorpo">' + esqueleto() + '</div>';
+  $('mtAtualizar').addEventListener('click', () => carregarMotoristas(false));
+  if ($('mtLocais')) $('mtLocais').addEventListener('click', () => irPara('locais'));
+  clearInterval(timerMot);
+  timerMot = setInterval(() => { if (E.aba === 'motoristas' && !document.hidden) carregarMotoristas(true); }, 60000);
+  carregarMotoristas(false);
+}
+async function carregarMotoristas(silencioso) {
+  const meu = ++tokenMot, hoje = hojeSP(), semana = somarDias(hoje, -6);
+  try {
+    const [rotas, loc, ev] = await Promise.all([
+      api('GET', '/rest/v1/rotas_hoje?select=rota,operador_id,operador,iniciada_em,atualizada_em,concluida_em&order=iniciada_em.asc').catch(() => []),
+      api('GET', '/rest/v1/cadastros?select=valor&chave=eq.locais').catch(() => []),
+      lerTudo('/rest/v1/eventos?select=tipo,rota,awb,dia&tipo=in.(atribuicao,erro,divergencia)&rota=not.is.null&dia=gte.' + eFiltroSeguro(semana) + '&dia=lte.' + eFiltroSeguro(hoje), 12),
+    ]);
+    if (meu !== tokenMot || !$('mtCorpo')) return;
+    const locais = limparLocais(loc && loc[0] && Array.isArray(loc[0].valor) ? loc[0].valor : []);
+    const sr = situacaoRotas(rotas || []), hojeDe = new Map(sr.map((r) => [r.rota, r]));
+    const nomes = new Set([...locais.map((l) => l.rota), ...sr.map((r) => r.rota)]);
+    const rs = [...nomes].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+    if (!rs.length) { $('mtCorpo').innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhuma rota cadastrada</b>As rotas aparecem aqui quando houver locais cadastrados ou quando alguém escolher a rota do dia no app ou na extensão.</div></div>'; return; }
+    if (!rs.includes(E.rotaSel)) E.rotaSel = rs[0];
+    const item = (r) => {
+      const s = hojeDe.get(r), n = locais.filter((l) => l.rota === r).length;
+      const quem = s ? s.pessoas.map((p) => p.nome).join(', ') : 'Livre hoje';
+      return `<button type="button" class="rota-item ${r === E.rotaSel ? 'sel' : ''}" data-rota="${esc(r)}"><span><b>${esc(r)}</b><small>${esc(quem)}</small></span><em>${s ? (s.estado === 'concluida' ? ICO_FEITA : ICO_CADEADO) : ''}<i>${n} bairro${n === 1 ? '' : 's'}</i></em></button>`;
+    };
+    const detalhe = () => {
+      const r = E.rotaSel, s = hojeDe.get(r), meus = locais.filter((l) => l.rota === r);
+      const linhas = ev.itens.filter((x) => x.rota === r);
+      const dist = (tp) => new Set(linhas.filter((x) => x.tipo === tp).map((x) => x.awb)).size;
+      const atrib = dist('atribuicao'), err = dist('erro') + dist('divergencia');
+      const taxa = atrib + err ? (err / (atrib + err) * 100).toFixed(1).replace('.', ',') + '%' : '—';
+      const dias = new Set(linhas.map((x) => x.dia)).size;
+      return `<section class="cartao"><div class="cartao-topo"><h2>${esc(r)} · bairros e ruas</h2><span class="sub">Usado na conferência de bipagem</span></div>
+        ${meus.length ? `<div class="chips">${meus.map((l) => `<span class="chip">${esc(l.termo)}${l.cidade ? ' <small>' + esc(l.cidade) + '</small>' : ''}</span>`).join('')}</div>` : '<p class="sub">Nenhum local cadastrado para esta rota ainda.</p>'}
+        <h3 class="sec">Hoje</h3>
+        ${s ? s.pessoas.map((p) => `<div class="rota-pessoa"><span class="av" aria-hidden="true">${esc(iniciais(p.nome))}</span><div><b>${esc(p.nome)}</b><span class="sub">${p.concluida ? 'Concluiu às ' + esc(horaCurta(p.concluidaEm)) : 'Desde ' + esc(horaCurta(p.desde)) + (p.parado ? ' · sem bipe há mais de 3 horas' : '')}</span></div></div>`).join('') : '<p class="sub">Ninguém escolheu esta rota hoje.</p>'}
+        <h3 class="sec">Desempenho da semana <span class="sub">(últimos 7 dias)</span></h3>
+        <div class="metricas"><div><span>Pacotes atribuídos</span><b>${atrib}</b></div><div><span>Erros e divergências</span><b>${err}</b></div><div><span>Taxa de erro</span><b>${taxa}</b></div><div><span>Dias com bipe</span><b>${dias}</b></div></div>
+      </section>`;
+    };
+    $('mtCorpo').innerHTML = `<div class="grade-rotas"><section class="cartao"><div class="cartao-topo"><h2>Rotas</h2><span class="sub">${rs.length}</span></div><div class="rota-lista">${rs.map(item).join('')}</div></section><div id="mtDet">${detalhe()}</div></div>`;
+    $('mtCorpo').querySelectorAll('.rota-item').forEach((b) => b.addEventListener('click', () => {
+      E.rotaSel = b.dataset.rota;
+      $('mtCorpo').querySelectorAll('.rota-item').forEach((x) => x.classList.toggle('sel', x === b));
+      $('mtDet').innerHTML = detalhe();
+    }));
+  } catch (e) { if (meu === tokenMot && $('mtCorpo') && !silencioso) $('mtCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+
+/* ===================== FECHAMENTO ===================== */
+let estFech = { dia: null }, tokenFech = 0;
+function telaFechamento() {
+  if (!estFech.dia) estFech.dia = hojeSP();
+  $('conteudo').innerHTML = cabecalho('Fechamento do dia', 'Resumo para conferir e enviar no fim do expediente.',
+    `<label class="c">Dia<input type="date" id="fcDia" value="${esc(estFech.dia)}" max="${esc(hojeSP())}" /></label>`) + '<div id="fcCorpo">' + esqueleto() + '</div>';
+  $('fcDia').addEventListener('change', () => { if ($('fcDia').value) { estFech.dia = $('fcDia').value; carregarFechamento(); } });
+  carregarFechamento();
+}
+async function carregarFechamento() {
+  const meu = ++tokenFech, dia = estFech.dia;
+  try {
+    const [vis, rotas, cob] = await Promise.all([
+      lerTudo('/rest/v1/produtividade_dia?select=dia,operador_id,operador,tipo,pacotes_unicos,total&dia=eq.' + eFiltroSeguro(dia)),
+      api('GET', '/rest/v1/rotas_dia?select=rota,operador_id,iniciada_em,atualizada_em,concluida_em&dia=eq.' + eFiltroSeguro(dia) + '&order=iniciada_em.asc').catch(() => []),
+      api('GET', '/rest/v1/cobrancas?select=status,prazo_ate&status=in.(aberta,prometida,sem_resposta)').catch(() => []),
+    ]);
+    if (meu !== tokenFech || !$('fcCorpo')) return;
+    const lista = agregar(vis.itens), t = totais(lista);
+    const rs = (rotas || []).map((r) => ({ rota: r.rota, nome: nomeOperador(r.operador_id), concluida: !!r.concluida_em, em: r.concluida_em }));
+    const texto = textoFechamento(dia, t, lista, rs, E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0, (cob || []).length);
+    $('fcCorpo').innerHTML = `
+      <div class="tiles"><div class="tile"><span>Pacotes bipados</span><b>${t.pacotes}</b><small>${t.chegada} chegadas · ${t.atribuicao} atribuições</small></div>
+        <div class="tile ${t.erro ? 'erro' : ''}"><span>Erros</span><b>${t.erro}</b><small>no dia</small></div>
+        <div class="tile ${t.divergencia ? 'alerta' : ''}"><span>Divergências</span><b>${t.divergencia}</b><small>no dia</small></div>
+        <div class="tile"><span>Rotas concluídas</span><b>${rs.filter((r) => r.concluida).length}</b><small>de ${rs.length} usadas</small></div>
+        <div class="tile"><span>Equipe</span><b>${lista.length}</b><small>pessoa${lista.length === 1 ? '' : 's'} bipando</small></div></div>
+      <div class="grade2"><section class="cartao"><div class="cartao-topo"><h2>Por colaborador</h2></div>
+        ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Colaborador</th><th class="n">Chegadas</th><th class="n">Atribuições</th><th class="n">Pacotes</th><th class="n">Erros</th><th class="n">Diverg.</th></tr></thead><tbody>
+          ${lista.map((o) => `<tr><td><b>${esc(o.nome)}</b></td><td class="n" data-r="Chegadas">${o.chegada}</td><td class="n" data-r="Atribuições">${o.atribuicao}</td><td class="n" data-r="Pacotes">${o.pacotes}</td><td class="n" data-r="Erros">${o.erro}</td><td class="n" data-r="Diverg.">${o.divergencia}</td></tr>`).join('')}</tbody></table></div>` : '<div class="vazio"><b>Sem bipes neste dia</b></div>'}</section>
+        <section class="cartao"><div class="cartao-topo"><h2>Mensagem do fechamento</h2></div>
+          <textarea id="fcTexto" rows="16" readonly class="texto-fech">${esc(texto)}</textarea>
+          <div class="acoes" style="margin-top:12px"><button class="btn main" id="fcCopiar" type="button">Copiar</button><button class="btn" id="fcCsv" type="button">Baixar CSV</button></div></section></div>`;
+    $('fcCopiar').addEventListener('click', async () => {
+      try { await navigator.clipboard.writeText(texto); aviso('Mensagem copiada'); }
+      catch (_) { $('fcTexto').select(); aviso('Selecione e copie (Ctrl+C)'); }
+    });
+    $('fcCsv').addEventListener('click', () => baixar('fechamento-' + dia + '.csv', paraCsv(['Colaborador', 'Chegadas', 'Atribuições', 'Pacotes', 'Erros', 'Divergências', 'Repetidos'],
+      lista.map((o) => [o.nome, o.chegada, o.atribuicao, o.pacotes, o.erro, o.divergencia, o.repetido]))));
+  } catch (e) { if (meu === tokenFech && $('fcCorpo')) $('fcCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+
+/* ===================== SEÇÕES QUE AINDA NÃO SINCRONIZAM ===================== */
+const EM_BREVE = {
+  acareacoes: ['Acareações', 'Histórico compartilhado entre todos os aparelhos', 'Hoje as acareações ficam só na extensão do computador. Para aparecerem aqui, falta enviá-las ao banco.', ['Lista de acareações abertas, com prazo e situação', 'Prévia da mensagem para o grupo', 'Histórico e acareações por motorista']],
+  naorecebidos: ['Não recebidos', 'Pacotes procurados e achados', 'A lista de não recebidos e os pacotes achados ficam só na extensão do computador por enquanto.', ['Quantos foram achados da lista', 'Quem achou e quando', 'Pacotes que ainda faltam']],
+  backlog: ['Backlog', 'Pacotes parados por motorista', 'O backlog é consultado ao vivo no iMile pela extensão e ainda não é guardado no banco.', ['Pacotes parados por motorista e por dias', 'Parados há 3 dias ou mais', 'Erros de rota no backlog']],
+};
+function telaEmBreve(id) {
+  const [nome, sub, porque, itens] = EM_BREVE[id];
+  $('conteudo').innerHTML = cabecalho(nome, sub) + `<section class="cartao"><div class="vazio"><b>Ainda não chega ao painel</b>${esc(porque)}
+    <ul class="em-breve">${itens.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
+    <p class="sub" style="margin-top:14px">Enquanto isso, use a extensão no computador. Quando essa sincronização for feita, esta tela mostra tudo em tempo real.</p></div></section>`;
 }
 
 /* ===================== ERROS E DIVERGÊNCIAS ===================== */
@@ -714,7 +966,7 @@ let tokenPro = 0, linhasPro = [];
 const ICO_BUSCA = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 function telaProblemas() {
   const opts = [...E.perfis.values()].filter((p) => p.ativo).map((p) => `<option value="${esc(p.id)}" ${estPro.operador === p.id ? 'selected' : ''}>${esc(p.nome)}</option>`).join('');
-  $('conteudo').innerHTML = cabecalho('Erros e divergências', 'Tudo o que não deu certo ou saiu da rota esperada. Toque no código do pacote para ver a história dele.', seletorPeriodo(estPro)) + datasLivres(estPro) +
+  raizTela().innerHTML = cabecalho('Erros e divergências', 'Tudo o que não deu certo ou saiu da rota esperada. Toque no código do pacote para ver a história dele.', seletorPeriodo(estPro)) + datasLivres(estPro) +
     `<div class="cartao"><div class="filtros">
       <label class="c">Tipo<select id="prTipo"><option value="erro,divergencia">Erros e divergências</option><option value="erro">Só erros</option><option value="divergencia">Só divergências</option><option value="repetido">Repetidos</option></select></label>
       ${E.perfil.papel === 'bipador' ? '' : `<label class="c">Colaborador<select id="prOp"><option value="">Todos</option>${opts}</select></label>`}
@@ -765,7 +1017,7 @@ function desenharProblemas() {
 
 /* ===================== PACOTE ===================== */
 function telaPacote(awbInicial) {
-  $('conteudo').innerHTML = cabecalho('Ficha do pacote', 'Digite o código para ver, em ordem, quem bipou, o que aconteceu e se houve cobrança.') +
+  raizTela().innerHTML = cabecalho('Ficha do pacote', 'Digite o código para ver, em ordem, quem bipou, o que aconteceu e se houve cobrança.') +
     `<div class="cartao"><div class="pacote-busca"><input id="pkAwb" placeholder="Código do pacote (AWB)" aria-label="Código do pacote" autocomplete="off" value="${esc(awbInicial || '')}" /><button class="btn main" id="pkBuscar" type="button">Buscar pacote</button></div></div><div id="pkCorpo"></div>`;
   const buscar = async () => {
     const awb = eFiltroSeguro($('pkAwb').value.trim());
@@ -935,7 +1187,7 @@ $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[
   if (s && s.refresh) { E.sessao = s; if (await renovar()) { await iniciarApp(); return; } }
   mostrarLogin();
 })();
-if (typeof module !== 'undefined') module.exports = { situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
+if (typeof module !== 'undefined') module.exports = { textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
 </script>
 </body>
 </html>
