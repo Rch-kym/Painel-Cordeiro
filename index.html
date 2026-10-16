@@ -163,6 +163,19 @@ input::placeholder { color:var(--tinta-2); opacity:.7; }
 @keyframes encher { from { transform:scaleX(0); } to { transform:scaleX(1); } }
 .nota-pistas { margin:12px 0 0; display:flex; gap:8px 20px; flex-wrap:wrap; }
 
+/* ---------- Rotas de hoje ---------- */
+.rotas-grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(270px,1fr)); gap:14px; }
+.rota-cartao { background:var(--superficie); border:1px solid var(--linha); border-radius:16px; padding:16px 18px; box-shadow:var(--sombra); border-left:5px solid var(--ambar); }
+.rota-cartao.feita { border-left-color:var(--ok); }
+.rota-cartao h3 { font-size:20px; font-weight:850; font-stretch:112%; letter-spacing:-.3px; display:flex; align-items:center; gap:10px; margin-bottom:10px; }
+.rota-cartao h3 svg { width:20px; height:20px; stroke:var(--ambar-texto); fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; flex:none; }
+.rota-cartao.feita h3 svg { stroke:var(--ok); }
+.rota-pessoa { display:flex; align-items:center; gap:10px; padding:7px 0; border-top:1px solid var(--linha); }
+.rota-pessoa .av { width:30px; height:30px; font-size:11.5px; }
+.rota-pessoa b { font-size:14.5px; }
+.rota-pessoa .sub { display:block; font-size:12.5px; }
+.resumo-rotas { display:flex; gap:10px 14px; flex-wrap:wrap; margin-bottom:16px; }
+
 /* ---------- Ritmo do dia ---------- */
 .ritmo { display:flex; align-items:flex-end; gap:5px; height:150px; padding-top:22px; }
 .ritmo > div { flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; position:relative; }
@@ -376,6 +389,23 @@ function pico(h) {
   for (let i = 1; i < h.length; i++) if (h[i] > h[b]) b = i;
   return { hora: b, valor: h[b] || 0 };
 }
+function horaCurta(iso) {
+  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }).format(new Date(iso));
+}
+// Agrupa as linhas de rotas_hoje por rota. Estado: em andamento (alguém sem concluir) ou concluída (todos concluíram).
+function situacaoRotas(itens, agora) {
+  const por = new Map();
+  for (const r of itens || []) { if (!por.has(r.rota)) por.set(r.rota, []); por.get(r.rota).push(r); }
+  const lista = [...por.entries()].map(([rota, pessoas]) => {
+    const ps = pessoas.map((p) => ({
+      id: p.operador_id, nome: p.operador, desde: p.iniciada_em, concluida: !!p.concluida_em, concluidaEm: p.concluida_em || null,
+      parado: !p.concluida_em && (agora || Date.now()) - new Date(p.atualizada_em).getTime() > 3 * 3600 * 1000,
+    })).sort((a, b) => Number(a.concluida) - Number(b.concluida) || String(a.nome).localeCompare(String(b.nome), 'pt-BR'));
+    return { rota, pessoas: ps, estado: ps.every((p) => p.concluida) ? 'concluida' : 'andamento' };
+  });
+  lista.sort((a, b) => (a.estado === b.estado ? 0 : a.estado === 'andamento' ? -1 : 1) || a.rota.localeCompare(b.rota, 'pt-BR', { numeric: true }));
+  return lista;
+}
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
 /* PURAS:FIM */
 
@@ -462,6 +492,7 @@ async function sair() {
 
 /* ===================== INÍCIO ===================== */
 const ICONES = {
+  rotas: '<svg viewBox="0 0 24 24"><circle cx="6" cy="18" r="2.2"/><circle cx="18" cy="6" r="2.2"/><path d="M8.2 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.8"/></svg>',
   produtividade: '<svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/><path d="M3 20.5h18"/></svg>',
   problemas: '<svg viewBox="0 0 24 24"><path d="M12 3.5l9 16H3l9-16z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>',
   pacote: '<svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12L4 7.5M12 12v9"/></svg>',
@@ -471,6 +502,7 @@ const ICONES = {
 };
 const ABAS = [
   { id: 'produtividade', nome: 'Produtividade', curto: 'Produção', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'rotas', nome: 'Rotas de hoje', curto: 'Rotas', papeis: ['dono', 'monitor', 'bipador'] },
   { id: 'problemas', nome: 'Erros e divergências', curto: 'Ocorrências', papeis: ['dono', 'monitor', 'bipador'] },
   { id: 'pacote', nome: 'Pacote', curto: 'Pacote', papeis: ['dono', 'monitor', 'bipador'] },
   { id: 'cobrancas', nome: 'Cobranças', curto: 'Cobranças', papeis: ['dono', 'monitor'] },
@@ -529,7 +561,7 @@ async function iniciarApp() {
 function irPara(id, arg) {
   E.aba = id;
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === id ? 'page' : 'false'));
-  const mapa = { produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
+  const mapa = { rotas: telaRotas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
   mapa[id](arg);
@@ -642,6 +674,38 @@ async function carregarProdutividade(silencioso) {
       ['Colaborador', 'Chegadas', 'Atribuições', 'Pacotes', 'Erros', 'Divergências', 'Repetidos', '% erro'],
       lista.map((o) => [o.nome, o.chegada, o.atribuicao, o.pacotes, o.erro, o.divergencia, o.repetido, (o.taxaErro * 100).toFixed(1).replace('.', ',')]))));
   } catch (e) { if (meu === tokenProd && $('prodCorpo') && !silencioso) $('prodCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+
+/* ===================== ROTAS DE HOJE ===================== */
+// Aviso visual de quem está em cada rota. Não trava ninguém: cada colaborador
+// escolhe a rota no app ou na extensão e conclui por lá.
+const ICO_CADEADO = '<svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+const ICO_FEITA = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></svg>';
+let timerRotas = null, tokenRotas = 0;
+function telaRotas() {
+  $('conteudo').innerHTML = cabecalho('Rotas de hoje', 'Quem está bipando cada rota. O cadeado é só um aviso: ninguém fica impedido de bipar. Quem termina conclui a rota no app ou na extensão.',
+    '<button class="btn" id="rotasAtualizar" type="button">Atualizar</button>') + '<div id="rotasCorpo">' + esqueleto() + '</div>';
+  $('rotasAtualizar').addEventListener('click', () => carregarRotas(false));
+  clearInterval(timerRotas);
+  timerRotas = setInterval(() => { if (E.aba === 'rotas' && !document.hidden) carregarRotas(true); }, 60000);
+  carregarRotas(false);
+}
+async function carregarRotas(silencioso) {
+  const meu = ++tokenRotas;
+  try {
+    const itens = await api('GET', '/rest/v1/rotas_hoje?select=rota,operador_id,operador,iniciada_em,atualizada_em,concluida_em&order=iniciada_em.asc');
+    if (meu !== tokenRotas || !$('rotasCorpo')) return;
+    const lista = situacaoRotas(itens || []);
+    const and = lista.filter((r) => r.estado === 'andamento').length, fim = lista.length - and;
+    $('rotasCorpo').innerHTML = lista.length ? `
+      <div class="resumo-rotas"><span class="etq aberta">${and} em andamento</span><span class="etq ok">${fim} concluída${fim === 1 ? '' : 's'}</span><span class="sub" style="align-self:center">Atualizado às ${esc(horaAgora())}</span></div>
+      <div class="rotas-grid">${lista.map((r) => `<section class="rota-cartao ${r.estado === 'concluida' ? 'feita' : ''}">
+        <h3>${r.estado === 'concluida' ? ICO_FEITA : ICO_CADEADO}<span>${esc(r.rota)}</span></h3>
+        ${r.pessoas.map((p) => `<div class="rota-pessoa"><span class="av" aria-hidden="true">${esc(iniciais(p.nome))}</span><div><b>${esc(p.nome)}</b>
+          <span class="sub">${p.concluida ? 'Concluiu às ' + esc(horaCurta(p.concluidaEm)) : 'Desde ' + esc(horaCurta(p.desde)) + (p.parado ? ' · sem bipe há mais de 3 horas' : '')}</span></div></div>`).join('')}
+      </section>`).join('')}</div>`
+      : `<div class="cartao"><div class="vazio"><b>Nenhuma rota em uso hoje</b>As rotas aparecem aqui quando alguém escolhe a rota do dia no app ou na extensão, com a Nuvem Cordeiro ligada.</div></div>`;
+  } catch (e) { if (meu === tokenRotas && $('rotasCorpo') && !silencioso) $('rotasCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 
 /* ===================== ERROS E DIVERGÊNCIAS ===================== */
@@ -871,7 +935,7 @@ $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[
   if (s && s.refresh) { E.sessao = s; if (await renovar()) { await iniciarApp(); return; } }
   mostrarLogin();
 })();
-if (typeof module !== 'undefined') module.exports = { limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
+if (typeof module !== 'undefined') module.exports = { situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
 </script>
 </body>
 </html>
