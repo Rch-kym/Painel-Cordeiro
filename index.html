@@ -278,7 +278,7 @@ details.det summary { cursor:pointer; font-weight:750; color:var(--azul); paddin
   <div class="entrar-form">
     <form id="formLogin" novalidate>
       <h1>Entrar no painel</h1>
-      <p class="sub" style="margin:-6px 0 0">Use o e-mail e a senha que o dono criou para você.</p>
+      <p class="sub" style="margin:-6px 0 0">Use o e-mail e a senha que o administrador criou para você.</p>
       <label class="c">E-mail<input id="lgEmail" type="email" autocomplete="username" inputmode="email" /></label>
       <label class="c">Senha<span class="campo-senha"><input id="lgSenha" type="password" autocomplete="current-password" /><button type="button" id="lgVer">Mostrar</button></span></label>
       <button id="lgEntrar" class="btn main" type="submit">Entrar</button>
@@ -509,7 +509,7 @@ const ABAS = [
   { id: 'locais', nome: 'Locais por rota', curto: 'Locais', papeis: ['dono', 'monitor'] },
   { id: 'equipe', nome: 'Equipe', curto: 'Equipe', papeis: ['dono'] },
 ];
-const PAPEL_NOME = { dono: 'Dono', monitor: 'Monitor', bipador: 'Bipador' };
+const PAPEL_NOME = { dono: 'Administrador do banco de dados', monitor: 'Monitor', bipador: 'Bipador' };
 
 /* ---------- tema ---------- */
 function temaGuardado() { try { return localStorage.getItem('painelTema') || ''; } catch (_) { return ''; } }
@@ -548,7 +548,7 @@ async function iniciarApp() {
   E.perfil = E.perfis.get(E.sessao.id);
   if (!E.perfil || !E.perfil.ativo) {
     guardarSessao(null); mostrarLogin();
-    const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo dono. Peça a ele para ativar em Equipe.'; m.hidden = false; return;
+    const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo administrador. Peça a ele para ativar em Equipe.'; m.hidden = false; return;
   }
   try { const c = await api('GET', '/rest/v1/cadastros?select=valor&chave=eq.metas'); E.meta = c && c[0] ? c[0].valor : null; } catch (_) { E.meta = null; }
   $('euNome').textContent = E.perfil.nome; $('euAv').textContent = iniciais(E.perfil.nome);
@@ -837,7 +837,7 @@ async function telaCobrancas() {
 }
 
 /* ===================== LOCAIS POR ROTA ===================== */
-// Lista única para todos os aparelhos (app e extensão). O dono edita aqui ou
+// Lista única para todos os aparelhos (app e extensão). O administrador edita aqui ou
 // no próprio app/extensão; os demais recebem a lista automaticamente.
 function limparLocais(lista) {
   const vistos = new Set(), out = [];
@@ -866,11 +866,11 @@ async function telaLocais() {
     <td><input class="lcCidade" value="${esc(x.cidade)}" placeholder="Qualquer cidade" aria-label="Cidade" ${editavel ? '' : 'disabled'} /></td>
     ${editavel ? '<td><button class="btn mini lcDel" type="button">Excluir</button></td>' : ''}</tr>`;
   $('lcRaiz').innerHTML = `<div class="cartao">
-    <p class="sub" style="margin:0 0 14px">${editavel ? 'Ao salvar, todos os celulares e computadores recebem a lista em poucos minutos.' : 'Só o dono edita. Você recebe a lista automaticamente.'}
+    <p class="sub" style="margin:0 0 14px">${editavel ? 'Ao salvar, todos os celulares e computadores recebem a lista em poucos minutos.' : 'Só o administrador edita. Você recebe a lista automaticamente.'}
     ${quando ? ' Última alteração em ' + esc(dataHoraBR(quando)) + (quem ? ', por ' + esc(nomeOperador(quem)) : '') + '.' : ' Ainda não há lista publicada.'}</p>
     <datalist id="lcRotas">${rotas.map((r) => `<option value="${esc(r)}">`).join('')}</datalist>
     <div class="rolagem"><table class="tabela"><thead><tr><th>Local</th><th>Rota</th><th>Cidade</th>${editavel ? '<th></th>' : ''}</tr></thead><tbody id="lcCorpo">${lista.map(linha).join('')}</tbody></table></div>
-    ${lista.length || editavel ? '' : '<div class="vazio"><b>Nada cadastrado</b>O dono ainda não publicou locais.</div>'}
+    ${lista.length || editavel ? '' : '<div class="vazio"><b>Nada cadastrado</b>O administrador ainda não publicou locais.</div>'}
     ${editavel ? '<div class="filtros" style="margin-top:14px"><button class="btn" id="lcAdd" type="button">Adicionar local</button><button class="btn ambar" id="lcSalvar" type="button">Salvar para todos</button><span id="lcMsg" class="sub"></span></div>' : ''}</div>`;
   if (!editavel) return;
   const ligarDel = () => document.querySelectorAll('.lcDel').forEach((b) => { b.onclick = () => b.closest('tr').remove(); });
@@ -887,7 +887,7 @@ async function telaLocais() {
   });
 }
 
-/* ===================== EQUIPE (dono) ===================== */
+/* ===================== EQUIPE (administrador) ===================== */
 async function telaEquipe() {
   const meta = E.meta && E.meta.pacotes_dia ? E.meta.pacotes_dia : '';
   const lista = [...E.perfis.values()].sort((a, b) => Number(a.ativo) - Number(b.ativo) || a.nome.localeCompare(b.nome, 'pt-BR'));
