@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="robots" content="noindex, nofollow" />
+<title>Painel Cordeiro</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&display=swap" rel="stylesheet" />
+<style>
+:root {
+  --navy:#0F2A43; --amber:#E8A33D; --cream:#F5F2EC; --paper:#FFFFFF; --line:#DED8CD; --warm:#6A665E; --soft:#EDE8DF;
+  --ok:#1E7B4B; --bad:#B42318; --warn:#8A5A0B; --blue:#1F5AA0;
+  --bg:var(--cream); --fg:var(--navy); --cartao:var(--paper); --cartao-2:#FAF8F4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-tema="claro"]) {
+    --bg:#0B1B2C; --fg:#F1EDE4; --cartao:#12293F; --cartao-2:#0F2236; --line:#27435D; --warm:#A9B6C4; --soft:#173048;
+    --ok:#4CC38A; --bad:#FF8A7A; --warn:#E8A33D; --blue:#7FB2EA;
+  }
+}
+* { box-sizing:border-box; }
+body { margin:0; background:var(--bg); color:var(--fg); font-family:'Archivo',system-ui,Arial,sans-serif; font-size:15px; line-height:1.4; }
+[hidden] { display:none !important; }
+button, input, select, textarea { font:inherit; color:inherit; }
+.topo { background:#0F2A43; color:#F5F2EC; display:flex; align-items:center; gap:16px; padding:12px 20px; flex-wrap:wrap; position:sticky; top:0; z-index:5; }
+.topo h1 { font-size:18px; font-weight:900; margin:0; letter-spacing:.3px; }
+.topo h1 span { color:var(--amber); }
+.topo .btn { background:transparent; color:#F5F2EC; border-color:#4C6580; }
+.topo .btn:hover { border-color:var(--amber); }
+.topo .quem { margin-left:auto; font-size:13px; opacity:.9; display:flex; gap:10px; align-items:center; }
+.abas { display:flex; gap:4px; flex-wrap:wrap; }
+.abas button { background:none; border:0; color:#C9D3DE; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700; font-size:14px; }
+.abas button[aria-selected="true"] { background:var(--amber); color:#0F2A43; }
+.abas button:hover:not([aria-selected="true"]) { color:#fff; }
+main { max-width:1180px; margin:0 auto; padding:20px 16px 60px; }
+.cartao { background:var(--cartao); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; }
+.cartao h2 { font-size:16px; font-weight:800; margin:0 0 10px; }
+.filtros { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
+.seg { display:inline-flex; background:var(--soft); border-radius:10px; padding:3px; gap:2px; flex-wrap:wrap; }
+.seg button { border:0; background:none; padding:7px 12px; border-radius:8px; font-weight:700; font-size:13px; color:var(--warm); cursor:pointer; }
+.seg button[aria-pressed="true"] { background:var(--cartao); color:var(--fg); box-shadow:0 1px 2px rgba(0,0,0,.15); }
+label.c { display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:700; color:var(--warm); }
+input, select, textarea { padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--cartao-2); font-size:14px; }
+.btn { cursor:pointer; font-weight:700; border-radius:9px; border:1px solid var(--line); padding:8px 14px; background:var(--cartao); font-size:13px; }
+.btn:hover:not(:disabled) { border-color:var(--fg); }
+.btn.main { background:#0F2A43; color:#F5F2EC; border-color:#0F2A43; }
+.btn:disabled { opacity:.5; cursor:default; }
+.btn.mini { padding:3px 9px; font-size:12px; }
+.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:16px; }
+.num { background:var(--cartao); border:1px solid var(--line); border-radius:14px; padding:14px; }
+.num b { display:block; font-size:30px; font-weight:900; line-height:1.1; }
+.num small { color:var(--warm); font-weight:700; font-size:12px; }
+.num.bad b { color:var(--bad); } .num.warn b { color:var(--warn); }
+.tabela { width:100%; border-collapse:collapse; font-size:14px; }
+.tabela th { text-align:left; font-size:12px; color:var(--warm); font-weight:800; padding:8px; border-bottom:2px solid var(--line); white-space:nowrap; }
+.tabela td { padding:8px; border-bottom:1px solid var(--line); vertical-align:top; }
+.tabela td.n, .tabela th.n { text-align:right; font-variant-numeric:tabular-nums; }
+.tabela tr:hover td { background:var(--cartao-2); }
+.rolagem { overflow-x:auto; }
+.etq { display:inline-block; padding:2px 8px; border-radius:20px; font-size:12px; font-weight:800; }
+.etq.erro { background:#FDE7E4; color:#B42318; } .etq.divergencia { background:#FFF1D6; color:#8A5A0B; }
+.etq.repetido { background:#E8EEF7; color:#1F5AA0; } .etq.chegada { background:#E3F3EA; color:#1E7B4B; } .etq.atribuicao { background:#E3F3EA; color:#1E7B4B; }
+.etq.aberta { background:#FFF1D6; color:#8A5A0B; } .etq.prometida { background:#E8EEF7; color:#1F5AA0; } .etq.resolvida { background:#E3F3EA; color:#1E7B4B; } .etq.sem_resposta { background:#FDE7E4; color:#B42318; }
+.barra { height:8px; background:var(--soft); border-radius:6px; overflow:hidden; min-width:80px; }
+.barra i { display:block; height:100%; background:var(--amber); }
+.vazio { color:var(--warm); padding:18px 4px; }
+.aviso { padding:10px 12px; border-radius:10px; background:#FFF1D6; color:#6B4509; font-size:13px; margin-bottom:12px; }
+.aviso.erro { background:#FDE7E4; color:#8E1B10; }
+.horas { display:flex; align-items:flex-end; gap:3px; height:110px; padding-top:6px; }
+.horas div { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:3px; min-width:0; }
+.horas i { display:block; width:100%; background:var(--blue); border-radius:3px 3px 0 0; min-height:2px; }
+.horas span { font-size:10px; color:var(--warm); }
+.linha-tempo { list-style:none; margin:0; padding:0; }
+.linha-tempo li { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); flex-wrap:wrap; }
+.linha-tempo time { min-width:150px; color:var(--warm); font-size:13px; font-variant-numeric:tabular-nums; }
+.login { max-width:380px; margin:12vh auto; }
+.login .cartao { padding:24px; display:flex; flex-direction:column; gap:12px; }
+a.awb { color:var(--blue); cursor:pointer; font-weight:700; text-decoration:underline; }
+.sub { color:var(--warm); font-size:12.5px; }
+@media (max-width:640px) { .topo { padding:10px 12px; } main { padding:14px 10px 50px; } .num b { font-size:24px; } }
+</style>
+</head>
+<body>
+
+<section id="telaLogin" class="login" hidden>
+  <div class="cartao">
+    <h1 style="margin:0;font-size:24px;font-weight:900">Painel <span style="color:var(--amber)">Cordeiro</span></h1>
+    <p class="sub" style="margin:0">Entre com o e-mail e a senha que o dono criou para você.</p>
+    <label class="c">E-mail<input id="lgEmail" type="email" autocomplete="username" /></label>
+    <label class="c">Senha<input id="lgSenha" type="password" autocomplete="current-password" /></label>
+    <button id="lgEntrar" class="btn main" type="button">Entrar</button>
+    <div id="lgMsg" class="aviso erro" hidden></div>
+  </div>
+</section>
+
+<div id="telaApp" hidden>
+  <header class="topo">
+    <h1>Painel <span>Cordeiro</span></h1>
+    <nav class="abas" role="tablist" id="abas"></nav>
+    <div class="quem"><span id="quemSou"></span><button id="btnSair" class="btn mini" type="button">Sair</button></div>
+  </header>
+  <main id="conteudo"></main>
+</div>
+
+<script>
+/* ===================== PURAS ===================== */
+/* PURAS:INICIO */
+function esc(v) {
+  return String(v == null ? '' : v).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+}
+function hojeSP(agora) {
+  const p = new Intl.DateTimeFormat('en-CA', { timeZone: 'America/Sao_Paulo', year: 'numeric', month: '2-digit', day: '2-digit' }).format(agora || new Date());
+  return p; // AAAA-MM-DD
+}
+function somarDias(iso, n) {
+  const [a, m, d] = iso.split('-').map(Number);
+  const dt = new Date(Date.UTC(a, m - 1, d + n));
+  return dt.toISOString().slice(0, 10);
+}
+function periodo(tipo, hoje, de, ate) {
+  switch (tipo) {
+    case 'hoje': return { de: hoje, ate: hoje };
+    case 'ontem': { const o = somarDias(hoje, -1); return { de: o, ate: o }; }
+    case '7d': return { de: somarDias(hoje, -6), ate: hoje };
+    case '30d': return { de: somarDias(hoje, -29), ate: hoje };
+    case 'mes': return { de: hoje.slice(0, 8) + '01', ate: hoje };
+    default: return { de: de || hoje, ate: ate || hoje };
+  }
+}
+function dataBR(iso) { const [a, m, d] = String(iso).slice(0, 10).split('-'); return d + '/' + m + '/' + a; }
+// linhas da view produtividade_dia -> um item por colaborador
+function agregar(linhas) {
+  const por = new Map();
+  for (const l of linhas) {
+    let o = por.get(l.operador_id);
+    if (!o) { o = { id: l.operador_id, nome: l.operador, chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0, tot: { chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0 } }; por.set(l.operador_id, o); }
+    if (l.tipo in o.tot) { o[l.tipo] += Number(l.pacotes_unicos) || 0; o.tot[l.tipo] += Number(l.total) || 0; }
+  }
+  const lista = [...por.values()];
+  for (const o of lista) {
+    o.pacotes = o.chegada + o.atribuicao;
+    const tentativas = o.tot.chegada + o.tot.atribuicao + o.tot.erro;
+    o.taxaErro = tentativas ? o.tot.erro / tentativas : 0;
+  }
+  lista.sort((a, b) => b.pacotes - a.pacotes || a.nome.localeCompare(b.nome, 'pt-BR'));
+  return lista;
+}
+function totais(lista) {
+  const t = { chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0, pacotes: 0 };
+  for (const o of lista) { for (const k of ['chegada', 'atribuicao', 'erro', 'divergencia', 'repetido']) t[k] += o[k]; t.pacotes += o.pacotes; }
+  return t;
+}
+function horaSP(iso) {
+  return Number(new Intl.DateTimeFormat('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', hour12: false }).format(new Date(iso))) % 24;
+}
+function porHora(eventos) {
+  const h = new Array(24).fill(0);
+  for (const e of eventos) if (e.tipo === 'chegada' || e.tipo === 'atribuicao') h[horaSP(e.ocorreu_em)] += 1;
+  return h;
+}
+function csvCelula(v) {
+  let s = String(v == null ? '' : v);
+  if (/^[=+\-@\t\r]/.test(s)) s = "'" + s; // evita fórmula ao abrir no Excel
+  return /[;"\n\r]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s;
+}
+function paraCsv(cabecalho, linhas) {
+  return '﻿' + [cabecalho, ...linhas].map((l) => l.map(csvCelula).join(';')).join('\r\n');
+}
+function dataHoraBR(iso) {
+  return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(iso));
+}
+function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
+/* PURAS:FIM */
+
+/* ===================== ACESSO AO BANCO ===================== */
+const URL_BASE = 'https://vyweddtvpxnmuofmfghz.supabase.co';
+const CHAVE = 'sb_publishable_n2Bs2Hm0cUvcZoecdXdKnA__UmfHe7i';
+const K_SESSAO = 'painelSessao';
+const E = { sessao: null, perfil: null, perfis: new Map(), aba: 'produtividade', meta: null };
+
+function lerSessaoGuardada() { try { const s = localStorage.getItem(K_SESSAO); return s ? JSON.parse(s) : null; } catch (_) { return null; } }
+function guardarSessao(s) { E.sessao = s; try { if (s) localStorage.setItem(K_SESSAO, JSON.stringify(s)); else localStorage.removeItem(K_SESSAO); } catch (_) {} }
+function montarSessao(j) {
+  const agora = Math.floor(Date.now() / 1000);
+  return { access: j.access_token, refresh: j.refresh_token, exp: j.expires_at || agora + (j.expires_in || 3600), id: (j.user && j.user.id) || (E.sessao && E.sessao.id) || '', email: (j.user && j.user.email) || (E.sessao && E.sessao.email) || '' };
+}
+async function cru(metodo, caminho, corpo, token, extra) {
+  const h = { apikey: CHAVE, 'Content-Type': 'application/json', ...(extra || {}) };
+  if (token) h.Authorization = 'Bearer ' + token;
+  const res = await fetch(URL_BASE + caminho, { method: metodo, headers: h, body: corpo === undefined ? undefined : JSON.stringify(corpo) });
+  let json = null;
+  try { const t = await res.text(); json = t ? JSON.parse(t) : null; } catch (_) {}
+  return { status: res.status, corpo: json, cab: res.headers };
+}
+async function renovar() {
+  if (!E.sessao) return false;
+  try {
+    const r = await cru('POST', '/auth/v1/token?grant_type=refresh_token', { refresh_token: E.sessao.refresh });
+    if (r.status === 200 && r.corpo && r.corpo.access_token) { guardarSessao(montarSessao(r.corpo)); return true; }
+    if ([400, 401, 403].includes(r.status)) guardarSessao(null);
+  } catch (_) {}
+  return false;
+}
+async function api(metodo, caminho, corpo, extra) {
+  if (!E.sessao) throw new Error('Sessão encerrada. Entre novamente.');
+  if (E.sessao.exp - Math.floor(Date.now() / 1000) < 60) await renovar();
+  if (!E.sessao) { mostrarLogin(); throw new Error('Sessão encerrada. Entre novamente.'); }
+  let r;
+  try { r = await cru(metodo, caminho, corpo, E.sessao.access, extra); }
+  catch (_) { throw new Error('Sem conexão com a internet.'); }
+  if (r.status === 401 && await renovar()) r = await cru(metodo, caminho, corpo, E.sessao.access, extra);
+  if (r.status === 401) { mostrarLogin(); throw new Error('Sessão encerrada. Entre novamente.'); }
+  if (r.status >= 400) throw new Error((r.corpo && (r.corpo.message || r.corpo.hint)) || 'Erro ' + r.status);
+  return r.corpo;
+}
+// Lê todas as páginas (o servidor entrega no máximo 1000 por vez).
+async function lerTudo(caminho, maxPaginas) {
+  const tam = 1000, saida = [];
+  for (let p = 0; p < (maxPaginas || 20); p++) {
+    const pg = await api('GET', caminho, undefined, { 'Range-Unit': 'items', Range: (p * tam) + '-' + (p * tam + tam - 1) });
+    saida.push(...(pg || []));
+    if (!pg || pg.length < tam) return { itens: saida, completo: true };
+  }
+  return { itens: saida, completo: false };
+}
+
+/* ===================== ENTRAR / SAIR ===================== */
+const $ = (id) => document.getElementById(id);
+function mostrarLogin() {
+  $('telaApp').hidden = true; $('telaLogin').hidden = false; E.perfil = null;
+}
+async function entrar() {
+  const msg = $('lgMsg'); msg.hidden = true;
+  const email = $('lgEmail').value.trim(), senha = $('lgSenha').value;
+  if (!email || !senha) { msg.textContent = 'Preencha o e-mail e a senha.'; msg.hidden = false; return; }
+  $('lgEntrar').disabled = true;
+  try {
+    const r = await cru('POST', '/auth/v1/token?grant_type=password', { email, password: senha });
+    if (r.status !== 200 || !r.corpo || !r.corpo.access_token) {
+      const m = (r.corpo && (r.corpo.error_description || r.corpo.msg)) || '';
+      msg.textContent = /Invalid login/i.test(m) ? 'E-mail ou senha incorretos.' : (m || 'Não foi possível entrar.'); msg.hidden = false; return;
+    }
+    guardarSessao(montarSessao(r.corpo));
+    $('lgSenha').value = '';
+    await iniciarApp();
+  } catch (_) { msg.textContent = 'Sem conexão com a internet.'; msg.hidden = false; }
+  finally { $('lgEntrar').disabled = false; }
+}
+async function sair() {
+  try { if (E.sessao) await cru('POST', '/auth/v1/logout', undefined, E.sessao.access); } catch (_) {}
+  guardarSessao(null); mostrarLogin();
+}
+
+/* ===================== INÍCIO ===================== */
+const ABAS = [
+  { id: 'produtividade', nome: 'Produtividade', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'problemas', nome: 'Erros e divergências', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'pacote', nome: 'Pacote', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'cobrancas', nome: 'Cobranças', papeis: ['dono', 'monitor'] },
+  { id: 'locais', nome: 'Locais por rota', papeis: ['dono', 'monitor'] },
+  { id: 'equipe', nome: 'Equipe', papeis: ['dono'] },
+];
+async function iniciarApp() {
+  $('telaLogin').hidden = true;
+  let perfis;
+  try { perfis = await api('GET', '/rest/v1/perfis?select=id,nome,papel,ativo,nome_imile,criado_em&order=nome.asc'); }
+  catch (e) { mostrarLogin(); const m = $('lgMsg'); m.textContent = e.message; m.hidden = false; return; }
+  E.perfis = new Map((perfis || []).map((p) => [p.id, p]));
+  E.perfil = E.perfis.get(E.sessao.id);
+  if (!E.perfil || !E.perfil.ativo) {
+    guardarSessao(null); mostrarLogin();
+    const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo dono.'; m.hidden = false; return;
+  }
+  try { const c = await api('GET', '/rest/v1/cadastros?select=valor&chave=eq.metas'); E.meta = c && c[0] ? c[0].valor : null; } catch (_) { E.meta = null; }
+  $('quemSou').textContent = E.perfil.nome + ' · ' + E.perfil.papel;
+  $('telaApp').hidden = false;
+  const lista = ABAS.filter((a) => a.papeis.includes(E.perfil.papel));
+  $('abas').innerHTML = lista.map((a) => `<button type="button" role="tab" data-aba="${a.id}" aria-selected="false">${esc(a.nome)}</button>`).join('');
+  irPara(lista.some((a) => a.id === E.aba) ? E.aba : lista[0].id);
+}
+function irPara(id, arg) {
+  E.aba = id;
+  document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.aba === id)));
+  const mapa = { produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
+  $('conteudo').innerHTML = '';
+  mapa[id](arg);
+}
+function nomeOperador(id) { const p = E.perfis.get(id); return p ? p.nome : '—'; }
+function baixar(nome, texto) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([texto], { type: 'text/csv;charset=utf-8' }));
+  a.download = nome; document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+}
+
+/* ===================== FILTRO DE PERÍODO ===================== */
+function filtroPeriodo(estado, aoMudar, extras) {
+  const rotulos = [['hoje', 'Hoje'], ['ontem', 'Ontem'], ['7d', '7 dias'], ['30d', '30 dias'], ['mes', 'Este mês'], ['livre', 'Escolher']];
+  return `<div class="filtros">
+    <div class="seg" id="fpSeg">${rotulos.map(([k, n]) => `<button type="button" data-p="${k}" aria-pressed="${estado.tipo === k}">${n}</button>`).join('')}</div>
+    <div class="filtros" id="fpLivre" ${estado.tipo === 'livre' ? '' : 'hidden'}>
+      <label class="c">De<input type="date" id="fpDe" value="${esc(estado.de)}" /></label>
+      <label class="c">Até<input type="date" id="fpAte" value="${esc(estado.ate)}" /></label>
+    </div>${extras || ''}</div>`;
+}
+function ligarFiltroPeriodo(estado, aoMudar) {
+  document.querySelectorAll('#fpSeg button').forEach((b) => b.addEventListener('click', () => {
+    estado.tipo = b.dataset.p;
+    if (estado.tipo !== 'livre') { const p = periodo(estado.tipo, hojeSP()); estado.de = p.de; estado.ate = p.ate; }
+    document.querySelectorAll('#fpSeg button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
+    $('fpLivre').hidden = estado.tipo !== 'livre';
+    if ($('fpDe')) { $('fpDe').value = estado.de; $('fpAte').value = estado.ate; }
+    aoMudar();
+  }));
+  const livre = () => { if ($('fpDe').value && $('fpAte').value) { estado.de = $('fpDe').value; estado.ate = $('fpAte').value; if (estado.de > estado.ate) [estado.de, estado.ate] = [estado.ate, estado.de]; aoMudar(); } };
+  $('fpDe').addEventListener('change', livre); $('fpAte').addEventListener('change', livre);
+}
+function novoEstadoPeriodo(tipo) { const p = periodo(tipo, hojeSP()); return { tipo, de: p.de, ate: p.ate }; }
+function faixa(est) { return `dia=gte.${eFiltroSeguro(est.de)}&dia=lte.${eFiltroSeguro(est.ate)}`; }
+
+/* ===================== PRODUTIVIDADE ===================== */
+const estProd = novoEstadoPeriodo('hoje');
+let tokenProd = 0;
+function telaProdutividade() {
+  const raiz = $('conteudo');
+  raiz.innerHTML = `<div class="cartao">${filtroPeriodo(estProd)}</div><div id="prodCorpo"><p class="vazio">Carregando…</p></div>`;
+  ligarFiltroPeriodo(estProd, carregarProdutividade);
+  carregarProdutividade();
+}
+async function carregarProdutividade() {
+  const meu = ++tokenProd, corpo = $('prodCorpo');
+  corpo.innerHTML = '<p class="vazio">Carregando…</p>';
+  try {
+    const [vis, ev] = await Promise.all([
+      lerTudo('/rest/v1/produtividade_dia?select=dia,operador_id,operador,tipo,pacotes_unicos,total&' + faixa(estProd)),
+      lerTudo('/rest/v1/eventos?select=ocorreu_em,tipo&tipo=in.(chegada,atribuicao)&' + faixa(estProd), 12),
+    ]);
+    if (meu !== tokenProd) return;
+    const lista = agregar(vis.itens), t = totais(lista);
+    const meta = E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0;
+    const umDia = estProd.de === estProd.ate;
+    const maior = Math.max(1, ...lista.map((o) => o.pacotes));
+    const h = porHora(ev.itens), mh = Math.max(1, ...h);
+    const so = E.perfil.papel === 'bipador';
+    corpo.innerHTML = `
+      ${so ? '<div class="aviso">Você vê apenas os seus próprios bipes.</div>' : ''}
+      <div class="cards">
+        <div class="num"><b>${t.pacotes}</b><small>Pacotes bipados</small></div>
+        <div class="num"><b>${t.chegada}</b><small>Chegadas</small></div>
+        <div class="num"><b>${t.atribuicao}</b><small>Atribuições</small></div>
+        <div class="num bad"><b>${t.erro}</b><small>Erros</small></div>
+        <div class="num warn"><b>${t.divergencia}</b><small>Divergências</small></div>
+        <div class="num"><b>${t.repetido}</b><small>Repetidos</small></div>
+      </div>
+      <div class="cartao"><h2>${so ? 'Meu desempenho' : 'Ranking'} · ${esc(dataBR(estProd.de))}${umDia ? '' : ' a ' + esc(dataBR(estProd.ate))}</h2>
+        ${lista.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>#</th><th>Colaborador</th><th class="n">Chegadas</th><th class="n">Atribuições</th><th class="n">Pacotes</th><th></th><th class="n">Erros</th><th class="n">Diverg.</th><th class="n">Repet.</th><th class="n">% erro</th>${meta && umDia ? '<th class="n">Meta</th>' : ''}</tr></thead><tbody>
+        ${lista.map((o, i) => `<tr><td>${i + 1}</td><td><b>${esc(o.nome)}</b></td><td class="n">${o.chegada}</td><td class="n">${o.atribuicao}</td><td class="n"><b>${o.pacotes}</b></td>
+          <td style="width:140px"><div class="barra"><i style="width:${Math.round(o.pacotes / maior * 100)}%"></i></div></td>
+          <td class="n">${o.erro}</td><td class="n">${o.divergencia}</td><td class="n">${o.repetido}</td><td class="n">${(o.taxaErro * 100).toFixed(1).replace('.', ',')}%</td>
+          ${meta && umDia ? `<td class="n">${Math.round(o.pacotes / meta * 100)}%</td>` : ''}</tr>`).join('')}
+        </tbody></table></div>` : '<p class="vazio">Nenhum bipe neste período.</p>'}
+        <p class="sub">Cada pacote conta uma vez por tipo, colaborador e dia. Em vários dias, soma-se o que foi bipado em cada dia. % erro = erros ÷ (chegadas + atribuições + erros).${meta && umDia ? ' Meta: ' + meta + ' pacotes por dia.' : ''}</p>
+        ${vis.completo ? '' : '<div class="aviso">Muitos dados: mostrando parte. Reduza o período.</div>'}
+      </div>
+      <div class="cartao"><h2>Pacotes por hora do dia</h2>
+        ${ev.itens.length ? `<div class="horas">${h.map((v, i) => `<div title="${i}h: ${v}"><i style="height:${Math.round(v / mh * 90)}px"></i><span>${i}</span></div>`).join('')}</div>` : '<p class="vazio">Sem dados.</p>'}
+        ${ev.completo ? '' : '<p class="sub">Gráfico com parte dos dados (período grande).</p>'}</div>
+      ${lista.length ? '<button class="btn" id="prodCsv" type="button">Baixar CSV</button>' : ''}`;
+    const b = $('prodCsv');
+    if (b) b.addEventListener('click', () => baixar('produtividade-' + estProd.de + '_' + estProd.ate + '.csv', paraCsv(
+      ['Colaborador', 'Chegadas', 'Atribuições', 'Pacotes', 'Erros', 'Divergências', 'Repetidos', '% erro'],
+      lista.map((o) => [o.nome, o.chegada, o.atribuicao, o.pacotes, o.erro, o.divergencia, o.repetido, (o.taxaErro * 100).toFixed(1).replace('.', ',')]))));
+  } catch (e) { if (meu === tokenProd) corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+
+/* ===================== ERROS E DIVERGÊNCIAS ===================== */
+const estPro = { ...novoEstadoPeriodo('hoje'), tipo2: 'erro,divergencia', operador: '', busca: '' };
+let tokenPro = 0, linhasPro = [];
+function telaProblemas() {
+  const opts = [...E.perfis.values()].filter((p) => p.ativo).map((p) => `<option value="${esc(p.id)}" ${estPro.operador === p.id ? 'selected' : ''}>${esc(p.nome)}</option>`).join('');
+  const extras = `<label class="c">Tipo<select id="prTipo">
+      <option value="erro,divergencia">Erros e divergências</option><option value="erro">Só erros</option><option value="divergencia">Só divergências</option><option value="repetido">Repetidos</option></select></label>
+    ${E.perfil.papel === 'bipador' ? '' : `<label class="c">Colaborador<select id="prOp"><option value="">Todos</option>${opts}</select></label>`}
+    <label class="c">Buscar<input id="prBusca" placeholder="AWB, motorista, motivo" value="${esc(estPro.busca)}" /></label>`;
+  $('conteudo').innerHTML = `<div class="cartao">${filtroPeriodo(estPro, null, extras)}</div><div id="prCorpo"><p class="vazio">Carregando…</p></div>`;
+  $('prTipo').value = estPro.tipo2;
+  ligarFiltroPeriodo(estPro, carregarProblemas);
+  $('prTipo').addEventListener('change', () => { estPro.tipo2 = $('prTipo').value; carregarProblemas(); });
+  if ($('prOp')) $('prOp').addEventListener('change', () => { estPro.operador = $('prOp').value; carregarProblemas(); });
+  $('prBusca').addEventListener('input', () => { estPro.busca = $('prBusca').value; desenharProblemas(); });
+  carregarProblemas();
+}
+async function carregarProblemas() {
+  const meu = ++tokenPro, corpo = $('prCorpo');
+  corpo.innerHTML = '<p class="vazio">Carregando…</p>';
+  try {
+    const op = estPro.operador ? '&operador_id=eq.' + eFiltroSeguro(estPro.operador) : '';
+    const r = await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10);
+    if (meu !== tokenPro) return;
+    linhasPro = r.itens; linhasPro._completo = r.completo;
+    desenharProblemas();
+  } catch (e) { if (meu === tokenPro) corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+function filtrarProblemas() {
+  const q = estPro.busca.trim().toLowerCase();
+  if (!q) return linhasPro;
+  return linhasPro.filter((e) => [e.awb, e.motorista, e.motivo, e.rota, e.cidade, nomeOperador(e.operador_id)].some((v) => String(v || '').toLowerCase().includes(q)));
+}
+function desenharProblemas() {
+  const corpo = $('prCorpo'); if (!corpo) return;
+  const l = filtrarProblemas(), mostrados = l.slice(0, 500);
+  corpo.innerHTML = `<div class="cartao"><h2>${l.length} ocorrência(s)</h2>
+    ${l.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>Quando</th><th>Tipo</th><th>AWB</th><th>Colaborador</th><th>Motorista</th><th>Rota / cidade</th><th>Motivo</th><th>Origem</th></tr></thead><tbody>
+    ${mostrados.map((e) => `<tr><td style="white-space:nowrap">${esc(dataHoraBR(e.ocorreu_em))}</td><td><span class="etq ${esc(e.tipo)}">${esc(e.tipo)}</span></td>
+      <td><a class="awb" data-awb="${esc(e.awb)}">${esc(e.awb)}</a></td><td>${esc(nomeOperador(e.operador_id))}</td><td>${esc(e.motorista || '—')}</td>
+      <td>${esc([e.rota, e.cidade].filter(Boolean).join(' · ') || '—')}</td><td>${esc(e.motivo || '—')}</td><td>${esc(e.origem)}</td></tr>`).join('')}
+    </tbody></table></div>` : '<p class="vazio">Nada neste período. Bom sinal.</p>'}
+    ${l.length > 500 ? '<p class="sub">Mostrando as 500 mais recentes. O CSV leva todas.</p>' : ''}
+    ${linhasPro._completo === false ? '<div class="aviso">Muitos dados: lista parcial. Reduza o período.</div>' : ''}
+    ${l.length ? '<button class="btn" id="prCsv" type="button">Baixar CSV</button>' : ''}</div>`;
+  corpo.querySelectorAll('a.awb').forEach((a) => a.addEventListener('click', () => irPara('pacote', a.dataset.awb)));
+  const b = $('prCsv');
+  if (b) b.addEventListener('click', () => baixar('ocorrencias-' + estPro.de + '_' + estPro.ate + '.csv', paraCsv(
+    ['Quando', 'Tipo', 'AWB', 'Colaborador', 'Motorista', 'Rota', 'Cidade', 'Motivo', 'Origem'],
+    l.map((e) => [dataHoraBR(e.ocorreu_em), e.tipo, e.awb, nomeOperador(e.operador_id), e.motorista, e.rota, e.cidade, e.motivo, e.origem]))));
+}
+
+/* ===================== PACOTE ===================== */
+function telaPacote(awbInicial) {
+  $('conteudo').innerHTML = `<div class="cartao"><h2>Ficha do pacote</h2><div class="filtros">
+    <label class="c">AWB<input id="pkAwb" placeholder="Código do pacote" style="min-width:260px" value="${esc(awbInicial || '')}" /></label>
+    <button class="btn main" id="pkBuscar" type="button">Buscar</button></div></div><div id="pkCorpo"></div>`;
+  const buscar = async () => {
+    const awb = eFiltroSeguro($('pkAwb').value.trim());
+    const corpo = $('pkCorpo');
+    if (!awb) { corpo.innerHTML = ''; return; }
+    corpo.innerHTML = '<p class="vazio">Buscando…</p>';
+    try {
+      const ev = await api('GET', '/rest/v1/eventos?select=id,ocorreu_em,tipo,operador_id,origem,cidade,rota,motorista,motivo&awb=eq.' + awb + '&order=ocorreu_em.asc&limit=500');
+      let cob = [];
+      if (E.perfil.papel !== 'bipador') cob = await api('GET', '/rest/v1/cobrancas?select=*&awb=eq.' + awb + '&order=enviada_em.asc') || [];
+      if (!ev.length && !cob.length) { corpo.innerHTML = '<div class="cartao"><p class="vazio">Nenhum registro deste pacote no painel. Só aparecem pacotes bipados com a Nuvem Cordeiro ligada.</p></div>'; return; }
+      const itens = [
+        ...ev.map((e) => ({ t: e.ocorreu_em, html: `<span class="etq ${esc(e.tipo)}">${esc(e.tipo)}</span> <b>${esc(nomeOperador(e.operador_id))}</b> (${esc(e.origem)})${e.motorista ? ' · motorista ' + esc(e.motorista) : ''}${e.rota ? ' · ' + esc(e.rota) : ''}${e.cidade ? ' · ' + esc(e.cidade) : ''}${e.motivo ? '<br><span class="sub">' + esc(e.motivo) + '</span>' : ''}` })),
+        ...cob.map((c) => ({ t: c.enviada_em, html: `<span class="etq ${esc(c.status)}">cobrança ${esc(c.status)}</span> ${c.motorista ? esc(c.motorista) : ''}${c.dias_atraso != null ? ' · ' + esc(c.dias_atraso) + ' dia(s) de atraso' : ''}${c.prazo_ate ? ' · prazo ' + esc(dataBR(c.prazo_ate)) : ''}${c.resposta ? '<br><span class="sub">' + esc(c.resposta) + '</span>' : ''}` })),
+      ].sort((a, b) => new Date(a.t) - new Date(b.t));
+      corpo.innerHTML = `<div class="cartao"><h2>Linha do tempo · ${esc(awb)}</h2><ul class="linha-tempo">${itens.map((i) => `<li><time>${esc(dataHoraBR(i.t))}</time><div>${i.html}</div></li>`).join('')}</ul></div>`;
+    } catch (e) { corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+  };
+  $('pkBuscar').addEventListener('click', buscar);
+  $('pkAwb').addEventListener('keydown', (e) => { if (e.key === 'Enter') buscar(); });
+  if (awbInicial) buscar();
+}
+
+/* ===================== COBRANÇAS ===================== */
+const STATUS_COB = [['aberta', 'Aberta'], ['prometida', 'Prometida'], ['sem_resposta', 'Sem resposta'], ['resolvida', 'Resolvida']];
+let filtroCob = 'abertas';
+async function telaCobrancas() {
+  $('conteudo').innerHTML = `<div class="cartao"><h2>Nova cobrança</h2><div class="filtros">
+      <label class="c">AWB<input id="cbAwb" /></label><label class="c">Motorista<input id="cbMot" /></label>
+      <label class="c">Dias de atraso<input id="cbDias" type="number" min="0" style="width:110px" /></label>
+      <label class="c">Prazo<input id="cbPrazo" type="date" /></label>
+      <button class="btn main" id="cbCriar" type="button">Registrar</button></div><div id="cbMsg" class="aviso erro" hidden style="margin-top:10px"></div></div>
+    <div class="cartao"><div class="filtros"><div class="seg" id="cbSeg">
+      ${[['abertas', 'Em andamento'], ['resolvida', 'Resolvidas'], ['todas', 'Todas']].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${filtroCob === k}">${n}</button>`).join('')}</div></div></div>
+    <div id="cbCorpo"><p class="vazio">Carregando…</p></div>`;
+  document.querySelectorAll('#cbSeg button').forEach((b) => b.addEventListener('click', () => { filtroCob = b.dataset.f; telaCobrancas(); }));
+  $('cbCriar').addEventListener('click', async () => {
+    const awb = eFiltroSeguro($('cbAwb').value.trim()), m = $('cbMsg'); m.hidden = true;
+    if (!awb) { m.textContent = 'Informe o AWB.'; m.hidden = false; return; }
+    try {
+      await api('POST', '/rest/v1/cobrancas', [{ awb, motorista: $('cbMot').value.trim() || null, dias_atraso: $('cbDias').value === '' ? null : Number($('cbDias').value), prazo_ate: $('cbPrazo').value || null }], { Prefer: 'return=minimal' });
+      telaCobrancas();
+    } catch (e) { m.textContent = e.message; m.hidden = false; }
+  });
+  const filtro = filtroCob === 'abertas' ? '&status=in.(aberta,prometida,sem_resposta)' : filtroCob === 'resolvida' ? '&status=eq.resolvida' : '';
+  try {
+    const r = await lerTudo('/rest/v1/cobrancas?select=*&order=enviada_em.desc' + filtro, 5);
+    const hoje = hojeSP();
+    $('cbCorpo').innerHTML = `<div class="cartao">${r.itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>Enviada</th><th>AWB</th><th>Motorista</th><th class="n">Atraso</th><th>Prazo</th><th>Status</th><th>Resposta</th><th></th></tr></thead><tbody>
+      ${r.itens.map((c) => { const vencida = c.prazo_ate && c.prazo_ate < hoje && c.status !== 'resolvida';
+        return `<tr data-id="${esc(c.id)}"><td style="white-space:nowrap">${esc(dataHoraBR(c.enviada_em))}<br><span class="sub">${esc(nomeOperador(c.enviada_por))}</span></td>
+        <td><a class="awb" data-awb="${esc(c.awb)}">${esc(c.awb)}</a></td><td>${esc(c.motorista || '—')}</td><td class="n">${c.dias_atraso == null ? '—' : esc(c.dias_atraso)}</td>
+        <td style="white-space:nowrap${vencida ? ';color:var(--bad);font-weight:800' : ''}">${c.prazo_ate ? esc(dataBR(c.prazo_ate)) + (vencida ? ' (vencido)' : '') : '—'}</td>
+        <td><select class="cbStatus">${STATUS_COB.map(([k, n]) => `<option value="${k}" ${c.status === k ? 'selected' : ''}>${n}</option>`).join('')}</select></td>
+        <td><input class="cbResp" value="${esc(c.resposta || '')}" placeholder="O que o motorista respondeu" style="min-width:200px" /></td>
+        <td><button class="btn mini cbSalvar" type="button">Salvar</button></td></tr>`; }).join('')}
+      </tbody></table></div>` : '<p class="vazio">Nenhuma cobrança aqui.</p>'}</div>`;
+    document.querySelectorAll('#cbCorpo a.awb').forEach((a) => a.addEventListener('click', () => irPara('pacote', a.dataset.awb)));
+    document.querySelectorAll('.cbSalvar').forEach((b) => b.addEventListener('click', async () => {
+      const tr = b.closest('tr'), status = tr.querySelector('.cbStatus').value;
+      b.disabled = true;
+      try {
+        await api('PATCH', '/rest/v1/cobrancas?id=eq.' + eFiltroSeguro(tr.dataset.id), { status, resposta: tr.querySelector('.cbResp').value.trim() || null, resolvida_em: status === 'resolvida' ? new Date().toISOString() : null }, { Prefer: 'return=minimal' });
+        b.textContent = 'Salvo ✓'; setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
+      } catch (e) { b.disabled = false; alert(e.message); }
+    }));
+  } catch (e) { $('cbCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+
+/* ===================== LOCAIS POR ROTA ===================== */
+// Lista única para todos os aparelhos (app e extensão). O dono edita aqui ou
+// no próprio app/extensão; os demais recebem a lista automaticamente.
+function limparLocais(lista) {
+  const vistos = new Set(), out = [];
+  for (const x of lista) {
+    const termo = String(x.termo || '').trim().slice(0, 80), rota = String(x.rota || '').trim().slice(0, 60), cidade = String(x.cidade || '').trim().slice(0, 60);
+    if (!termo || !rota) continue;
+    const k = (termo + '|' + cidade).toLowerCase();
+    if (vistos.has(k)) continue;
+    vistos.add(k); out.push({ termo, rota, cidade });
+  }
+  return out;
+}
+async function telaLocais() {
+  const editavel = E.perfil.papel === 'dono';
+  $('conteudo').innerHTML = '<p class="vazio">Carregando…</p>';
+  let lista = [];
+  try {
+    const r = await api('GET', '/rest/v1/cadastros?select=valor,atualizado_em,atualizado_por&chave=eq.locais');
+    if (r && r[0] && Array.isArray(r[0].valor)) lista = r[0].valor;
+    var quando = r && r[0] ? r[0].atualizado_em : null, quem = r && r[0] ? r[0].atualizado_por : null;
+  } catch (e) { $('conteudo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; return; }
+  const rotas = [...new Set(lista.map((x) => x.rota).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
+  const linha = (x) => `<tr><td><input class="lcTermo" value="${esc(x.termo)}" ${editavel ? '' : 'disabled'} /></td>
+    <td><input class="lcRota" list="lcRotas" value="${esc(x.rota)}" ${editavel ? '' : 'disabled'} /></td>
+    <td><input class="lcCidade" value="${esc(x.cidade)}" placeholder="qualquer" ${editavel ? '' : 'disabled'} /></td>
+    ${editavel ? '<td><button class="btn mini lcDel" type="button">Excluir</button></td>' : ''}</tr>`;
+  $('conteudo').innerHTML = `<div class="cartao"><h2>Locais por rota</h2>
+    <p class="sub">Bairros, ruas ou trechos (ex.: BR-101, Centro) que pertencem a uma rota. ${editavel ? 'Ao salvar, todos os celulares e computadores recebem a lista em poucos minutos.' : 'Somente o dono edita; você recebe a lista automaticamente.'}
+    ${quando ? ' Última alteração: ' + esc(dataHoraBR(quando)) + (quem ? ' por ' + esc(nomeOperador(quem)) : '') + '.' : ' Ainda não há lista publicada.'}</p>
+    <datalist id="lcRotas">${rotas.map((r) => `<option value="${esc(r)}">`).join('')}</datalist>
+    <div class="rolagem"><table class="tabela"><thead><tr><th>Local</th><th>Rota</th><th>Cidade</th>${editavel ? '<th></th>' : ''}</tr></thead><tbody id="lcCorpo">${lista.map(linha).join('')}</tbody></table></div>
+    ${lista.length || editavel ? '' : '<p class="vazio">Nada cadastrado.</p>'}
+    ${editavel ? '<div class="filtros" style="margin-top:12px"><button class="btn" id="lcAdd" type="button">+ Novo local</button><button class="btn main" id="lcSalvar" type="button">Salvar para todos</button><span id="lcMsg" class="sub"></span></div>' : ''}</div>`;
+  if (!editavel) return;
+  const ligarDel = () => document.querySelectorAll('.lcDel').forEach((b) => { b.onclick = () => b.closest('tr').remove(); });
+  ligarDel();
+  $('lcAdd').addEventListener('click', () => { $('lcCorpo').insertAdjacentHTML('beforeend', linha({ termo: '', rota: '', cidade: '' })); ligarDel(); });
+  $('lcSalvar').addEventListener('click', async () => {
+    const novos = limparLocais([...document.querySelectorAll('#lcCorpo tr')].map((tr) => ({ termo: tr.querySelector('.lcTermo').value, rota: tr.querySelector('.lcRota').value, cidade: tr.querySelector('.lcCidade').value })));
+    const botao = $('lcSalvar'); botao.disabled = true;
+    try {
+      await api('POST', '/rest/v1/cadastros', [{ chave: 'locais', valor: novos, atualizado_em: new Date().toISOString() }], { Prefer: 'resolution=merge-duplicates,return=minimal' });
+      $('lcMsg').textContent = novos.length + ' local(is) salvo(s) ✓';
+    } catch (e) { $('lcMsg').textContent = e.message; }
+    finally { botao.disabled = false; }
+  });
+}
+
+/* ===================== EQUIPE (dono) ===================== */
+async function telaEquipe() {
+  const meta = E.meta && E.meta.pacotes_dia ? E.meta.pacotes_dia : '';
+  const lista = [...E.perfis.values()];
+  $('conteudo').innerHTML = `<div class="cartao"><h2>Equipe</h2>
+    <p class="sub">Para criar um novo acesso: Supabase › Authentication › Users › Add user. A pessoa aparece aqui como inativa; ative e escolha o papel.</p>
+    <div class="rolagem"><table class="tabela"><thead><tr><th>Nome</th><th>Papel</th><th>Ativo</th><th>Nome no iMile</th><th></th></tr></thead><tbody>
+    ${lista.map((p) => { const eu = p.id === E.sessao.id; return `<tr data-id="${esc(p.id)}"><td><input class="eqNome" value="${esc(p.nome)}" /></td>
+      <td><select class="eqPapel" ${eu ? 'disabled' : ''}>${['dono', 'monitor', 'bipador'].map((k) => `<option ${p.papel === k ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
+      <td><input type="checkbox" class="eqAtivo" ${p.ativo ? 'checked' : ''} ${eu ? 'disabled' : ''} /></td>
+      <td><input class="eqImile" value="${esc(p.nome_imile || '')}" /></td><td><button class="btn mini eqSalvar" type="button">Salvar</button></td></tr>`; }).join('')}
+    </tbody></table></div></div>
+    <div class="cartao"><h2>Meta diária</h2><div class="filtros"><label class="c">Pacotes por colaborador por dia<input id="metaDia" type="number" min="0" value="${esc(meta)}" style="width:140px" /></label>
+    <button class="btn main" id="metaSalvar" type="button">Salvar meta</button></div><p class="sub">Aparece como % da meta na Produtividade quando o período é um único dia. Vazio ou 0 desliga.</p></div>`;
+  document.querySelectorAll('.eqSalvar').forEach((b) => b.addEventListener('click', async () => {
+    const tr = b.closest('tr'), id = tr.dataset.id;
+    const dados = { nome: tr.querySelector('.eqNome').value.trim() || 'Sem nome', nome_imile: tr.querySelector('.eqImile').value.trim() || null };
+    if (id !== E.sessao.id) { dados.papel = tr.querySelector('.eqPapel').value; dados.ativo = tr.querySelector('.eqAtivo').checked; }
+    b.disabled = true;
+    try {
+      await api('PATCH', '/rest/v1/perfis?id=eq.' + eFiltroSeguro(id), dados, { Prefer: 'return=minimal' });
+      E.perfis.set(id, { ...E.perfis.get(id), ...dados });
+      b.textContent = 'Salvo ✓'; setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
+    } catch (e) { b.disabled = false; alert(e.message); }
+  }));
+  $('metaSalvar').addEventListener('click', async () => {
+    const n = Math.max(0, Math.floor(Number($('metaDia').value) || 0));
+    try {
+      await api('POST', '/rest/v1/cadastros', [{ chave: 'metas', valor: { pacotes_dia: n }, atualizado_em: new Date().toISOString() }], { Prefer: 'resolution=merge-duplicates,return=minimal' });
+      E.meta = { pacotes_dia: n }; $('metaSalvar').textContent = 'Salvo ✓'; setTimeout(() => { $('metaSalvar').textContent = 'Salvar meta'; }, 1200);
+    } catch (e) { alert(e.message); }
+  });
+}
+
+/* ===================== PARTIDA ===================== */
+$('lgEntrar').addEventListener('click', entrar);
+['lgEmail', 'lgSenha'].forEach((id) => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); }));
+$('btnSair').addEventListener('click', sair);
+$('abas').addEventListener('click', (e) => { const b = e.target.closest('button[data-aba]'); if (b) irPara(b.dataset.aba); });
+(async function partida() {
+  const s = lerSessaoGuardada();
+  if (s && s.refresh) { E.sessao = s; if (await renovar()) { await iniciarApp(); return; } }
+  mostrarLogin();
+})();
+if (typeof module !== 'undefined') module.exports = { limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
+</script>
+</body>
+</html>
