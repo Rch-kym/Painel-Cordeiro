@@ -4,104 +4,291 @@
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <meta name="robots" content="noindex, nofollow" />
+<meta name="color-scheme" content="light dark" />
 <title>Painel Cordeiro</title>
 <link rel="preconnect" href="https://fonts.googleapis.com" />
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800;900&display=swap" rel="stylesheet" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,100..900&display=swap" rel="stylesheet" />
 <style>
+/* ---------- Cores e tipografia ----------
+   Marca: azul-marinho e âmbar (a faixa tracejada de estrada).
+   Claro: papel azulado, tinta marinho. Escuro: asfalto. O âmbar é só sinal. */
 :root {
-  --navy:#0F2A43; --amber:#E8A33D; --cream:#F5F2EC; --paper:#FFFFFF; --line:#DED8CD; --warm:#6A665E; --soft:#EDE8DF;
-  --ok:#1E7B4B; --bad:#B42318; --warn:#8A5A0B; --blue:#1F5AA0;
-  --bg:var(--cream); --fg:var(--navy); --cartao:var(--paper); --cartao-2:#FAF8F4;
+  --fundo:#E9EEF3; --superficie:#FFFFFF; --superficie-2:#F4F7FA; --tinta:#0F2A43; --tinta-2:#506274; --linha:#D3DBE4;
+  --ambar:#E8A33D; --ambar-texto:#7C5008; --asfalto:#12283C; --asfalto-linha:rgba(255,255,255,.30);
+  --azul:#1F5AA0; --azul-fundo:#E4EDF8;
+  --erro:#B42318; --erro-fundo:#FCE8E5; --alerta:#7C5008; --alerta-fundo:#FDF0D5; --ok:#1B6E44; --ok-fundo:#E1F3E9;
+  --lateral:#0F2A43; --lateral-tinta:#C7D4E1; --sombra:0 1px 2px rgba(15,42,67,.06), 0 6px 20px -8px rgba(15,42,67,.12);
+  --foco:#1F5AA0;
+  --f:'Archivo',system-ui,-apple-system,'Segoe UI',Arial,sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-tema="claro"]) {
-    --bg:#0B1B2C; --fg:#F1EDE4; --cartao:#12293F; --cartao-2:#0F2236; --line:#27435D; --warm:#A9B6C4; --soft:#173048;
-    --ok:#4CC38A; --bad:#FF8A7A; --warn:#E8A33D; --blue:#7FB2EA;
+    --fundo:#07121D; --superficie:#0E2031; --superficie-2:#0A1927; --tinta:#E8EEF5; --tinta-2:#9AAEC2; --linha:#1E3850;
+    --ambar:#F0AE45; --ambar-texto:#F0AE45; --asfalto:#040B12; --asfalto-linha:rgba(255,255,255,.22);
+    --azul:#86B8EE; --azul-fundo:#12304D;
+    --erro:#FF9A8C; --erro-fundo:#3A1A18; --alerta:#F0AE45; --alerta-fundo:#3A2A0E; --ok:#5CCB93; --ok-fundo:#10332A;
+    --lateral:#0A1827; --lateral-tinta:#9AAEC2; --sombra:none; --foco:#86B8EE;
   }
 }
+:root[data-tema="escuro"] {
+  --fundo:#07121D; --superficie:#0E2031; --superficie-2:#0A1927; --tinta:#E8EEF5; --tinta-2:#9AAEC2; --linha:#1E3850;
+  --ambar:#F0AE45; --ambar-texto:#F0AE45; --asfalto:#040B12; --asfalto-linha:rgba(255,255,255,.22);
+  --azul:#86B8EE; --azul-fundo:#12304D;
+  --erro:#FF9A8C; --erro-fundo:#3A1A18; --alerta:#F0AE45; --alerta-fundo:#3A2A0E; --ok:#5CCB93; --ok-fundo:#10332A;
+  --lateral:#0A1827; --lateral-tinta:#9AAEC2; --sombra:none; --foco:#86B8EE;
+}
 * { box-sizing:border-box; }
-body { margin:0; background:var(--bg); color:var(--fg); font-family:'Archivo',system-ui,Arial,sans-serif; font-size:15px; line-height:1.4; }
+html { -webkit-text-size-adjust:100%; }
+body { margin:0; background:var(--fundo); color:var(--tinta); font-family:var(--f); font-size:15px; line-height:1.45; font-variant-numeric:tabular-nums; }
 [hidden] { display:none !important; }
 button, input, select, textarea { font:inherit; color:inherit; }
-.topo { background:#0F2A43; color:#F5F2EC; display:flex; align-items:center; gap:16px; padding:12px 20px; flex-wrap:wrap; position:sticky; top:0; z-index:5; }
-.topo h1 { font-size:18px; font-weight:900; margin:0; letter-spacing:.3px; }
-.topo h1 span { color:var(--amber); }
-.topo .btn { background:transparent; color:#F5F2EC; border-color:#4C6580; }
-.topo .btn:hover { border-color:var(--amber); }
-.topo .quem { margin-left:auto; font-size:13px; opacity:.9; display:flex; gap:10px; align-items:center; }
-.abas { display:flex; gap:4px; flex-wrap:wrap; }
-.abas button { background:none; border:0; color:#C9D3DE; padding:8px 12px; border-radius:8px; cursor:pointer; font-weight:700; font-size:14px; }
-.abas button[aria-selected="true"] { background:var(--amber); color:#0F2A43; }
-.abas button:hover:not([aria-selected="true"]) { color:#fff; }
-main { max-width:1180px; margin:0 auto; padding:20px 16px 60px; }
-.cartao { background:var(--cartao); border:1px solid var(--line); border-radius:14px; padding:16px; margin-bottom:16px; }
-.cartao h2 { font-size:16px; font-weight:800; margin:0 0 10px; }
-.filtros { display:flex; gap:12px; flex-wrap:wrap; align-items:flex-end; }
-.seg { display:inline-flex; background:var(--soft); border-radius:10px; padding:3px; gap:2px; flex-wrap:wrap; }
-.seg button { border:0; background:none; padding:7px 12px; border-radius:8px; font-weight:700; font-size:13px; color:var(--warm); cursor:pointer; }
-.seg button[aria-pressed="true"] { background:var(--cartao); color:var(--fg); box-shadow:0 1px 2px rgba(0,0,0,.15); }
-label.c { display:flex; flex-direction:column; gap:4px; font-size:12px; font-weight:700; color:var(--warm); }
-input, select, textarea { padding:8px 10px; border:1px solid var(--line); border-radius:8px; background:var(--cartao-2); font-size:14px; }
-.btn { cursor:pointer; font-weight:700; border-radius:9px; border:1px solid var(--line); padding:8px 14px; background:var(--cartao); font-size:13px; }
-.btn:hover:not(:disabled) { border-color:var(--fg); }
-.btn.main { background:#0F2A43; color:#F5F2EC; border-color:#0F2A43; }
-.btn:disabled { opacity:.5; cursor:default; }
-.btn.mini { padding:3px 9px; font-size:12px; }
-.cards { display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:12px; margin-bottom:16px; }
-.num { background:var(--cartao); border:1px solid var(--line); border-radius:14px; padding:14px; }
-.num b { display:block; font-size:30px; font-weight:900; line-height:1.1; }
-.num small { color:var(--warm); font-weight:700; font-size:12px; }
-.num.bad b { color:var(--bad); } .num.warn b { color:var(--warn); }
-.tabela { width:100%; border-collapse:collapse; font-size:14px; }
-.tabela th { text-align:left; font-size:12px; color:var(--warm); font-weight:800; padding:8px; border-bottom:2px solid var(--line); white-space:nowrap; }
-.tabela td { padding:8px; border-bottom:1px solid var(--line); vertical-align:top; }
-.tabela td.n, .tabela th.n { text-align:right; font-variant-numeric:tabular-nums; }
-.tabela tr:hover td { background:var(--cartao-2); }
+:focus-visible { outline:3px solid var(--foco); outline-offset:2px; border-radius:6px; }
+h1, h2, h3 { margin:0; }
+.sub { color:var(--tinta-2); font-size:13px; }
+.larga { font-stretch:112%; }
+
+/* ---------- Estrutura ---------- */
+.shell { display:grid; grid-template-columns:240px minmax(0,1fr); min-height:100vh; }
+.lateral { background:var(--lateral); color:#F2F6FA; display:flex; flex-direction:column; position:sticky; top:0; height:100vh; padding:22px 14px 0; }
+.marca { padding:0 8px 22px; }
+.marca b { display:block; font-size:25px; font-weight:900; font-stretch:118%; letter-spacing:-.4px; line-height:1; }
+.marca small { display:block; margin-top:7px; font-size:12px; color:var(--lateral-tinta); }
+.faixa { height:4px; width:56px; margin-top:12px; background:repeating-linear-gradient(90deg,var(--ambar) 0 12px,transparent 12px 20px); border-radius:2px; }
+#abas { display:flex; flex-direction:column; gap:2px; flex:1; overflow-y:auto; }
+#abas button { display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:none; border:0; color:var(--lateral-tinta); padding:10px 10px; border-radius:10px; cursor:pointer; font-weight:600; font-size:14.5px; position:relative; }
+#abas button svg { width:20px; height:20px; flex:none; stroke:currentColor; fill:none; stroke-width:1.8; stroke-linecap:round; stroke-linejoin:round; }
+#abas button:hover { background:rgba(255,255,255,.07); color:#fff; }
+#abas button[aria-current="page"] { background:rgba(255,255,255,.11); color:#fff; font-weight:800; }
+#abas button[aria-current="page"]::before { content:""; position:absolute; left:-14px; top:8px; bottom:8px; width:4px; border-radius:0 3px 3px 0; background:var(--ambar); }
+.nome-curto { display:none; }
+.lateral-pe { border-top:1px solid rgba(255,255,255,.12); padding:14px 6px 18px; display:flex; flex-direction:column; gap:10px; }
+.eu { display:flex; align-items:center; gap:10px; min-width:0; }
+.eu .av { background:rgba(255,255,255,.14); color:#fff; }
+.eu div { min-width:0; line-height:1.2; }
+.eu b { display:block; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.eu span { font-size:12px; color:var(--lateral-tinta); }
+.pe-botoes { display:flex; gap:8px; }
+.btn-lat { flex:1; background:transparent; border:1px solid rgba(255,255,255,.22); color:#E4ECF4; border-radius:9px; padding:7px 8px; font-size:13px; font-weight:700; cursor:pointer; }
+.btn-lat:hover { border-color:var(--ambar); }
+.coluna { min-width:0; }
+.topo-m { display:none; }
+main { max-width:1120px; margin:0 auto; padding:30px 28px 80px; }
+
+/* ---------- Cabeçalho de página ---------- */
+.pagina-topo { display:flex; align-items:flex-end; justify-content:space-between; gap:16px 24px; flex-wrap:wrap; margin-bottom:22px; }
+.pagina-topo h1 { font-size:clamp(26px,3.2vw,36px); font-weight:850; font-stretch:114%; letter-spacing:-.6px; line-height:1.08; }
+.pagina-topo p { margin:6px 0 0; color:var(--tinta-2); font-size:14.5px; max-width:62ch; }
+.acoes { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
+
+/* ---------- Controles ---------- */
+.seg { max-width:100%; overflow-x:auto; display:inline-flex; background:var(--superficie); border:1px solid var(--linha); border-radius:11px; padding:3px; gap:2px; flex-wrap:wrap; }
+.seg button { white-space:nowrap; flex:none; border:0; background:none; padding:7px 13px; border-radius:8px; font-weight:700; font-size:13.5px; color:var(--tinta-2); cursor:pointer; }
+.seg button:hover { color:var(--tinta); }
+.seg button[aria-pressed="true"] { background:var(--tinta); color:var(--superficie); }
+label.c { display:flex; flex-direction:column; gap:5px; font-size:12.5px; font-weight:700; color:var(--tinta-2); }
+label.c input, label.c select { font-weight:500; color:var(--tinta); }
+input, select, textarea { padding:9px 11px; border:1px solid var(--linha); border-radius:9px; background:var(--superficie); font-size:14.5px; min-height:40px; }
+input:disabled { background:transparent; border-color:transparent; padding-left:0; }
+input::placeholder { color:var(--tinta-2); opacity:.7; }
+.btn { cursor:pointer; font-weight:750; border-radius:10px; border:1px solid var(--linha); padding:9px 15px; background:var(--superficie); font-size:14px; min-height:40px; transition:border-color .15s, background .15s; }
+.btn:hover:not(:disabled) { border-color:var(--tinta); }
+.btn.main { background:var(--tinta); color:var(--superficie); border-color:var(--tinta); }
+.btn.ambar { background:var(--ambar); color:#0F2A43; border-color:var(--ambar); }
+.btn.mini { padding:4px 11px; font-size:13px; min-height:32px; }
+.btn:disabled { opacity:.55; cursor:default; }
+.filtros { display:flex; gap:12px 16px; flex-wrap:wrap; align-items:flex-end; }
+.busca-in { position:relative; display:block; }
+.busca-in svg { position:absolute; left:11px; top:50%; transform:translateY(-50%); width:17px; height:17px; stroke:var(--tinta-2); fill:none; stroke-width:2; stroke-linecap:round; }
+.busca-in input { padding-left:36px; min-width:260px; width:100%; }
+
+/* ---------- Superfícies ---------- */
+.cartao { background:var(--superficie); border:1px solid var(--linha); border-radius:16px; padding:20px; margin-bottom:16px; box-shadow:var(--sombra); }
+.cartao h2 { font-size:17px; font-weight:800; font-stretch:106%; letter-spacing:-.2px; }
+.cartao-topo { display:flex; justify-content:space-between; align-items:baseline; gap:12px; flex-wrap:wrap; margin-bottom:14px; }
+.aviso { padding:11px 14px; border-radius:11px; background:var(--alerta-fundo); color:var(--alerta); font-size:14px; margin-bottom:14px; font-weight:600; }
+.aviso.erro { background:var(--erro-fundo); color:var(--erro); }
+.vazio { padding:26px 6px; color:var(--tinta-2); text-align:center; max-width:52ch; margin:0 auto; }
+.vazio b { display:block; color:var(--tinta); font-size:16px; margin-bottom:4px; }
+
+/* ---------- Produtividade: resumo ---------- */
+.cards { display:grid; grid-template-columns:minmax(0,1.7fr) repeat(3,minmax(0,1fr)); gap:14px; margin-bottom:16px; }
+.total { background:var(--tinta); color:var(--superficie); border-radius:16px; padding:20px 22px; display:flex; flex-direction:column; gap:12px; }
+.total h2 { font-size:14px; font-weight:700; opacity:.82; font-stretch:100%; letter-spacing:0; }
+.total-n { font-size:clamp(46px,6vw,68px); font-weight:900; font-stretch:122%; line-height:.95; letter-spacing:-2px; }
+.divide { display:flex; height:10px; border-radius:6px; overflow:hidden; gap:3px; }
+.divide i { display:block; min-width:4px; }
+.divide .d-ch { background:#86B8EE; } .divide .d-at { background:var(--ambar); }
+.legenda { display:flex; gap:18px; font-size:13.5px; flex-wrap:wrap; }
+.legenda span::before { content:""; display:inline-block; width:10px; height:10px; border-radius:3px; margin-right:7px; vertical-align:-1px; }
+.legenda .l-ch::before { background:#86B8EE; } .legenda .l-at::before { background:var(--ambar); }
+.legenda b { font-weight:800; }
+.prob { justify-content:space-between; text-align:left; border:1px solid var(--linha); background:var(--superficie); border-radius:16px; padding:18px 18px 14px; cursor:pointer; display:flex; flex-direction:column; gap:3px; box-shadow:var(--sombra); transition:border-color .15s, transform .15s; }
+.prob:hover { border-color:currentColor; }
+.prob b { font-size:38px; font-weight:850; font-stretch:114%; line-height:1; letter-spacing:-1px; }
+.prob span { font-size:14.5px; font-weight:700; color:var(--tinta); }
+.prob small { font-size:12.5px; color:var(--tinta-2); margin-top:4px; }
+.prob.zero b { color:var(--tinta-2); font-weight:700; }
+.prob.erro { color:var(--erro); } .prob.diverg { color:var(--alerta); } .prob.rep { color:var(--azul); }
+.prob.zero { color:var(--tinta-2); }
+
+/* ---------- Produtividade: pistas (ranking) ---------- */
+.pistas { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; }
+.pista { display:grid; grid-template-columns:26px 38px minmax(0,1fr) 92px; gap:4px 14px; align-items:center; padding:13px 0; border-top:1px solid var(--linha); }
+.pista:first-child { border-top:0; }
+.pos { color:var(--tinta-2); font-weight:700; text-align:center; }
+.av { width:38px; height:38px; border-radius:50%; background:var(--azul-fundo); color:var(--azul); display:grid; place-items:center; font-weight:800; font-size:13px; letter-spacing:.3px; flex:none; }
+.pista-topo { display:flex; gap:4px 12px; align-items:baseline; flex-wrap:wrap; margin-bottom:7px; }
+.pista-topo b { font-size:15.5px; font-weight:800; }
+.pista-topo .sub { font-size:12.5px; }
+.via { position:relative; height:14px; border-radius:7px; background:var(--asfalto); }
+.via::before { content:""; position:absolute; left:6px; right:6px; top:50%; height:2px; margin-top:-1px; background:repeating-linear-gradient(90deg,var(--asfalto-linha) 0 9px,transparent 9px 18px); }
+.via-fill { position:absolute; left:0; top:0; bottom:0; width:var(--w); background:var(--ambar); border-radius:7px; transform-origin:left center; animation:encher .8s cubic-bezier(.2,.7,.2,1) both; }
+.via-fill::after { content:""; position:absolute; left:6px; right:6px; top:50%; height:2px; margin-top:-1px; background:repeating-linear-gradient(90deg,rgba(15,42,67,.45) 0 9px,transparent 9px 18px); }
+.meta-marca { position:absolute; top:-5px; bottom:-5px; width:3px; margin-left:-1.5px; background:var(--tinta); border-radius:2px; }
+.pista-n { text-align:right; line-height:1.1; }
+.pista-n b { font-size:25px; font-weight:850; font-stretch:112%; letter-spacing:-.5px; }
+.pista-n .sub { display:block; font-size:12px; }
+.pista-extra { grid-column:3 / 5; display:flex; gap:8px; flex-wrap:wrap; margin-top:4px; }
+.pista-extra:empty { display:none; }
+.etq { display:inline-flex; align-items:center; gap:5px; padding:2px 9px; border-radius:20px; font-size:12.5px; font-weight:750; white-space:nowrap; }
+.etq.erro { background:var(--erro-fundo); color:var(--erro); }
+.etq.divergencia { background:var(--alerta-fundo); color:var(--alerta); }
+.etq.repetido { background:var(--azul-fundo); color:var(--azul); }
+.etq.chegada, .etq.atribuicao, .etq.resolvida, .etq.ok { background:var(--ok-fundo); color:var(--ok); }
+.etq.aberta { background:var(--alerta-fundo); color:var(--alerta); }
+.etq.prometida { background:var(--azul-fundo); color:var(--azul); }
+.etq.sem_resposta { background:var(--erro-fundo); color:var(--erro); }
+.etq.neutro { background:var(--superficie-2); color:var(--tinta-2); border:1px solid var(--linha); }
+@keyframes encher { from { transform:scaleX(0); } to { transform:scaleX(1); } }
+.nota-pistas { margin:12px 0 0; display:flex; gap:8px 20px; flex-wrap:wrap; }
+
+/* ---------- Ritmo do dia ---------- */
+.ritmo { display:flex; align-items:flex-end; gap:5px; height:150px; padding-top:22px; }
+.ritmo > div { flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; position:relative; }
+.ritmo i { display:block; width:100%; border-radius:5px 5px 2px 2px; background:var(--azul); opacity:.55; min-height:3px; }
+.ritmo .pico i { background:var(--ambar); opacity:1; }
+.ritmo em { font-style:normal; font-size:12px; font-weight:800; position:absolute; top:-1px; }
+.ritmo span { font-size:11.5px; color:var(--tinta-2); height:14px; }
+
+/* ---------- Tabelas ---------- */
 .rolagem { overflow-x:auto; }
-.etq { display:inline-block; padding:2px 8px; border-radius:20px; font-size:12px; font-weight:800; }
-.etq.erro { background:#FDE7E4; color:#B42318; } .etq.divergencia { background:#FFF1D6; color:#8A5A0B; }
-.etq.repetido { background:#E8EEF7; color:#1F5AA0; } .etq.chegada { background:#E3F3EA; color:#1E7B4B; } .etq.atribuicao { background:#E3F3EA; color:#1E7B4B; }
-.etq.aberta { background:#FFF1D6; color:#8A5A0B; } .etq.prometida { background:#E8EEF7; color:#1F5AA0; } .etq.resolvida { background:#E3F3EA; color:#1E7B4B; } .etq.sem_resposta { background:#FDE7E4; color:#B42318; }
-.barra { height:8px; background:var(--soft); border-radius:6px; overflow:hidden; min-width:80px; }
-.barra i { display:block; height:100%; background:var(--amber); }
-.vazio { color:var(--warm); padding:18px 4px; }
-.aviso { padding:10px 12px; border-radius:10px; background:#FFF1D6; color:#6B4509; font-size:13px; margin-bottom:12px; }
-.aviso.erro { background:#FDE7E4; color:#8E1B10; }
-.horas { display:flex; align-items:flex-end; gap:3px; height:110px; padding-top:6px; }
-.horas div { flex:1; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:3px; min-width:0; }
-.horas i { display:block; width:100%; background:var(--blue); border-radius:3px 3px 0 0; min-height:2px; }
-.horas span { font-size:10px; color:var(--warm); }
-.linha-tempo { list-style:none; margin:0; padding:0; }
-.linha-tempo li { display:flex; gap:12px; padding:10px 0; border-bottom:1px solid var(--line); flex-wrap:wrap; }
-.linha-tempo time { min-width:150px; color:var(--warm); font-size:13px; font-variant-numeric:tabular-nums; }
-.login { max-width:380px; margin:12vh auto; }
-.login .cartao { padding:24px; display:flex; flex-direction:column; gap:12px; }
-a.awb { color:var(--blue); cursor:pointer; font-weight:700; text-decoration:underline; }
-.sub { color:var(--warm); font-size:12.5px; }
-@media (max-width:640px) { .topo { padding:10px 12px; } main { padding:14px 10px 50px; } .num b { font-size:24px; } }
+.tabela { width:100%; border-collapse:collapse; font-size:14.5px; }
+.tabela th { text-align:left; font-size:12.5px; color:var(--tinta-2); font-weight:750; padding:9px 10px; border-bottom:1px solid var(--linha); white-space:nowrap; position:sticky; top:0; background:var(--superficie); }
+.tabela td { padding:11px 10px; border-bottom:1px solid var(--linha); vertical-align:top; }
+.tabela td.n, .tabela th.n { text-align:right; }
+.tabela tbody tr:hover td { background:var(--superficie-2); }
+.tabela tr.vencida td:first-child { box-shadow:inset 3px 0 0 var(--erro); }
+.tabela .inativa td:first-child { box-shadow:inset 3px 0 0 var(--ambar); }
+a.awb { color:var(--azul); cursor:pointer; font-weight:750; text-decoration:underline; text-underline-offset:3px; }
+details.det { margin-top:14px; }
+details.det summary { cursor:pointer; font-weight:750; color:var(--azul); padding:6px 0; }
+
+/* ---------- Pacote (linha do tempo) ---------- */
+.pacote-busca { display:flex; gap:10px; flex-wrap:wrap; }
+.pacote-busca input { flex:1; min-width:240px; font-size:16px; min-height:46px; }
+.pacote-busca .btn { min-height:46px; }
+.linha-tempo { list-style:none; margin:6px 0 0; padding:0 0 0 8px; position:relative; }
+.linha-tempo::before { content:""; position:absolute; left:15px; top:10px; bottom:10px; width:2px; background:var(--linha); }
+.linha-tempo li { display:grid; grid-template-columns:16px minmax(0,1fr); gap:14px; padding:10px 0; position:relative; }
+.linha-tempo li > i { width:16px; height:16px; border-radius:50%; background:var(--superficie); border:3px solid var(--azul); margin-top:3px; position:relative; z-index:1; }
+.linha-tempo li.t-erro > i { border-color:var(--erro); } .linha-tempo li.t-divergencia > i { border-color:var(--ambar); }
+.linha-tempo li.t-ok > i { border-color:var(--ok); }
+.linha-tempo time { display:block; color:var(--tinta-2); font-size:13px; margin-bottom:3px; }
+
+/* ---------- Toast ---------- */
+#toasts { position:fixed; right:20px; bottom:20px; display:flex; flex-direction:column; gap:8px; z-index:50; }
+.toast { background:var(--tinta); color:var(--superficie); padding:11px 16px; border-radius:11px; font-weight:700; font-size:14px; box-shadow:0 10px 30px -10px rgba(0,0,0,.4); animation:entra .25s ease-out; max-width:340px; }
+.toast.erro { background:var(--erro); color:#fff; }
+@keyframes entra { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:none; } }
+
+/* ---------- Esqueleto de carregamento ---------- */
+.esq { border-radius:12px; background:linear-gradient(90deg,var(--linha) 0%,var(--superficie-2) 50%,var(--linha) 100%); background-size:200% 100%; animation:brilho 1.3s linear infinite; }
+@keyframes brilho { to { background-position:-200% 0; } }
+
+/* ---------- Entrar ---------- */
+.entrar { min-height:100vh; display:grid; grid-template-columns:minmax(0,1.05fr) minmax(0,1fr); }
+.entrar-marca { background:var(--lateral); color:#F2F6FA; padding:48px 52px; display:flex; flex-direction:column; justify-content:space-between; gap:40px; position:relative; overflow:hidden; }
+.entrar-marca b { font-size:clamp(34px,4.6vw,54px); font-weight:900; font-stretch:120%; letter-spacing:-1px; line-height:1; display:block; }
+.entrar-marca p { margin:18px 0 0; max-width:34ch; color:var(--lateral-tinta); font-size:17px; }
+.estrada { height:18px; background:var(--asfalto); border-radius:9px; position:relative; margin:0 -52px 0 0; }
+.estrada::before { content:""; position:absolute; left:14px; right:0; top:50%; height:3px; margin-top:-1.5px; background:repeating-linear-gradient(90deg,var(--ambar) 0 34px,transparent 34px 58px); }
+.entrar-form { display:flex; align-items:center; justify-content:center; padding:32px 24px; }
+.entrar-form form { width:100%; max-width:380px; display:flex; flex-direction:column; gap:16px; }
+.entrar-form h1 { font-size:28px; font-weight:850; font-stretch:112%; letter-spacing:-.5px; }
+.entrar-form .btn { min-height:46px; font-size:15px; }
+.campo-senha { position:relative; display:flex; }
+.campo-senha input { flex:1; padding-right:70px; }
+.campo-senha button { position:absolute; right:6px; top:50%; transform:translateY(-50%); border:0; background:none; font-weight:700; font-size:13px; color:var(--azul); cursor:pointer; padding:6px 8px; }
+
+/* ---------- Celular ---------- */
+@media (max-width:1020px) { .cards { grid-template-columns:repeat(3,minmax(0,1fr)); } .total { grid-column:1 / -1; } }
+@media (max-width:860px) {
+  .shell { display:block; }
+  .lateral { position:fixed; z-index:20; left:0; right:0; bottom:0; top:auto; height:auto; padding:0; flex-direction:row; border-top:1px solid rgba(255,255,255,.14); }
+  .marca, .lateral-pe { display:none; }
+  #abas { flex-direction:row; justify-content:space-around; overflow-x:auto; padding:4px 4px calc(4px + env(safe-area-inset-bottom)); gap:0; }
+  #abas button { flex-direction:column; gap:3px; padding:7px 6px; font-size:11px; justify-content:center; align-items:center; text-align:center; flex:1; min-width:56px; }
+  #abas button[aria-current="page"]::before { left:20%; right:20%; top:0; bottom:auto; width:auto; height:3px; border-radius:0 0 3px 3px; }
+  .nome-longo { display:none; } .nome-curto { display:inline; }
+  .topo-m { display:flex; align-items:center; justify-content:space-between; gap:12px; background:var(--lateral); color:#F2F6FA; padding:12px 16px; position:sticky; top:0; z-index:10; }
+  .topo-m b { font-size:19px; font-weight:900; font-stretch:118%; }
+  .topo-m .btn-lat { flex:none; padding:5px 12px; }
+  main { padding:20px 14px 96px; }
+  .entrar { grid-template-columns:1fr; } .entrar-marca { padding:28px 24px; gap:22px; } .estrada { margin-right:-24px; } .entrar-marca p { font-size:15px; margin-top:10px; }
+  .pista { grid-template-columns:22px 34px minmax(0,1fr) 70px; gap:4px 10px; } .av { width:34px; height:34px; font-size:12px; } .pista-n b { font-size:21px; }
+  .pista-extra { grid-column:3 / 5; }
+  .busca-in input { min-width:0; } .filtros > label.c { flex:1 1 150px; }
+  #toasts { left:14px; right:14px; bottom:84px; }
+  /* tabela vira lista de cartões */
+  .tabela.empilha thead { display:none; }
+  .tabela.empilha, .tabela.empilha tbody, .tabela.empilha tr, .tabela.empilha td { display:block; width:100%; }
+  .tabela.empilha tr { border-bottom:1px solid var(--linha); padding:10px 0; }
+  .tabela.empilha td { border:0; padding:3px 0; }
+  .tabela.empilha td[data-r]::before { content:attr(data-r) ": "; color:var(--tinta-2); font-weight:700; font-size:12.5px; }
+  .tabela.empilha tbody tr:hover td { background:none; }
+}
+@media (max-width:560px) { .cards { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; } .prob { padding:14px 12px 12px; } .prob b { font-size:30px; } .prob span { font-size:13.5px; } .prob small { font-size:11.5px; } .pagina-topo h1 { font-size:25px; } }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
 </style>
 </head>
 <body>
 
-<section id="telaLogin" class="login" hidden>
-  <div class="cartao">
-    <h1 style="margin:0;font-size:24px;font-weight:900">Painel <span style="color:var(--amber)">Cordeiro</span></h1>
-    <p class="sub" style="margin:0">Entre com o e-mail e a senha que o dono criou para você.</p>
-    <label class="c">E-mail<input id="lgEmail" type="email" autocomplete="username" /></label>
-    <label class="c">Senha<input id="lgSenha" type="password" autocomplete="current-password" /></label>
-    <button id="lgEntrar" class="btn main" type="button">Entrar</button>
-    <div id="lgMsg" class="aviso erro" hidden></div>
+<section id="telaLogin" class="entrar" hidden>
+  <div class="entrar-marca">
+    <div>
+      <b>Cordeiro<br />Transportes</b>
+      <p>Quem bipou, quanto bipou e onde o pacote parou, em um só lugar.</p>
+    </div>
+    <div class="estrada" aria-hidden="true"></div>
+  </div>
+  <div class="entrar-form">
+    <form id="formLogin" novalidate>
+      <h1>Entrar no painel</h1>
+      <p class="sub" style="margin:-6px 0 0">Use o e-mail e a senha que o dono criou para você.</p>
+      <label class="c">E-mail<input id="lgEmail" type="email" autocomplete="username" inputmode="email" /></label>
+      <label class="c">Senha<span class="campo-senha"><input id="lgSenha" type="password" autocomplete="current-password" /><button type="button" id="lgVer">Mostrar</button></span></label>
+      <button id="lgEntrar" class="btn main" type="submit">Entrar</button>
+      <div id="lgMsg" class="aviso erro" role="alert" hidden></div>
+    </form>
   </div>
 </section>
 
-<div id="telaApp" hidden>
-  <header class="topo">
-    <h1>Painel <span>Cordeiro</span></h1>
-    <nav class="abas" role="tablist" id="abas"></nav>
-    <div class="quem"><span id="quemSou"></span><button id="btnSair" class="btn mini" type="button">Sair</button></div>
-  </header>
-  <main id="conteudo"></main>
+<div id="telaApp" class="shell" hidden>
+  <aside class="lateral">
+    <div class="marca"><b>Cordeiro</b><small>Painel de operação</small><div class="faixa"></div></div>
+    <nav id="abas" aria-label="Seções"></nav>
+    <div class="lateral-pe">
+      <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
+      <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
+    </div>
+  </aside>
+  <div class="coluna">
+    <header class="topo-m"><b>Cordeiro</b><button id="btnSairM" class="btn-lat" type="button">Sair</button></header>
+    <main id="conteudo"></main>
+  </div>
 </div>
+<div id="toasts" role="status" aria-live="polite"></div>
 
 <script>
 /* ===================== PURAS ===================== */
@@ -170,8 +357,28 @@ function paraCsv(cabecalho, linhas) {
 function dataHoraBR(iso) {
   return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit', second: '2-digit' }).format(new Date(iso));
 }
+function iniciais(nome) {
+  const p = String(nome || '').replace(/<[^>]*>/g, '').trim().split(/\s+/).filter(Boolean);
+  if (!p.length) return '?';
+  return (p[0][0] + (p.length > 1 ? p[p.length - 1][0] : '')).toUpperCase();
+}
+function dataExtenso(iso) {
+  const [a, m, d] = String(iso).slice(0, 10).split('-').map(Number);
+  const t = new Intl.DateTimeFormat('pt-BR', { timeZone: 'UTC', weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' }).format(new Date(Date.UTC(a, m - 1, d, 12)));
+  return t.charAt(0).toUpperCase() + t.slice(1);
+}
+function rotuloPeriodo(est, hoje) {
+  if (est.de === est.ate) return est.de === hoje ? 'Hoje, ' + dataExtenso(est.de).toLowerCase() : dataExtenso(est.de);
+  return dataBR(est.de) + ' a ' + dataBR(est.ate);
+}
+function pico(h) {
+  let b = 0;
+  for (let i = 1; i < h.length; i++) if (h[i] > h[b]) b = i;
+  return { hora: b, valor: h[b] || 0 };
+}
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
 /* PURAS:FIM */
+
 
 /* ===================== ACESSO AO BANCO ===================== */
 const URL_BASE = 'https://vyweddtvpxnmuofmfghz.supabase.co';
@@ -252,15 +459,54 @@ async function sair() {
   guardarSessao(null); mostrarLogin();
 }
 
+
 /* ===================== INÍCIO ===================== */
+const ICONES = {
+  produtividade: '<svg viewBox="0 0 24 24"><path d="M5 20V11M12 20V4M19 20v-6"/><path d="M3 20.5h18"/></svg>',
+  problemas: '<svg viewBox="0 0 24 24"><path d="M12 3.5l9 16H3l9-16z"/><path d="M12 10v4.5M12 17.4v.1"/></svg>',
+  pacote: '<svg viewBox="0 0 24 24"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M12 12l8-4.5M12 12L4 7.5M12 12v9"/></svg>',
+  cobrancas: '<svg viewBox="0 0 24 24"><path d="M4 10v4h3l5 4V6L7 10H4z"/><path d="M16 9.5a4 4 0 0 1 0 5M18.5 7a7.5 7.5 0 0 1 0 10"/></svg>',
+  locais: '<svg viewBox="0 0 24 24"><path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>',
+  equipe: '<svg viewBox="0 0 24 24"><circle cx="9" cy="8.5" r="3.2"/><path d="M3 20c0-3.3 2.7-5.5 6-5.5s6 2.2 6 5.5"/><path d="M16 5.6a3 3 0 0 1 0 5.8M18 14.8c1.8.7 3 2.4 3 5.2"/></svg>',
+};
 const ABAS = [
-  { id: 'produtividade', nome: 'Produtividade', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'problemas', nome: 'Erros e divergências', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'pacote', nome: 'Pacote', papeis: ['dono', 'monitor', 'bipador'] },
-  { id: 'cobrancas', nome: 'Cobranças', papeis: ['dono', 'monitor'] },
-  { id: 'locais', nome: 'Locais por rota', papeis: ['dono', 'monitor'] },
-  { id: 'equipe', nome: 'Equipe', papeis: ['dono'] },
+  { id: 'produtividade', nome: 'Produtividade', curto: 'Produção', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'problemas', nome: 'Erros e divergências', curto: 'Ocorrências', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'pacote', nome: 'Pacote', curto: 'Pacote', papeis: ['dono', 'monitor', 'bipador'] },
+  { id: 'cobrancas', nome: 'Cobranças', curto: 'Cobranças', papeis: ['dono', 'monitor'] },
+  { id: 'locais', nome: 'Locais por rota', curto: 'Locais', papeis: ['dono', 'monitor'] },
+  { id: 'equipe', nome: 'Equipe', curto: 'Equipe', papeis: ['dono'] },
 ];
+const PAPEL_NOME = { dono: 'Dono', monitor: 'Monitor', bipador: 'Bipador' };
+
+/* ---------- tema ---------- */
+function temaGuardado() { try { return localStorage.getItem('painelTema') || ''; } catch (_) { return ''; } }
+function aplicarTema(t) {
+  if (t === 'claro' || t === 'escuro') document.documentElement.setAttribute('data-tema', t);
+  else document.documentElement.removeAttribute('data-tema');
+  const b = document.getElementById('btnTema');
+  if (b) b.textContent = 'Tema ' + (t === 'claro' ? 'claro' : t === 'escuro' ? 'escuro' : 'auto');
+}
+function ciclarTema() {
+  const prox = { '': 'claro', claro: 'escuro', escuro: '' }[temaGuardado()] || '';
+  try { if (prox) localStorage.setItem('painelTema', prox); else localStorage.removeItem('painelTema'); } catch (_) {}
+  aplicarTema(prox);
+}
+
+/* ---------- apoio de tela ---------- */
+function aviso(texto, erro) {
+  const c = $('toasts'), d = document.createElement('div');
+  d.className = 'toast' + (erro ? ' erro' : ''); d.textContent = texto; c.appendChild(d);
+  setTimeout(() => d.remove(), erro ? 6000 : 3200);
+}
+function cabecalho(titulo, sub, direita) {
+  return `<div class="pagina-topo"><div><h1>${esc(titulo)}</h1>${sub ? `<p>${sub}</p>` : ''}</div><div class="acoes">${direita || ''}</div></div>`;
+}
+function esqueleto() {
+  return '<div class="esq" style="height:150px;margin-bottom:14px"></div><div class="esq" style="height:260px;margin-bottom:14px"></div><div class="esq" style="height:170px"></div>';
+}
+function horaAgora() { return new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }).format(new Date()); }
+
 async function iniciarApp() {
   $('telaLogin').hidden = true;
   let perfis;
@@ -270,20 +516,22 @@ async function iniciarApp() {
   E.perfil = E.perfis.get(E.sessao.id);
   if (!E.perfil || !E.perfil.ativo) {
     guardarSessao(null); mostrarLogin();
-    const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo dono.'; m.hidden = false; return;
+    const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo dono. Peça a ele para ativar em Equipe.'; m.hidden = false; return;
   }
   try { const c = await api('GET', '/rest/v1/cadastros?select=valor&chave=eq.metas'); E.meta = c && c[0] ? c[0].valor : null; } catch (_) { E.meta = null; }
-  $('quemSou').textContent = E.perfil.nome + ' · ' + E.perfil.papel;
+  $('euNome').textContent = E.perfil.nome; $('euAv').textContent = iniciais(E.perfil.nome);
+  $('quemSou').textContent = PAPEL_NOME[E.perfil.papel] || E.perfil.papel;
   $('telaApp').hidden = false;
   const lista = ABAS.filter((a) => a.papeis.includes(E.perfil.papel));
-  $('abas').innerHTML = lista.map((a) => `<button type="button" role="tab" data-aba="${a.id}" aria-selected="false">${esc(a.nome)}</button>`).join('');
+  $('abas').innerHTML = lista.map((a) => `<button type="button" data-aba="${a.id}" aria-current="false">${ICONES[a.id]}<span class="nome-longo">${esc(a.nome)}</span><span class="nome-curto">${esc(a.curto)}</span></button>`).join('');
   irPara(lista.some((a) => a.id === E.aba) ? E.aba : lista[0].id);
 }
 function irPara(id, arg) {
   E.aba = id;
-  document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-selected', String(b.dataset.aba === id)));
+  document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === id ? 'page' : 'false'));
   const mapa = { produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
+  window.scrollTo(0, 0);
   mapa[id](arg);
 }
 function nomeOperador(id) { const p = E.perfis.get(id); return p ? p.nome : '—'; }
@@ -295,14 +543,14 @@ function baixar(nome, texto) {
 }
 
 /* ===================== FILTRO DE PERÍODO ===================== */
-function filtroPeriodo(estado, aoMudar, extras) {
+function seletorPeriodo(estado) {
   const rotulos = [['hoje', 'Hoje'], ['ontem', 'Ontem'], ['7d', '7 dias'], ['30d', '30 dias'], ['mes', 'Este mês'], ['livre', 'Escolher']];
-  return `<div class="filtros">
-    <div class="seg" id="fpSeg">${rotulos.map(([k, n]) => `<button type="button" data-p="${k}" aria-pressed="${estado.tipo === k}">${n}</button>`).join('')}</div>
-    <div class="filtros" id="fpLivre" ${estado.tipo === 'livre' ? '' : 'hidden'}>
-      <label class="c">De<input type="date" id="fpDe" value="${esc(estado.de)}" /></label>
-      <label class="c">Até<input type="date" id="fpAte" value="${esc(estado.ate)}" /></label>
-    </div>${extras || ''}</div>`;
+  return `<div class="seg" id="fpSeg" role="group" aria-label="Período">${rotulos.map(([k, n]) => `<button type="button" data-p="${k}" aria-pressed="${estado.tipo === k}">${n}</button>`).join('')}</div>`;
+}
+function datasLivres(estado) {
+  return `<div class="filtros" id="fpLivre" ${estado.tipo === 'livre' ? '' : 'hidden'} style="margin-bottom:16px">
+    <label class="c">De<input type="date" id="fpDe" value="${esc(estado.de)}" /></label>
+    <label class="c">Até<input type="date" id="fpAte" value="${esc(estado.ate)}" /></label></div>`;
 }
 function ligarFiltroPeriodo(estado, aoMudar) {
   document.querySelectorAll('#fpSeg button').forEach((b) => b.addEventListener('click', () => {
@@ -310,7 +558,7 @@ function ligarFiltroPeriodo(estado, aoMudar) {
     if (estado.tipo !== 'livre') { const p = periodo(estado.tipo, hojeSP()); estado.de = p.de; estado.ate = p.ate; }
     document.querySelectorAll('#fpSeg button').forEach((x) => x.setAttribute('aria-pressed', String(x === b)));
     $('fpLivre').hidden = estado.tipo !== 'livre';
-    if ($('fpDe')) { $('fpDe').value = estado.de; $('fpAte').value = estado.ate; }
+    $('fpDe').value = estado.de; $('fpAte').value = estado.ate;
     aoMudar();
   }));
   const livre = () => { if ($('fpDe').value && $('fpAte').value) { estado.de = $('fpDe').value; estado.ate = $('fpAte').value; if (estado.de > estado.ate) [estado.de, estado.ate] = [estado.ate, estado.de]; aoMudar(); } };
@@ -321,69 +569,92 @@ function faixa(est) { return `dia=gte.${eFiltroSeguro(est.de)}&dia=lte.${eFiltro
 
 /* ===================== PRODUTIVIDADE ===================== */
 const estProd = novoEstadoPeriodo('hoje');
-let tokenProd = 0;
+let tokenProd = 0, timerProd = null;
 function telaProdutividade() {
-  const raiz = $('conteudo');
-  raiz.innerHTML = `<div class="cartao">${filtroPeriodo(estProd)}</div><div id="prodCorpo"><p class="vazio">Carregando…</p></div>`;
-  ligarFiltroPeriodo(estProd, carregarProdutividade);
-  carregarProdutividade();
+  const so = E.perfil.papel === 'bipador';
+  $('conteudo').innerHTML = cabecalho(so ? 'Meu dia' : 'Produtividade', '<span id="prodRotulo"></span>',
+    seletorPeriodo(estProd) + '<button class="btn" id="prodAtualizar" type="button">Atualizar</button>') + datasLivres(estProd) + '<div id="prodCorpo"></div>';
+  ligarFiltroPeriodo(estProd, () => carregarProdutividade(false));
+  $('prodAtualizar').addEventListener('click', () => carregarProdutividade(false));
+  clearInterval(timerProd);
+  timerProd = setInterval(() => { if (E.aba === 'produtividade' && !document.hidden && estProd.ate === hojeSP()) carregarProdutividade(true); }, 60000);
+  carregarProdutividade(false);
 }
-async function carregarProdutividade() {
+async function carregarProdutividade(silencioso) {
   const meu = ++tokenProd, corpo = $('prodCorpo');
-  corpo.innerHTML = '<p class="vazio">Carregando…</p>';
+  if (!corpo) return;
+  if (!silencioso) corpo.innerHTML = esqueleto();
   try {
     const [vis, ev] = await Promise.all([
       lerTudo('/rest/v1/produtividade_dia?select=dia,operador_id,operador,tipo,pacotes_unicos,total&' + faixa(estProd)),
       lerTudo('/rest/v1/eventos?select=ocorreu_em,tipo&tipo=in.(chegada,atribuicao)&' + faixa(estProd), 12),
     ]);
-    if (meu !== tokenProd) return;
+    if (meu !== tokenProd || !$('prodCorpo')) return;
     const lista = agregar(vis.itens), t = totais(lista);
     const meta = E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0;
-    const umDia = estProd.de === estProd.ate;
-    const maior = Math.max(1, ...lista.map((o) => o.pacotes));
-    const h = porHora(ev.itens), mh = Math.max(1, ...h);
+    const umDia = estProd.de === estProd.ate, usaMeta = meta > 0 && umDia;
+    const escala = Math.max(1, usaMeta ? meta : 0, ...lista.map((o) => o.pacotes)) * 1.04;
+    const h = porHora(ev.itens), pk = pico(h);
     const so = E.perfil.papel === 'bipador';
+    $('prodRotulo').textContent = rotuloPeriodo(estProd, hojeSP()) + ' · atualizado às ' + horaAgora();
+    const pc = t.pacotes ? Math.round(t.chegada / t.pacotes * 100) : 0;
+    const tile = (k, cls, n, nome, alvo) => `<button type="button" class="prob ${cls}${n ? '' : ' zero'}" data-ir="${alvo}"><b>${n}</b><span>${nome}</span><small>${n ? 'Ver ocorrências' : 'Nenhuma no período'}</small></button>`;
+    const pistas = lista.map((o, i) => {
+      const extras = [
+        o.erro ? `<span class="etq erro">${o.erro} erro${o.erro > 1 ? 's' : ''} · ${(o.taxaErro * 100).toFixed(1).replace('.', ',')}%</span>` : '',
+        o.divergencia ? `<span class="etq divergencia">${o.divergencia} divergência${o.divergencia > 1 ? 's' : ''}</span>` : '',
+        o.repetido ? `<span class="etq repetido">${o.repetido} repetido${o.repetido > 1 ? 's' : ''}</span>` : '',
+        usaMeta ? `<span class="etq ${o.pacotes >= meta ? 'ok' : 'neutro'}">${Math.round(o.pacotes / meta * 100)}% da meta</span>` : '',
+      ].join('');
+      return `<li class="pista"><span class="pos">${i + 1}</span><span class="av" aria-hidden="true">${esc(iniciais(o.nome))}</span>
+        <div><div class="pista-topo"><b>${esc(o.nome)}</b><span class="sub">${o.chegada} chegadas · ${o.atribuicao} atribuições</span></div>
+          <div class="via" role="img" aria-label="${esc(o.nome)}: ${o.pacotes} pacotes"><i class="via-fill" style="--w:${(o.pacotes / escala * 100).toFixed(1)}%"></i>${usaMeta ? `<u class="meta-marca" style="left:${(meta / escala * 100).toFixed(1)}%" title="Meta: ${meta}"></u>` : ''}</div></div>
+        <div class="pista-n"><b>${o.pacotes}</b><span class="sub">pacotes</span></div>
+        <div class="pista-extra">${extras}</div></li>`;
+    }).join('');
+    const ate = Math.max(...h.map((v, i) => (v ? i : -1))), de = h.findIndex((v) => v > 0);
+    const ini = Math.max(0, Math.min(6, de - 1)), fim = Math.min(23, Math.max(18, ate + 1));
+    const mh = Math.max(1, ...h);
+    let barras = '';
+    for (let i = ini; i <= fim; i++) barras += `<div class="${h[i] === pk.valor && pk.valor ? 'pico' : ''}" title="${i}h: ${h[i]} pacotes">${h[i] === pk.valor && pk.valor ? `<em>${h[i]}</em>` : ''}<i style="height:${Math.round(h[i] / mh * 100)}%"></i><span>${(i - ini) % 2 === 0 ? i + 'h' : ''}</span></div>`;
     corpo.innerHTML = `
       ${so ? '<div class="aviso">Você vê apenas os seus próprios bipes.</div>' : ''}
       <div class="cards">
-        <div class="num"><b>${t.pacotes}</b><small>Pacotes bipados</small></div>
-        <div class="num"><b>${t.chegada}</b><small>Chegadas</small></div>
-        <div class="num"><b>${t.atribuicao}</b><small>Atribuições</small></div>
-        <div class="num bad"><b>${t.erro}</b><small>Erros</small></div>
-        <div class="num warn"><b>${t.divergencia}</b><small>Divergências</small></div>
-        <div class="num"><b>${t.repetido}</b><small>Repetidos</small></div>
+        <section class="total"><h2>Pacotes bipados</h2><div class="total-n">${t.pacotes}</div>
+          ${t.pacotes ? `<div class="divide" aria-hidden="true"><i class="d-ch" style="width:${pc}%"></i><i class="d-at" style="width:${100 - pc}%"></i></div>` : ''}
+          <div class="legenda"><span class="l-ch">Chegadas <b>${t.chegada}</b></span><span class="l-at">Atribuições <b>${t.atribuicao}</b></span></div></section>
+        ${tile('erro', 'erro', t.erro, 'Erros', 'erro')}${tile('div', 'diverg', t.divergencia, 'Divergências', 'divergencia')}${tile('rep', 'rep', t.repetido, 'Repetidos', 'repetido')}
       </div>
-      <div class="cartao"><h2>${so ? 'Meu desempenho' : 'Ranking'} · ${esc(dataBR(estProd.de))}${umDia ? '' : ' a ' + esc(dataBR(estProd.ate))}</h2>
-        ${lista.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>#</th><th>Colaborador</th><th class="n">Chegadas</th><th class="n">Atribuições</th><th class="n">Pacotes</th><th></th><th class="n">Erros</th><th class="n">Diverg.</th><th class="n">Repet.</th><th class="n">% erro</th>${meta && umDia ? '<th class="n">Meta</th>' : ''}</tr></thead><tbody>
-        ${lista.map((o, i) => `<tr><td>${i + 1}</td><td><b>${esc(o.nome)}</b></td><td class="n">${o.chegada}</td><td class="n">${o.atribuicao}</td><td class="n"><b>${o.pacotes}</b></td>
-          <td style="width:140px"><div class="barra"><i style="width:${Math.round(o.pacotes / maior * 100)}%"></i></div></td>
-          <td class="n">${o.erro}</td><td class="n">${o.divergencia}</td><td class="n">${o.repetido}</td><td class="n">${(o.taxaErro * 100).toFixed(1).replace('.', ',')}%</td>
-          ${meta && umDia ? `<td class="n">${Math.round(o.pacotes / meta * 100)}%</td>` : ''}</tr>`).join('')}
-        </tbody></table></div>` : '<p class="vazio">Nenhum bipe neste período.</p>'}
-        <p class="sub">Cada pacote conta uma vez por tipo, colaborador e dia. Em vários dias, soma-se o que foi bipado em cada dia. % erro = erros ÷ (chegadas + atribuições + erros).${meta && umDia ? ' Meta: ' + meta + ' pacotes por dia.' : ''}</p>
-        ${vis.completo ? '' : '<div class="aviso">Muitos dados: mostrando parte. Reduza o período.</div>'}
-      </div>
-      <div class="cartao"><h2>Pacotes por hora do dia</h2>
-        ${ev.itens.length ? `<div class="horas">${h.map((v, i) => `<div title="${i}h: ${v}"><i style="height:${Math.round(v / mh * 90)}px"></i><span>${i}</span></div>`).join('')}</div>` : '<p class="vazio">Sem dados.</p>'}
-        ${ev.completo ? '' : '<p class="sub">Gráfico com parte dos dados (período grande).</p>'}</div>
-      ${lista.length ? '<button class="btn" id="prodCsv" type="button">Baixar CSV</button>' : ''}`;
+      <section class="cartao"><div class="cartao-topo"><h2>${so ? 'Meu desempenho' : 'Ranking da equipe'}</h2>${lista.length ? '<button class="btn mini" id="prodCsv" type="button">Baixar CSV</button>' : ''}</div>
+        ${lista.length ? `<ol class="pistas">${pistas}</ol>
+          <p class="sub nota-pistas">${usaMeta ? '<span>A linha vertical marca a meta de ' + meta + ' pacotes.</span>' : ''}<span>Cada pacote conta uma vez por tipo, colaborador e dia.</span></p>`
+          : `<div class="vazio"><b>Nenhum bipe neste período</b>Os bipes aparecem aqui assim que alguém bipar com a Nuvem Cordeiro ligada no app ou na extensão.</div>`}
+        ${vis.completo ? '' : '<div class="aviso" style="margin-top:12px">Há muitos dados: mostrando só parte. Escolha um período menor.</div>'}
+      </section>
+      <section class="cartao"><div class="cartao-topo"><h2>Ritmo do dia</h2><span class="sub">${pk.valor ? 'Pico às ' + pk.hora + 'h, com ' + pk.valor + ' pacotes' : ''}</span></div>
+        ${ev.itens.length ? `<div class="ritmo">${barras}</div>` : '<div class="vazio">Sem bipes para mostrar por hora.</div>'}
+        ${ev.completo ? '' : '<p class="sub">Gráfico com parte dos dados (período grande).</p>'}</section>`;
+    corpo.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => {
+      estPro.tipo2 = b.dataset.ir; estPro.tipo = estProd.tipo; estPro.de = estProd.de; estPro.ate = estProd.ate; irPara('problemas');
+    }));
     const b = $('prodCsv');
     if (b) b.addEventListener('click', () => baixar('produtividade-' + estProd.de + '_' + estProd.ate + '.csv', paraCsv(
       ['Colaborador', 'Chegadas', 'Atribuições', 'Pacotes', 'Erros', 'Divergências', 'Repetidos', '% erro'],
       lista.map((o) => [o.nome, o.chegada, o.atribuicao, o.pacotes, o.erro, o.divergencia, o.repetido, (o.taxaErro * 100).toFixed(1).replace('.', ',')]))));
-  } catch (e) { if (meu === tokenProd) corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+  } catch (e) { if (meu === tokenProd && $('prodCorpo') && !silencioso) $('prodCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 
 /* ===================== ERROS E DIVERGÊNCIAS ===================== */
 const estPro = { ...novoEstadoPeriodo('hoje'), tipo2: 'erro,divergencia', operador: '', busca: '' };
 let tokenPro = 0, linhasPro = [];
+const ICO_BUSCA = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
 function telaProblemas() {
   const opts = [...E.perfis.values()].filter((p) => p.ativo).map((p) => `<option value="${esc(p.id)}" ${estPro.operador === p.id ? 'selected' : ''}>${esc(p.nome)}</option>`).join('');
-  const extras = `<label class="c">Tipo<select id="prTipo">
-      <option value="erro,divergencia">Erros e divergências</option><option value="erro">Só erros</option><option value="divergencia">Só divergências</option><option value="repetido">Repetidos</option></select></label>
-    ${E.perfil.papel === 'bipador' ? '' : `<label class="c">Colaborador<select id="prOp"><option value="">Todos</option>${opts}</select></label>`}
-    <label class="c">Buscar<input id="prBusca" placeholder="AWB, motorista, motivo" value="${esc(estPro.busca)}" /></label>`;
-  $('conteudo').innerHTML = `<div class="cartao">${filtroPeriodo(estPro, null, extras)}</div><div id="prCorpo"><p class="vazio">Carregando…</p></div>`;
+  $('conteudo').innerHTML = cabecalho('Erros e divergências', 'Tudo o que não deu certo ou saiu da rota esperada. Toque no código do pacote para ver a história dele.', seletorPeriodo(estPro)) + datasLivres(estPro) +
+    `<div class="cartao"><div class="filtros">
+      <label class="c">Tipo<select id="prTipo"><option value="erro,divergencia">Erros e divergências</option><option value="erro">Só erros</option><option value="divergencia">Só divergências</option><option value="repetido">Repetidos</option></select></label>
+      ${E.perfil.papel === 'bipador' ? '' : `<label class="c">Colaborador<select id="prOp"><option value="">Todos</option>${opts}</select></label>`}
+      <label class="c">Buscar<span class="busca-in">${ICO_BUSCA}<input id="prBusca" placeholder="AWB, motorista ou motivo" value="${esc(estPro.busca)}" /></span></label></div></div><div id="prCorpo">${esqueleto()}</div>`;
   $('prTipo').value = estPro.tipo2;
   ligarFiltroPeriodo(estPro, carregarProblemas);
   $('prTipo').addEventListener('change', () => { estPro.tipo2 = $('prTipo').value; carregarProblemas(); });
@@ -393,33 +664,35 @@ function telaProblemas() {
 }
 async function carregarProblemas() {
   const meu = ++tokenPro, corpo = $('prCorpo');
-  corpo.innerHTML = '<p class="vazio">Carregando…</p>';
+  if (!corpo) return;
+  corpo.innerHTML = esqueleto();
   try {
     const op = estPro.operador ? '&operador_id=eq.' + eFiltroSeguro(estPro.operador) : '';
     const r = await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10);
     if (meu !== tokenPro) return;
     linhasPro = r.itens; linhasPro._completo = r.completo;
     desenharProblemas();
-  } catch (e) { if (meu === tokenPro) corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+  } catch (e) { if (meu === tokenPro && $('prCorpo')) $('prCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 function filtrarProblemas() {
   const q = estPro.busca.trim().toLowerCase();
   if (!q) return linhasPro;
   return linhasPro.filter((e) => [e.awb, e.motorista, e.motivo, e.rota, e.cidade, nomeOperador(e.operador_id)].some((v) => String(v || '').toLowerCase().includes(q)));
 }
+const ROTULO_TIPO = { erro: 'Erro', divergencia: 'Divergência', repetido: 'Repetido', chegada: 'Chegada', atribuicao: 'Atribuição' };
 function desenharProblemas() {
   const corpo = $('prCorpo'); if (!corpo) return;
   const l = filtrarProblemas(), mostrados = l.slice(0, 500);
-  corpo.innerHTML = `<div class="cartao"><h2>${l.length} ocorrência(s)</h2>
-    ${l.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>Quando</th><th>Tipo</th><th>AWB</th><th>Colaborador</th><th>Motorista</th><th>Rota / cidade</th><th>Motivo</th><th>Origem</th></tr></thead><tbody>
-    ${mostrados.map((e) => `<tr><td style="white-space:nowrap">${esc(dataHoraBR(e.ocorreu_em))}</td><td><span class="etq ${esc(e.tipo)}">${esc(e.tipo)}</span></td>
-      <td><a class="awb" data-awb="${esc(e.awb)}">${esc(e.awb)}</a></td><td>${esc(nomeOperador(e.operador_id))}</td><td>${esc(e.motorista || '—')}</td>
-      <td>${esc([e.rota, e.cidade].filter(Boolean).join(' · ') || '—')}</td><td>${esc(e.motivo || '—')}</td><td>${esc(e.origem)}</td></tr>`).join('')}
-    </tbody></table></div>` : '<p class="vazio">Nada neste período. Bom sinal.</p>'}
+  corpo.innerHTML = `<div class="cartao"><div class="cartao-topo"><h2>${l.length} ocorrência${l.length === 1 ? '' : 's'}</h2>${l.length ? '<button class="btn mini" id="prCsv" type="button">Baixar CSV</button>' : ''}</div>
+    ${l.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Quando</th><th>Tipo</th><th>AWB</th><th>Colaborador</th><th>Motorista</th><th>Rota e cidade</th><th>Motivo</th><th>Origem</th></tr></thead><tbody>
+    ${mostrados.map((e) => `<tr><td style="white-space:nowrap">${esc(dataHoraBR(e.ocorreu_em))}</td><td><span class="etq ${esc(e.tipo)}">${esc(ROTULO_TIPO[e.tipo] || e.tipo)}</span></td>
+      <td data-r="AWB"><a class="awb" data-awb="${esc(e.awb)}" tabindex="0" role="link">${esc(e.awb)}</a></td><td data-r="Colaborador">${esc(nomeOperador(e.operador_id))}</td><td data-r="Motorista">${esc(e.motorista || '—')}</td>
+      <td data-r="Rota">${esc([e.rota, e.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Motivo">${esc(e.motivo || '—')}</td><td data-r="Origem">${esc(e.origem === 'app' ? 'App' : 'Extensão')}</td></tr>`).join('')}
+    </tbody></table></div>` : `<div class="vazio"><b>Nada por aqui</b>${estPro.busca ? 'Nenhuma ocorrência combina com a busca.' : 'Nenhuma ocorrência neste período. Bom sinal.'}</div>`}
     ${l.length > 500 ? '<p class="sub">Mostrando as 500 mais recentes. O CSV leva todas.</p>' : ''}
-    ${linhasPro._completo === false ? '<div class="aviso">Muitos dados: lista parcial. Reduza o período.</div>' : ''}
-    ${l.length ? '<button class="btn" id="prCsv" type="button">Baixar CSV</button>' : ''}</div>`;
-  corpo.querySelectorAll('a.awb').forEach((a) => a.addEventListener('click', () => irPara('pacote', a.dataset.awb)));
+    ${linhasPro._completo === false ? '<div class="aviso">Há muitos dados: lista parcial. Escolha um período menor.</div>' : ''}</div>`;
+  const abrir = (a) => irPara('pacote', a.dataset.awb);
+  corpo.querySelectorAll('a.awb').forEach((a) => { a.addEventListener('click', () => abrir(a)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') abrir(a); }); });
   const b = $('prCsv');
   if (b) b.addEventListener('click', () => baixar('ocorrencias-' + estPro.de + '_' + estPro.ate + '.csv', paraCsv(
     ['Quando', 'Tipo', 'AWB', 'Colaborador', 'Motorista', 'Rota', 'Cidade', 'Motivo', 'Origem'],
@@ -428,73 +701,73 @@ function desenharProblemas() {
 
 /* ===================== PACOTE ===================== */
 function telaPacote(awbInicial) {
-  $('conteudo').innerHTML = `<div class="cartao"><h2>Ficha do pacote</h2><div class="filtros">
-    <label class="c">AWB<input id="pkAwb" placeholder="Código do pacote" style="min-width:260px" value="${esc(awbInicial || '')}" /></label>
-    <button class="btn main" id="pkBuscar" type="button">Buscar</button></div></div><div id="pkCorpo"></div>`;
+  $('conteudo').innerHTML = cabecalho('Ficha do pacote', 'Digite o código para ver, em ordem, quem bipou, o que aconteceu e se houve cobrança.') +
+    `<div class="cartao"><div class="pacote-busca"><input id="pkAwb" placeholder="Código do pacote (AWB)" aria-label="Código do pacote" autocomplete="off" value="${esc(awbInicial || '')}" /><button class="btn main" id="pkBuscar" type="button">Buscar pacote</button></div></div><div id="pkCorpo"></div>`;
   const buscar = async () => {
     const awb = eFiltroSeguro($('pkAwb').value.trim());
     const corpo = $('pkCorpo');
     if (!awb) { corpo.innerHTML = ''; return; }
-    corpo.innerHTML = '<p class="vazio">Buscando…</p>';
+    corpo.innerHTML = esqueleto();
     try {
       const ev = await api('GET', '/rest/v1/eventos?select=id,ocorreu_em,tipo,operador_id,origem,cidade,rota,motorista,motivo&awb=eq.' + awb + '&order=ocorreu_em.asc&limit=500');
       let cob = [];
       if (E.perfil.papel !== 'bipador') cob = await api('GET', '/rest/v1/cobrancas?select=*&awb=eq.' + awb + '&order=enviada_em.asc') || [];
-      if (!ev.length && !cob.length) { corpo.innerHTML = '<div class="cartao"><p class="vazio">Nenhum registro deste pacote no painel. Só aparecem pacotes bipados com a Nuvem Cordeiro ligada.</p></div>'; return; }
+      if (!ev.length && !cob.length) { corpo.innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhum registro deste pacote</b>Só aparecem pacotes bipados com a Nuvem Cordeiro ligada. Confira o código e tente de novo.</div></div>'; return; }
+      const classe = (t) => (t === 'erro' ? 't-erro' : t === 'divergencia' ? 't-divergencia' : t === 'chegada' || t === 'atribuicao' ? 't-ok' : '');
       const itens = [
-        ...ev.map((e) => ({ t: e.ocorreu_em, html: `<span class="etq ${esc(e.tipo)}">${esc(e.tipo)}</span> <b>${esc(nomeOperador(e.operador_id))}</b> (${esc(e.origem)})${e.motorista ? ' · motorista ' + esc(e.motorista) : ''}${e.rota ? ' · ' + esc(e.rota) : ''}${e.cidade ? ' · ' + esc(e.cidade) : ''}${e.motivo ? '<br><span class="sub">' + esc(e.motivo) + '</span>' : ''}` })),
-        ...cob.map((c) => ({ t: c.enviada_em, html: `<span class="etq ${esc(c.status)}">cobrança ${esc(c.status)}</span> ${c.motorista ? esc(c.motorista) : ''}${c.dias_atraso != null ? ' · ' + esc(c.dias_atraso) + ' dia(s) de atraso' : ''}${c.prazo_ate ? ' · prazo ' + esc(dataBR(c.prazo_ate)) : ''}${c.resposta ? '<br><span class="sub">' + esc(c.resposta) + '</span>' : ''}` })),
+        ...ev.map((e) => ({ t: e.ocorreu_em, c: classe(e.tipo), html: `<span class="etq ${esc(e.tipo)}">${esc(ROTULO_TIPO[e.tipo] || e.tipo)}</span> <b>${esc(nomeOperador(e.operador_id))}</b> <span class="sub">(${e.origem === 'app' ? 'app' : 'extensão'})</span>${e.motorista ? ' · motorista ' + esc(e.motorista) : ''}${e.rota ? ' · ' + esc(e.rota) : ''}${e.cidade ? ' · ' + esc(e.cidade) : ''}${e.motivo ? '<br><span class="sub">' + esc(e.motivo) + '</span>' : ''}` })),
+        ...cob.map((c) => ({ t: c.enviada_em, c: '', html: `<span class="etq ${esc(c.status)}">Cobrança ${esc((STATUS_COB.find((x) => x[0] === c.status) || [0, c.status])[1].toLowerCase())}</span>${c.motorista ? ' ' + esc(c.motorista) : ''}${c.dias_atraso != null ? ' · ' + esc(c.dias_atraso) + ' dia(s) de atraso' : ''}${c.prazo_ate ? ' · prazo ' + esc(dataBR(c.prazo_ate)) : ''}${c.resposta ? '<br><span class="sub">' + esc(c.resposta) + '</span>' : ''}` })),
       ].sort((a, b) => new Date(a.t) - new Date(b.t));
-      corpo.innerHTML = `<div class="cartao"><h2>Linha do tempo · ${esc(awb)}</h2><ul class="linha-tempo">${itens.map((i) => `<li><time>${esc(dataHoraBR(i.t))}</time><div>${i.html}</div></li>`).join('')}</ul></div>`;
+      corpo.innerHTML = `<div class="cartao"><div class="cartao-topo"><h2>${esc(awb)}</h2><span class="sub">${itens.length} registro${itens.length === 1 ? '' : 's'}</span></div><ul class="linha-tempo">${itens.map((i) => `<li class="${i.c}"><i></i><div><time>${esc(dataHoraBR(i.t))}</time>${i.html}</div></li>`).join('')}</ul></div>`;
     } catch (e) { corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
   };
   $('pkBuscar').addEventListener('click', buscar);
   $('pkAwb').addEventListener('keydown', (e) => { if (e.key === 'Enter') buscar(); });
-  if (awbInicial) buscar();
+  if (awbInicial) buscar(); else $('pkAwb').focus();
 }
 
 /* ===================== COBRANÇAS ===================== */
 const STATUS_COB = [['aberta', 'Aberta'], ['prometida', 'Prometida'], ['sem_resposta', 'Sem resposta'], ['resolvida', 'Resolvida']];
 let filtroCob = 'abertas';
 async function telaCobrancas() {
-  $('conteudo').innerHTML = `<div class="cartao"><h2>Nova cobrança</h2><div class="filtros">
+  $('conteudo').innerHTML = cabecalho('Cobranças', 'Pacotes cobrados do motorista, com prazo e resposta.',
+      `<div class="seg" id="cbSeg">${[['abertas', 'Em andamento'], ['resolvida', 'Resolvidas'], ['todas', 'Todas']].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${filtroCob === k}">${n}</button>`).join('')}</div>`) +
+    `<div class="cartao"><h2 style="margin-bottom:12px">Registrar cobrança</h2><div class="filtros">
       <label class="c">AWB<input id="cbAwb" /></label><label class="c">Motorista<input id="cbMot" /></label>
-      <label class="c">Dias de atraso<input id="cbDias" type="number" min="0" style="width:110px" /></label>
+      <label class="c">Dias de atraso<input id="cbDias" type="number" min="0" style="width:120px" /></label>
       <label class="c">Prazo<input id="cbPrazo" type="date" /></label>
-      <button class="btn main" id="cbCriar" type="button">Registrar</button></div><div id="cbMsg" class="aviso erro" hidden style="margin-top:10px"></div></div>
-    <div class="cartao"><div class="filtros"><div class="seg" id="cbSeg">
-      ${[['abertas', 'Em andamento'], ['resolvida', 'Resolvidas'], ['todas', 'Todas']].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${filtroCob === k}">${n}</button>`).join('')}</div></div></div>
-    <div id="cbCorpo"><p class="vazio">Carregando…</p></div>`;
+      <button class="btn main" id="cbCriar" type="button">Registrar</button></div><div id="cbMsg" class="aviso erro" hidden style="margin:12px 0 0"></div></div>
+    <div id="cbCorpo">${esqueleto()}</div>`;
   document.querySelectorAll('#cbSeg button').forEach((b) => b.addEventListener('click', () => { filtroCob = b.dataset.f; telaCobrancas(); }));
   $('cbCriar').addEventListener('click', async () => {
     const awb = eFiltroSeguro($('cbAwb').value.trim()), m = $('cbMsg'); m.hidden = true;
-    if (!awb) { m.textContent = 'Informe o AWB.'; m.hidden = false; return; }
+    if (!awb) { m.textContent = 'Informe o código do pacote (AWB).'; m.hidden = false; return; }
     try {
       await api('POST', '/rest/v1/cobrancas', [{ awb, motorista: $('cbMot').value.trim() || null, dias_atraso: $('cbDias').value === '' ? null : Number($('cbDias').value), prazo_ate: $('cbPrazo').value || null }], { Prefer: 'return=minimal' });
-      telaCobrancas();
+      aviso('Cobrança registrada'); telaCobrancas();
     } catch (e) { m.textContent = e.message; m.hidden = false; }
   });
   const filtro = filtroCob === 'abertas' ? '&status=in.(aberta,prometida,sem_resposta)' : filtroCob === 'resolvida' ? '&status=eq.resolvida' : '';
   try {
     const r = await lerTudo('/rest/v1/cobrancas?select=*&order=enviada_em.desc' + filtro, 5);
     const hoje = hojeSP();
-    $('cbCorpo').innerHTML = `<div class="cartao">${r.itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>Enviada</th><th>AWB</th><th>Motorista</th><th class="n">Atraso</th><th>Prazo</th><th>Status</th><th>Resposta</th><th></th></tr></thead><tbody>
+    $('cbCorpo').innerHTML = `<div class="cartao">${r.itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>Enviada</th><th>AWB</th><th>Motorista</th><th class="n">Atraso</th><th>Prazo</th><th>Situação</th><th>Resposta do motorista</th><th></th></tr></thead><tbody>
       ${r.itens.map((c) => { const vencida = c.prazo_ate && c.prazo_ate < hoje && c.status !== 'resolvida';
-        return `<tr data-id="${esc(c.id)}"><td style="white-space:nowrap">${esc(dataHoraBR(c.enviada_em))}<br><span class="sub">${esc(nomeOperador(c.enviada_por))}</span></td>
-        <td><a class="awb" data-awb="${esc(c.awb)}">${esc(c.awb)}</a></td><td>${esc(c.motorista || '—')}</td><td class="n">${c.dias_atraso == null ? '—' : esc(c.dias_atraso)}</td>
-        <td style="white-space:nowrap${vencida ? ';color:var(--bad);font-weight:800' : ''}">${c.prazo_ate ? esc(dataBR(c.prazo_ate)) + (vencida ? ' (vencido)' : '') : '—'}</td>
-        <td><select class="cbStatus">${STATUS_COB.map(([k, n]) => `<option value="${k}" ${c.status === k ? 'selected' : ''}>${n}</option>`).join('')}</select></td>
-        <td><input class="cbResp" value="${esc(c.resposta || '')}" placeholder="O que o motorista respondeu" style="min-width:200px" /></td>
+        return `<tr data-id="${esc(c.id)}" class="${vencida ? 'vencida' : ''}"><td style="white-space:nowrap">${esc(dataHoraBR(c.enviada_em))}<br><span class="sub">${esc(nomeOperador(c.enviada_por))}</span></td>
+        <td><a class="awb" data-awb="${esc(c.awb)}" tabindex="0" role="link">${esc(c.awb)}</a></td><td>${esc(c.motorista || '—')}</td><td class="n">${c.dias_atraso == null ? '—' : esc(c.dias_atraso)}</td>
+        <td style="white-space:nowrap${vencida ? ';color:var(--erro);font-weight:800' : ''}">${c.prazo_ate ? esc(dataBR(c.prazo_ate)) + (vencida ? ' (vencido)' : '') : '—'}</td>
+        <td><select class="cbStatus" aria-label="Situação">${STATUS_COB.map(([k, n]) => `<option value="${k}" ${c.status === k ? 'selected' : ''}>${n}</option>`).join('')}</select></td>
+        <td><input class="cbResp" value="${esc(c.resposta || '')}" placeholder="O que o motorista respondeu" aria-label="Resposta" style="min-width:210px" /></td>
         <td><button class="btn mini cbSalvar" type="button">Salvar</button></td></tr>`; }).join('')}
-      </tbody></table></div>` : '<p class="vazio">Nenhuma cobrança aqui.</p>'}</div>`;
-    document.querySelectorAll('#cbCorpo a.awb').forEach((a) => a.addEventListener('click', () => irPara('pacote', a.dataset.awb)));
+      </tbody></table></div>` : '<div class="vazio"><b>Nenhuma cobrança aqui</b>As cobranças registradas aparecem nesta lista, com prazo e resposta.</div>'}</div>`;
+    document.querySelectorAll('#cbCorpo a.awb').forEach((a) => { a.addEventListener('click', () => irPara('pacote', a.dataset.awb)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') irPara('pacote', a.dataset.awb); }); });
     document.querySelectorAll('.cbSalvar').forEach((b) => b.addEventListener('click', async () => {
       const tr = b.closest('tr'), status = tr.querySelector('.cbStatus').value;
       b.disabled = true;
       try {
         await api('PATCH', '/rest/v1/cobrancas?id=eq.' + eFiltroSeguro(tr.dataset.id), { status, resposta: tr.querySelector('.cbResp').value.trim() || null, resolvida_em: status === 'resolvida' ? new Date().toISOString() : null }, { Prefer: 'return=minimal' });
-        b.textContent = 'Salvo ✓'; setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
-      } catch (e) { b.disabled = false; alert(e.message); }
+        b.textContent = 'Salvo ✓'; aviso('Cobrança salva'); setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
+      } catch (e) { b.disabled = false; aviso(e.message, true); }
     }));
   } catch (e) { $('cbCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
@@ -515,36 +788,37 @@ function limparLocais(lista) {
 }
 async function telaLocais() {
   const editavel = E.perfil.papel === 'dono';
-  $('conteudo').innerHTML = '<p class="vazio">Carregando…</p>';
-  let lista = [];
+  $('conteudo').innerHTML = cabecalho('Locais por rota', 'Bairros, ruas ou trechos (como BR-101 ou Centro) que pertencem a cada rota.') + `<div id="lcRaiz">${esqueleto()}</div>`;
+  let lista = [], quando = null, quem = null;
   try {
     const r = await api('GET', '/rest/v1/cadastros?select=valor,atualizado_em,atualizado_por&chave=eq.locais');
     if (r && r[0] && Array.isArray(r[0].valor)) lista = r[0].valor;
-    var quando = r && r[0] ? r[0].atualizado_em : null, quem = r && r[0] ? r[0].atualizado_por : null;
-  } catch (e) { $('conteudo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; return; }
-  const rotas = [...new Set(lista.map((x) => x.rota).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR', { numeric: true }));
-  const linha = (x) => `<tr><td><input class="lcTermo" value="${esc(x.termo)}" ${editavel ? '' : 'disabled'} /></td>
-    <td><input class="lcRota" list="lcRotas" value="${esc(x.rota)}" ${editavel ? '' : 'disabled'} /></td>
-    <td><input class="lcCidade" value="${esc(x.cidade)}" placeholder="qualquer" ${editavel ? '' : 'disabled'} /></td>
+    if (r && r[0]) { quando = r[0].atualizado_em; quem = r[0].atualizado_por; }
+  } catch (e) { $('lcRaiz').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; return; }
+  lista = [...lista].sort((a, b) => String(a.rota).localeCompare(String(b.rota), 'pt-BR', { numeric: true }) || String(a.termo).localeCompare(String(b.termo), 'pt-BR'));
+  const rotas = [...new Set(lista.map((x) => x.rota).filter(Boolean))];
+  const linha = (x) => `<tr><td><input class="lcTermo" value="${esc(x.termo)}" aria-label="Local" ${editavel ? '' : 'disabled'} /></td>
+    <td><input class="lcRota" list="lcRotas" value="${esc(x.rota)}" aria-label="Rota" ${editavel ? '' : 'disabled'} /></td>
+    <td><input class="lcCidade" value="${esc(x.cidade)}" placeholder="Qualquer cidade" aria-label="Cidade" ${editavel ? '' : 'disabled'} /></td>
     ${editavel ? '<td><button class="btn mini lcDel" type="button">Excluir</button></td>' : ''}</tr>`;
-  $('conteudo').innerHTML = `<div class="cartao"><h2>Locais por rota</h2>
-    <p class="sub">Bairros, ruas ou trechos (ex.: BR-101, Centro) que pertencem a uma rota. ${editavel ? 'Ao salvar, todos os celulares e computadores recebem a lista em poucos minutos.' : 'Somente o dono edita; você recebe a lista automaticamente.'}
-    ${quando ? ' Última alteração: ' + esc(dataHoraBR(quando)) + (quem ? ' por ' + esc(nomeOperador(quem)) : '') + '.' : ' Ainda não há lista publicada.'}</p>
+  $('lcRaiz').innerHTML = `<div class="cartao">
+    <p class="sub" style="margin:0 0 14px">${editavel ? 'Ao salvar, todos os celulares e computadores recebem a lista em poucos minutos.' : 'Só o dono edita. Você recebe a lista automaticamente.'}
+    ${quando ? ' Última alteração em ' + esc(dataHoraBR(quando)) + (quem ? ', por ' + esc(nomeOperador(quem)) : '') + '.' : ' Ainda não há lista publicada.'}</p>
     <datalist id="lcRotas">${rotas.map((r) => `<option value="${esc(r)}">`).join('')}</datalist>
     <div class="rolagem"><table class="tabela"><thead><tr><th>Local</th><th>Rota</th><th>Cidade</th>${editavel ? '<th></th>' : ''}</tr></thead><tbody id="lcCorpo">${lista.map(linha).join('')}</tbody></table></div>
-    ${lista.length || editavel ? '' : '<p class="vazio">Nada cadastrado.</p>'}
-    ${editavel ? '<div class="filtros" style="margin-top:12px"><button class="btn" id="lcAdd" type="button">+ Novo local</button><button class="btn main" id="lcSalvar" type="button">Salvar para todos</button><span id="lcMsg" class="sub"></span></div>' : ''}</div>`;
+    ${lista.length || editavel ? '' : '<div class="vazio"><b>Nada cadastrado</b>O dono ainda não publicou locais.</div>'}
+    ${editavel ? '<div class="filtros" style="margin-top:14px"><button class="btn" id="lcAdd" type="button">Adicionar local</button><button class="btn ambar" id="lcSalvar" type="button">Salvar para todos</button><span id="lcMsg" class="sub"></span></div>' : ''}</div>`;
   if (!editavel) return;
   const ligarDel = () => document.querySelectorAll('.lcDel').forEach((b) => { b.onclick = () => b.closest('tr').remove(); });
   ligarDel();
-  $('lcAdd').addEventListener('click', () => { $('lcCorpo').insertAdjacentHTML('beforeend', linha({ termo: '', rota: '', cidade: '' })); ligarDel(); });
+  $('lcAdd').addEventListener('click', () => { $('lcCorpo').insertAdjacentHTML('beforeend', linha({ termo: '', rota: '', cidade: '' })); ligarDel(); $('lcCorpo').lastElementChild.querySelector('.lcTermo').focus(); });
   $('lcSalvar').addEventListener('click', async () => {
     const novos = limparLocais([...document.querySelectorAll('#lcCorpo tr')].map((tr) => ({ termo: tr.querySelector('.lcTermo').value, rota: tr.querySelector('.lcRota').value, cidade: tr.querySelector('.lcCidade').value })));
     const botao = $('lcSalvar'); botao.disabled = true;
     try {
       await api('POST', '/rest/v1/cadastros', [{ chave: 'locais', valor: novos, atualizado_em: new Date().toISOString() }], { Prefer: 'resolution=merge-duplicates,return=minimal' });
-      $('lcMsg').textContent = novos.length + ' local(is) salvo(s) ✓';
-    } catch (e) { $('lcMsg').textContent = e.message; }
+      $('lcMsg').textContent = novos.length + ' local(is) salvo(s) ✓'; aviso('Lista salva para todos os aparelhos');
+    } catch (e) { $('lcMsg').textContent = e.message; aviso(e.message, true); }
     finally { botao.disabled = false; }
   });
 }
@@ -552,17 +826,18 @@ async function telaLocais() {
 /* ===================== EQUIPE (dono) ===================== */
 async function telaEquipe() {
   const meta = E.meta && E.meta.pacotes_dia ? E.meta.pacotes_dia : '';
-  const lista = [...E.perfis.values()];
-  $('conteudo').innerHTML = `<div class="cartao"><h2>Equipe</h2>
-    <p class="sub">Para criar um novo acesso: Supabase › Authentication › Users › Add user. A pessoa aparece aqui como inativa; ative e escolha o papel.</p>
-    <div class="rolagem"><table class="tabela"><thead><tr><th>Nome</th><th>Papel</th><th>Ativo</th><th>Nome no iMile</th><th></th></tr></thead><tbody>
-    ${lista.map((p) => { const eu = p.id === E.sessao.id; return `<tr data-id="${esc(p.id)}"><td><input class="eqNome" value="${esc(p.nome)}" /></td>
-      <td><select class="eqPapel" ${eu ? 'disabled' : ''}>${['dono', 'monitor', 'bipador'].map((k) => `<option ${p.papel === k ? 'selected' : ''}>${k}</option>`).join('')}</select></td>
-      <td><input type="checkbox" class="eqAtivo" ${p.ativo ? 'checked' : ''} ${eu ? 'disabled' : ''} /></td>
-      <td><input class="eqImile" value="${esc(p.nome_imile || '')}" /></td><td><button class="btn mini eqSalvar" type="button">Salvar</button></td></tr>`; }).join('')}
+  const lista = [...E.perfis.values()].sort((a, b) => Number(a.ativo) - Number(b.ativo) || a.nome.localeCompare(b.nome, 'pt-BR'));
+  const aguardando = lista.filter((p) => !p.ativo).length;
+  $('conteudo').innerHTML = cabecalho('Equipe', 'Quem pode entrar e o que cada pessoa vê. Para criar um acesso novo: Supabase › Authentication › Users › Add user. A pessoa aparece aqui como inativa.') +
+    (aguardando ? `<div class="aviso">${aguardando} pessoa${aguardando > 1 ? 's' : ''} aguardando ativação.</div>` : '') +
+    `<div class="cartao"><div class="rolagem"><table class="tabela"><thead><tr><th>Nome</th><th>Papel</th><th>Ativo</th><th>Nome no iMile</th><th></th></tr></thead><tbody>
+    ${lista.map((p) => { const eu = p.id === E.sessao.id; return `<tr data-id="${esc(p.id)}" class="${p.ativo ? '' : 'inativa'}"><td><input class="eqNome" value="${esc(p.nome)}" aria-label="Nome" />${p.ativo ? '' : '<br><span class="etq aberta" style="margin-top:6px">Aguardando ativação</span>'}</td>
+      <td><select class="eqPapel" aria-label="Papel" ${eu ? 'disabled' : ''}>${['dono', 'monitor', 'bipador'].map((k) => `<option value="${k}" ${p.papel === k ? 'selected' : ''}>${PAPEL_NOME[k]}</option>`).join('')}</select></td>
+      <td><input type="checkbox" class="eqAtivo" aria-label="Ativo" ${p.ativo ? 'checked' : ''} ${eu ? 'disabled' : ''} style="min-height:0;width:20px;height:20px" /></td>
+      <td><input class="eqImile" value="${esc(p.nome_imile || '')}" aria-label="Nome no iMile" placeholder="Como aparece no iMile" /></td><td><button class="btn mini eqSalvar" type="button">Salvar</button></td></tr>`; }).join('')}
     </tbody></table></div></div>
-    <div class="cartao"><h2>Meta diária</h2><div class="filtros"><label class="c">Pacotes por colaborador por dia<input id="metaDia" type="number" min="0" value="${esc(meta)}" style="width:140px" /></label>
-    <button class="btn main" id="metaSalvar" type="button">Salvar meta</button></div><p class="sub">Aparece como % da meta na Produtividade quando o período é um único dia. Vazio ou 0 desliga.</p></div>`;
+    <div class="cartao"><h2 style="margin-bottom:12px">Meta diária</h2><div class="filtros"><label class="c">Pacotes por colaborador por dia<input id="metaDia" type="number" min="0" value="${esc(meta)}" style="width:150px" /></label>
+    <button class="btn ambar" id="metaSalvar" type="button">Salvar meta</button></div><p class="sub" style="margin:12px 0 0">Aparece como marca na pista de cada colaborador quando o período é um único dia. Vazio ou 0 desliga.</p></div>`;
   document.querySelectorAll('.eqSalvar').forEach((b) => b.addEventListener('click', async () => {
     const tr = b.closest('tr'), id = tr.dataset.id;
     const dados = { nome: tr.querySelector('.eqNome').value.trim() || 'Sem nome', nome_imile: tr.querySelector('.eqImile').value.trim() || null };
@@ -571,22 +846,25 @@ async function telaEquipe() {
     try {
       await api('PATCH', '/rest/v1/perfis?id=eq.' + eFiltroSeguro(id), dados, { Prefer: 'return=minimal' });
       E.perfis.set(id, { ...E.perfis.get(id), ...dados });
-      b.textContent = 'Salvo ✓'; setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
-    } catch (e) { b.disabled = false; alert(e.message); }
+      b.textContent = 'Salvo ✓'; aviso('Alterações salvas'); setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
+    } catch (e) { b.disabled = false; aviso(e.message, true); }
   }));
   $('metaSalvar').addEventListener('click', async () => {
     const n = Math.max(0, Math.floor(Number($('metaDia').value) || 0));
     try {
       await api('POST', '/rest/v1/cadastros', [{ chave: 'metas', valor: { pacotes_dia: n }, atualizado_em: new Date().toISOString() }], { Prefer: 'resolution=merge-duplicates,return=minimal' });
-      E.meta = { pacotes_dia: n }; $('metaSalvar').textContent = 'Salvo ✓'; setTimeout(() => { $('metaSalvar').textContent = 'Salvar meta'; }, 1200);
-    } catch (e) { alert(e.message); }
+      E.meta = { pacotes_dia: n }; $('metaSalvar').textContent = 'Salvo ✓'; aviso(n ? 'Meta salva: ' + n + ' pacotes por dia' : 'Meta desligada'); setTimeout(() => { $('metaSalvar').textContent = 'Salvar meta'; }, 1200);
+    } catch (e) { aviso(e.message, true); }
   });
 }
 
 /* ===================== PARTIDA ===================== */
-$('lgEntrar').addEventListener('click', entrar);
-['lgEmail', 'lgSenha'].forEach((id) => $(id).addEventListener('keydown', (e) => { if (e.key === 'Enter') entrar(); }));
+aplicarTema(temaGuardado());
+$('btnTema').addEventListener('click', ciclarTema);
+$('formLogin').addEventListener('submit', (e) => { e.preventDefault(); entrar(); });
+$('lgVer').addEventListener('click', () => { const i = $('lgSenha'), ver = i.type === 'password'; i.type = ver ? 'text' : 'password'; $('lgVer').textContent = ver ? 'Ocultar' : 'Mostrar'; });
 $('btnSair').addEventListener('click', sair);
+$('btnSairM').addEventListener('click', sair);
 $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[data-aba]'); if (b) irPara(b.dataset.aba); });
 (async function partida() {
   const s = lerSessaoGuardada();
