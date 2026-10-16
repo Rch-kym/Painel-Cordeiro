@@ -287,6 +287,16 @@ h3.sec .sub { font-weight:500; }
 @media (max-width:560px) { .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .tile { padding:13px 14px; } }
 @media (max-width:860px) { .grupo-nav { display:none; } }
 
+
+.tiles4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
+.tabela tr.achado td { background:var(--ok-fundo); }
+.tabela tr.achado:hover td { background:var(--ok-fundo); }
+.tabela tr.bl-linha { cursor:pointer; }
+.tabela tr.bl-det > td { background:var(--superficie-2); padding:6px 14px 14px; }
+.txt-alerta { color:var(--alerta); font-weight:800; } .txt-erro { color:var(--erro); font-weight:800; }
+.sr-only { position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0); }
+@media (max-width:1020px) { .tiles4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+
 /* ---------- Celular ---------- */
 @media (max-width:1020px) { .cards { grid-template-columns:repeat(3,minmax(0,1fr)); } .total { grid-column:1 / -1; } }
 @media (max-width:860px) {
@@ -468,6 +478,34 @@ function textoFechamento(dia, t, lista, rotas, meta, cobAbertas) {
   if (cobAbertas) L.push('', `Cobranças em aberto: ${cobAbertas}`);
   return L.join('\n');
 }
+// Backlog: itens da foto = [awb, motorista, codigo, dias, cidade, bairro, erroRota]
+function faixaDias(d) { return d >= 11 ? '11+' : d >= 6 ? '6-10' : d >= 3 ? '3-5' : '0-2'; }
+function agruparBacklog(itens) {
+  const por = new Map();
+  for (const x of itens || []) {
+    const [awb, mot, cod, dias, cidade, bairro, erro] = x;
+    const nome = String(mot || '').trim() || 'Sem motorista (no piso)';
+    const k = cod || nome;
+    let g = por.get(k);
+    if (!g) { g = { chave: k, nome, codigo: cod || '', pacotes: [], maior: 0, tres: 0, dez: 0, erros: 0 }; por.set(k, g); }
+    g.pacotes.push({ awb, dias: Number(dias) || 0, cidade: cidade || '', bairro: bairro || '', erro: !!erro });
+    g.maior = Math.max(g.maior, Number(dias) || 0);
+    if ((Number(dias) || 0) >= 3) g.tres += 1;
+    if ((Number(dias) || 0) > 10) g.dez += 1;
+    if (erro) g.erros += 1;
+  }
+  const lista = [...por.values()];
+  for (const g of lista) g.pacotes.sort((a, b) => b.dias - a.dias || String(a.awb).localeCompare(String(b.awb)));
+  lista.sort((a, b) => b.tres - a.tres || b.pacotes.length - a.pacotes.length || a.nome.localeCompare(b.nome, 'pt-BR'));
+  return lista;
+}
+// Não recebidos: junta a lista com os achados (chave = AWB em maiúsculas).
+function juntarNaoRecebidos(itens, achados) {
+  const mapa = new Map((achados || []).map((a) => [String(a.chave).toUpperCase(), a]));
+  const out = (itens || []).map((i) => ({ ...i, achado: mapa.get(String(i.waybillNo || '').trim().toUpperCase()) || null }));
+  out.sort((a, b) => String(a.cidade || '').localeCompare(String(b.cidade || ''), 'pt-BR') || String(a.bairro || '').localeCompare(String(b.bairro || ''), 'pt-BR') || String(a.waybillNo).localeCompare(String(b.waybillNo)));
+  return { itens: out, achados: out.filter((i) => i.achado).length };
+}
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
 /* PURAS:FIM */
 
@@ -645,7 +683,7 @@ function irPara(id, arg) {
   const nav = SUBTELAS[id] ? 'bipagem' : id;
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
-    acareacoes: () => telaEmBreve('acareacoes'), naorecebidos: () => telaEmBreve('naorecebidos'), backlog: () => telaEmBreve('backlog'),
+    acareacoes: () => telaEmBreve('acareacoes'), naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
     cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
@@ -950,14 +988,132 @@ async function carregarFechamento() {
 /* ===================== SEÇÕES QUE AINDA NÃO SINCRONIZAM ===================== */
 const EM_BREVE = {
   acareacoes: ['Acareações', 'Histórico compartilhado entre todos os aparelhos', 'Hoje as acareações ficam só na extensão do computador. Para aparecerem aqui, falta enviá-las ao banco.', ['Lista de acareações abertas, com prazo e situação', 'Prévia da mensagem para o grupo', 'Histórico e acareações por motorista']],
-  naorecebidos: ['Não recebidos', 'Pacotes procurados e achados', 'A lista de não recebidos e os pacotes achados ficam só na extensão do computador por enquanto.', ['Quantos foram achados da lista', 'Quem achou e quando', 'Pacotes que ainda faltam']],
-  backlog: ['Backlog', 'Pacotes parados por motorista', 'O backlog é consultado ao vivo no iMile pela extensão e ainda não é guardado no banco.', ['Pacotes parados por motorista e por dias', 'Parados há 3 dias ou mais', 'Erros de rota no backlog']],
 };
 function telaEmBreve(id) {
   const [nome, sub, porque, itens] = EM_BREVE[id];
   $('conteudo').innerHTML = cabecalho(nome, sub) + `<section class="cartao"><div class="vazio"><b>Ainda não chega ao painel</b>${esc(porque)}
     <ul class="em-breve">${itens.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
     <p class="sub" style="margin-top:14px">Enquanto isso, use a extensão no computador. Quando essa sincronização for feita, esta tela mostra tudo em tempo real.</p></div></section>`;
+}
+
+
+/* ===================== NÃO RECEBIDOS ===================== */
+const estNR = { filtro: 'todos', busca: '' };
+let tokenNR = 0, timerNR = null, dadosNR = null;
+function telaNaoRecebidos() {
+  $('conteudo').innerHTML = cabecalho('Não recebidos', '<span id="nrSub"></span>', '<button class="btn" id="nrAtualizar" type="button">Atualizar</button>') + '<div id="nrCorpo">' + esqueleto() + '</div>';
+  $('nrAtualizar').addEventListener('click', () => carregarNR(false));
+  clearInterval(timerNR);
+  timerNR = setInterval(() => { if (E.aba === 'naorecebidos' && !document.hidden) carregarNR(true); }, 60000);
+  carregarNR(false);
+}
+async function carregarNR(silencioso) {
+  const meu = ++tokenNR;
+  try {
+    const ls = await api('GET', '/rest/v1/nr_listas?select=id,dia,gerada_em,gerada_por,itens&order=gerada_em.desc&limit=1');
+    if (meu !== tokenNR || !$('nrCorpo')) return;
+    if (!ls || !ls[0]) { dadosNR = null; $('nrSub').textContent = ''; $('nrCorpo').innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhuma lista enviada ainda</b>Na extensão do computador (ou no app), abra Não recebidos e toque em Buscar. A lista sobe sozinha e passa a aparecer aqui e nos outros celulares.</div></div>'; return; }
+    const l = ls[0];
+    const ach = await lerTudo('/rest/v1/nr_achados?select=chave,achado_em,achado_por,motorista&lista_id=eq.' + eFiltroSeguro(l.id), 10);
+    if (meu !== tokenNR || !$('nrCorpo')) return;
+    dadosNR = { lista: l, ...juntarNaoRecebidos(l.itens, ach.itens) };
+    $('nrSub').textContent = 'Lista de ' + dataBR(l.dia) + ' · gerada por ' + nomeOperador(l.gerada_por) + ' às ' + horaCurta(l.gerada_em) + ' · atualizado às ' + horaAgora();
+    desenharNR();
+  } catch (e) { if (meu === tokenNR && $('nrCorpo') && !silencioso) $('nrCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+function desenharNR() {
+  if (!dadosNR || !$('nrCorpo')) return;
+  const todos = dadosNR.itens, ach = dadosNR.achados, falta = todos.length - ach;
+  const q = estNR.busca.trim().toLowerCase();
+  const vis = todos.filter((i) => (estNR.filtro === 'todos' || (estNR.filtro === 'achados') === !!i.achado)
+    && (!q || [i.waybillNo, i.bairro, i.cidade, i.rota, i.veiculo].join(' ').toLowerCase().includes(q)));
+  const pc = todos.length ? Math.round(ach / todos.length * 100) : 0;
+  $('nrCorpo').innerHTML = `
+    <div class="tiles tiles4">
+      <div class="tile"><span>Na lista</span><b>${todos.length}</b><small>pacotes não recebidos</small></div>
+      <div class="tile ok"><span>Achados</span><b>${ach}</b><small>${pc}% da lista</small></div>
+      <div class="tile ${falta ? 'alerta' : 'ok'}"><span>Faltam</span><b>${falta}</b><small>${falta ? 'ainda sem achar' : 'tudo achado'}</small></div>
+      <div class="tile"><span>Progresso</span><b>${pc}%</b><small><span class="barra-av" style="margin-top:6px"><i style="width:${pc}%;background:var(--ok)"></i></span></small></div></div>
+    <section class="cartao">
+      <div class="filtros" style="margin-bottom:14px">
+        <div class="seg" id="nrSeg">${[['todos', 'Todos · ' + todos.length], ['faltam', 'Faltam · ' + falta], ['achados', 'Achados · ' + ach]].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${estNR.filtro === k}">${n}</button>`).join('')}</div>
+        <label class="busca-in"><span class="sr-only"></span><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="nrBusca" type="search" placeholder="AWB, bairro, cidade ou rota" value="${esc(estNR.busca)}" /></label>
+        <button class="btn" id="nrCopiar" type="button">Copiar os que faltam</button><button class="btn" id="nrCsv" type="button">Baixar CSV</button></div>
+      ${vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Pacote</th><th>Local</th><th>Rota · veículo</th><th>Situação</th></tr></thead><tbody>
+        ${vis.map((i) => `<tr class="${i.achado ? 'achado' : ''}"><td><a class="awb" data-awb="${esc(i.waybillNo)}" tabindex="0" role="link">${esc(i.waybillNo)}</a></td>
+          <td data-r="Local">${esc([i.bairro, i.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Rota">${esc([i.rota, i.veiculo].filter(Boolean).join(' · ') || '—')}</td>
+          <td data-r="Situação">${i.achado ? `<span class="etq ok">✔ Achado</span> <span class="sub">${esc(i.achado.motorista ? i.achado.motorista + ' · ' : '')}${esc(nomeOperador(i.achado.achado_por))} às ${esc(horaCurta(i.achado.achado_em))}</span>` : '<span class="etq neutro">Falta</span>'}</td></tr>`).join('')}
+        </tbody></table></div>` : '<div class="vazio"><b>Nada por aqui</b>Nenhum pacote com esse filtro.</div>'}
+    </section>`;
+  $('nrSeg').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estNR.filtro = b.dataset.f; desenharNR(); } });
+  $('nrBusca').addEventListener('input', (e) => { estNR.busca = e.target.value; const pos = e.target.selectionStart; desenharNR(); const n = $('nrBusca'); n.focus(); n.setSelectionRange(pos, pos); });
+  document.querySelectorAll('#nrCorpo a.awb').forEach((a) => { a.addEventListener('click', () => irPara('pacote', a.dataset.awb)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') irPara('pacote', a.dataset.awb); }); });
+  $('nrCopiar').addEventListener('click', async () => {
+    const t = todos.filter((i) => !i.achado).map((i, n) => `${n + 1}. ${i.waybillNo}${i.bairro || i.cidade ? ' — ' + [i.bairro, i.cidade].filter(Boolean).join(', ') : ''}`).join('\n');
+    try { await navigator.clipboard.writeText(`*Não recebidos ${dataBR(dadosNR.lista.dia)} — faltam ${falta}*\n${t}`); aviso('Lista copiada'); } catch (_) { aviso('Não consegui copiar', true); }
+  });
+  $('nrCsv').addEventListener('click', () => baixar('nao-recebidos-' + dadosNR.lista.dia + '.csv', paraCsv(['AWB', 'Bairro', 'Cidade', 'Rota', 'Veículo', 'Situação', 'Achado por', 'Achado em'],
+    todos.map((i) => [i.waybillNo, i.bairro || '', i.cidade || '', i.rota || '', i.veiculo || '', i.achado ? 'Achado' : 'Falta', i.achado ? nomeOperador(i.achado.achado_por) : '', i.achado ? dataHoraBR(i.achado.achado_em) : '']))));
+}
+
+/* ===================== BACKLOG ===================== */
+const estBL = { faixa: '', busca: '', aberto: '' };
+let tokenBL = 0, dadosBL = null;
+function telaBacklog() {
+  $('conteudo').innerHTML = cabecalho('Backlog', '<span id="blSub"></span>', '<button class="btn" id="blAtualizar" type="button">Atualizar</button>') + '<div id="blCorpo">' + esqueleto() + '</div>';
+  $('blAtualizar').addEventListener('click', carregarBL);
+  carregarBL();
+}
+async function carregarBL() {
+  const meu = ++tokenBL;
+  try {
+    const f = await api('GET', '/rest/v1/backlog_fotos?select=id,gerado_em,gerado_por,total,itens&order=gerado_em.desc&limit=1');
+    if (meu !== tokenBL || !$('blCorpo')) return;
+    if (!f || !f[0]) { dadosBL = null; $('blSub').textContent = ''; $('blCorpo').innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhum backlog enviado ainda</b>Na extensão do computador, abra Backlog e toque em Gerar lista (busca completa, sem escolher motorista). Ao terminar, o resultado sobe para este painel.</div></div>'; return; }
+    dadosBL = { foto: f[0], grupos: agruparBacklog(f[0].itens) };
+    const horas = (Date.now() - new Date(f[0].gerado_em).getTime()) / 3600000;
+    $('blSub').textContent = 'Última busca completa: ' + dataBR(f[0].gerado_em) + ' às ' + horaCurta(f[0].gerado_em) + ' por ' + nomeOperador(f[0].gerado_por) + (horas > 24 ? ' · mais de 1 dia atrás' : '');
+    desenharBL();
+  } catch (e) { if (meu === tokenBL && $('blCorpo')) $('blCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+function desenharBL() {
+  if (!dadosBL || !$('blCorpo')) return;
+  const todos = dadosBL.grupos.flatMap((g) => g.pacotes.map((p) => ({ ...p, g })));
+  const cont = { '0-2': 0, '3-5': 0, '6-10': 0, '11+': 0 };
+  todos.forEach((p) => { cont[faixaDias(p.dias)] += 1; });
+  const q = estBL.busca.trim().toLowerCase();
+  const casa = (p, g) => (!estBL.faixa || faixaDias(p.dias) === estBL.faixa) && (!q || (p.awb + ' ' + g.nome + ' ' + g.codigo + ' ' + p.cidade + ' ' + p.bairro).toLowerCase().includes(q));
+  const grupos = dadosBL.grupos.map((g) => ({ g, ps: g.pacotes.filter((p) => casa(p, g)) })).filter((x) => x.ps.length);
+  const erros = todos.filter((p) => p.erro).length;
+  const maxG = Math.max(1, ...grupos.map((x) => x.ps.length));
+  $('blCorpo').innerHTML = `
+    <div class="tiles">
+      <div class="tile"><span>Pacotes em backlog</span><b>${todos.length}</b><small>${dadosBL.grupos.length} motorista(s)</small></div>
+      <div class="tile ${cont['3-5'] + cont['6-10'] + cont['11+'] ? 'alerta' : ''}"><span>Parados há 3+ dias</span><b>${cont['3-5'] + cont['6-10'] + cont['11+']}</b><small>cobrar o motorista</small></div>
+      <div class="tile ${cont['11+'] ? 'erro' : ''}"><span>Mais de 10 dias</span><b>${cont['11+']}</b><small>${cont['11+'] ? 'risco de extravio' : 'nenhum'}</small></div>
+      <div class="tile ${erros ? 'alerta' : ''}"><span>Erros de rota</span><b>${erros}</b><small>motorista divergente</small></div>
+      <div class="tile"><span>Sem motorista</span><b>${dadosBL.grupos.filter((g) => !g.codigo).reduce((n, g) => n + g.pacotes.length, 0)}</b><small>no piso</small></div></div>
+    <section class="cartao">
+      <div class="filtros" style="margin-bottom:14px">
+        <div class="seg" id="blSeg">${[['', 'Todos'], ['0-2', '0-2 dias · ' + cont['0-2']], ['3-5', '3-5 · ' + cont['3-5']], ['6-10', '6-10 · ' + cont['6-10']], ['11+', '11+ · ' + cont['11+']]].map(([k, n]) => `<button type="button" data-f="${esc(k)}" aria-pressed="${estBL.faixa === k}">${n}</button>`).join('')}</div>
+        <label class="busca-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="blBusca" type="search" placeholder="AWB, motorista, cidade ou bairro" value="${esc(estBL.busca)}" /></label>
+        <button class="btn" id="blCsv" type="button">Baixar CSV</button></div>
+      ${grupos.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Motorista</th><th class="n">Pacotes</th><th class="n">3+ dias</th><th class="n">Mais antigo</th><th>Volume</th></tr></thead><tbody>
+        ${grupos.map(({ g, ps }) => { const abre = estBL.aberto === g.chave; return `<tr class="bl-linha" data-k="${esc(g.chave)}" tabindex="0" role="button" aria-expanded="${abre}"><td><b>${esc(g.nome)}</b>${g.codigo ? `<br><span class="sub">${esc(g.codigo)}</span>` : ''}${g.erros ? ` <span class="etq divergencia">${g.erros} erro(s) de rota</span>` : ''}</td>
+          <td class="n" data-r="Pacotes">${ps.length}</td><td class="n ${g.tres ? 'txt-alerta' : ''}" data-r="3+ dias">${g.tres}</td><td class="n ${g.maior > 10 ? 'txt-erro' : ''}" data-r="Mais antigo">${g.maior}d</td>
+          <td class="avanco"><span class="barra-av"><i style="width:${(ps.length / maxG * 100).toFixed(1)}%"></i></span></td></tr>
+          ${abre ? `<tr class="bl-det"><td colspan="5"><div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th class="n">Dias</th><th>Local</th></tr></thead><tbody>${ps.map((p) => `<tr><td><a class="awb" data-awb="${esc(p.awb)}" tabindex="0" role="link">${esc(p.awb)}</a>${p.erro ? ' <span class="etq divergencia">rota</span>' : ''}</td><td class="n ${p.dias > 10 ? 'txt-erro' : p.dias >= 3 ? 'txt-alerta' : ''}">${p.dias}</td><td>${esc([p.bairro, p.cidade].filter(Boolean).join(' · ') || '—')}</td></tr>`).join('')}</tbody></table></div></td></tr>` : ''}`; }).join('')}
+        </tbody></table></div>` : '<div class="vazio"><b>Nada por aqui</b>Nenhum pacote com esse filtro.</div>'}
+    </section>`;
+  $('blSeg').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estBL.faixa = b.dataset.f; desenharBL(); } });
+  $('blBusca').addEventListener('input', (e) => { estBL.busca = e.target.value; const pos = e.target.selectionStart; desenharBL(); const n = $('blBusca'); n.focus(); n.setSelectionRange(pos, pos); });
+  document.querySelectorAll('#blCorpo .bl-linha').forEach((tr) => {
+    const alternar = () => { estBL.aberto = estBL.aberto === tr.dataset.k ? '' : tr.dataset.k; desenharBL(); };
+    tr.addEventListener('click', alternar); tr.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); alternar(); } });
+  });
+  document.querySelectorAll('#blCorpo a.awb').forEach((a) => { a.addEventListener('click', (ev) => { ev.stopPropagation(); irPara('pacote', a.dataset.awb); }); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') { ev.stopPropagation(); irPara('pacote', a.dataset.awb); } }); });
+  $('blCsv').addEventListener('click', () => baixar('backlog-' + dadosBL.foto.gerado_em.slice(0, 10) + '.csv', paraCsv(['AWB', 'Motorista', 'Código', 'Dias', 'Cidade', 'Bairro', 'Erro de rota'],
+    todos.map((p) => [p.awb, p.g.nome, p.g.codigo, p.dias, p.cidade, p.bairro, p.erro ? 'sim' : '']))));
 }
 
 /* ===================== ERROS E DIVERGÊNCIAS ===================== */
@@ -1187,7 +1343,7 @@ $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[
   if (s && s.refresh) { E.sessao = s; if (await renovar()) { await iniciarApp(); return; } }
   mostrarLogin();
 })();
-if (typeof module !== 'undefined') module.exports = { textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
+if (typeof module !== 'undefined') module.exports = { faixaDias, agruparBacklog, juntarNaoRecebidos, textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
 </script>
 </body>
 </html>
