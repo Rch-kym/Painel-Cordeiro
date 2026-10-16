@@ -255,6 +255,7 @@ button.tile:focus-visible, .ord:focus-visible, .bl-linha:focus-visible { outline
 .bl-resumo .btn { margin-left:auto; } .bl-resumo .chip-f ~ .btn, .bl-resumo .btn ~ .btn { margin-left:0; }
 .ord { background:none; border:0; padding:0; font:inherit; font-weight:750; color:inherit; cursor:pointer; text-transform:inherit; letter-spacing:inherit; }
 .ord:hover, .ord[aria-pressed="true"] { color:var(--tinta); text-decoration:underline; }
+.ac-grupo { cursor:pointer; } .ac-grupo:hover td { background:var(--superficie-2); } .ac-grupo:focus-visible { outline:2px solid var(--ambar); outline-offset:2px; }
 .bl-linha { cursor:pointer; } .bl-linha:hover td { background:var(--superficie-2); } .bl-linha.aberta td { background:var(--superficie-2); }
 .seta { color:var(--tinta-2); display:inline-block; width:12px; }
 .bl-acoes { display:flex; gap:8px; flex-wrap:wrap; margin:4px 0 10px; }
@@ -294,7 +295,6 @@ h3.sec .sub { font-weight:500; }
 .metricas span { display:block; font-size:12.5px; color:var(--tinta-2); }
 .metricas b { font-size:26px; font-weight:850; font-stretch:110%; letter-spacing:-.5px; }
 .texto-fech { width:100%; resize:vertical; font:13.5px/1.5 ui-monospace,Consolas,monospace; background:var(--alerta-fundo); border-color:transparent; }
-.em-breve { text-align:left; display:inline-block; margin:14px 0 0; color:var(--tinta); }
 @media (max-width:1020px) { .tiles { grid-template-columns:repeat(3,minmax(0,1fr)); } .grade2, .grade-rotas { grid-template-columns:1fr; } }
 @media (max-width:560px) { .tiles { grid-template-columns:repeat(2,minmax(0,1fr)); gap:10px; } .tile { padding:13px 14px; } }
 @media (max-width:860px) { .grupo-nav { display:none; } }
@@ -545,6 +545,33 @@ function textoCobrancaBL(nome, pacotes, geradoEm) {
     ps.map((p, i) => `${i + 1}. *${p.awb}* — ${p.dias} dia${p.dias === 1 ? '' : 's'}${[p.bairro, p.cidade].filter(Boolean).length ? ' · ' + [p.bairro, p.cidade].filter(Boolean).join(' · ') : ''}`).join('\n') +
     '\n\nPor favor, confirme a situação de cada um.';
 }
+// Acareações: grupos de situação, resumo, filtro e agrupamento por quem deu a baixa.
+const SEM_BAIXA_AC = 'Sem baixa identificada';
+function grupoAcareacao(e) { return e === 'enviado' || e === 'ja_enviado' ? 'enviadas' : e === 'pronto' ? 'prontas' : 'problema'; }
+function diaSPdeIso(iso) { const d = new Date(iso); return isNaN(d) ? '' : d.toLocaleDateString('en-CA', { timeZone: 'America/Sao_Paulo' }); }
+function filtrarAcareacoes(linhas, e, hoje) {
+  const q = String(e.busca || '').trim().toLowerCase();
+  const de = e.dias ? somarDias(hoje || hojeSP(), -(e.dias - 1)) : '';
+  return (linhas || []).filter((x) => {
+    if (de && diaSPdeIso(x.atualizado_em) < de) return false;
+    if (e.filtro === 'obs' ? !x.obs : e.filtro === 'grupo' ? !x.no_grupo_em : e.filtro && grupoAcareacao(x.estado) !== e.filtro) return false;
+    return !q || [x.awb, x.ticket, x.cliente, x.cidade, x.bairro, x.baixa_por, x.obs].join(' ').toLowerCase().includes(q);
+  });
+}
+function resumoAcareacoes(linhas) {
+  const r = { total: 0, enviadas: 0, problema: 0, prontas: 0, obs: 0, grupo: 0 };
+  for (const x of linhas || []) { r.total += 1; r[grupoAcareacao(x.estado)] += 1; if (x.obs) r.obs += 1; if (x.no_grupo_em) r.grupo += 1; }
+  return r;
+}
+function agruparAcareacoes(linhas) {
+  const por = new Map();
+  for (const x of linhas || []) {
+    const nome = x.baixa_por || SEM_BAIXA_AC;
+    if (!por.has(nome)) por.set(nome, { nome, total: 0, enviadas: 0, problema: 0, prontas: 0 });
+    const g = por.get(nome); g.total += 1; g[grupoAcareacao(x.estado)] += 1;
+  }
+  return [...por.values()].sort((a, b) => (a.nome === SEM_BAIXA_AC) - (b.nome === SEM_BAIXA_AC) || b.total - a.total || a.nome.localeCompare(b.nome, 'pt-BR'));
+}
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
 /* PURAS:FIM */
 
@@ -722,7 +749,7 @@ function irPara(id, arg) {
   const nav = SUBTELAS[id] ? 'bipagem' : id;
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
-    acareacoes: () => telaEmBreve('acareacoes'), naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
+    acareacoes: telaAcareacoes, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
     cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
@@ -1025,16 +1052,90 @@ async function carregarFechamento() {
 }
 
 /* ===================== SEÇÕES QUE AINDA NÃO SINCRONIZAM ===================== */
-const EM_BREVE = {
-  acareacoes: ['Acareações', 'Histórico compartilhado entre todos os aparelhos', 'Hoje as acareações ficam só na extensão do computador. Para aparecerem aqui, falta enviá-las ao banco.', ['Lista de acareações abertas, com prazo e situação', 'Prévia da mensagem para o grupo', 'Histórico e acareações por motorista']],
-};
-function telaEmBreve(id) {
-  const [nome, sub, porque, itens] = EM_BREVE[id];
-  $('conteudo').innerHTML = cabecalho(nome, sub) + `<section class="cartao"><div class="vazio"><b>Ainda não chega ao painel</b>${esc(porque)}
-    <ul class="em-breve">${itens.map((i) => `<li>${esc(i)}</li>`).join('')}</ul>
-    <p class="sub" style="margin-top:14px">Enquanto isso, use a extensão no computador. Quando essa sincronização for feita, esta tela mostra tudo em tempo real.</p></div></section>`;
+/* ===================== ACAREAÇÕES ===================== */
+const estAC = { filtro: '', busca: '', dias: 7, visao: 'lista', limite: 100 };
+let tokenAC = 0, timerAC = null, dadosAC = null;
+const ROT_AC = { pronto: 'Pronta', enviado: 'Enviada', ja_enviado: 'Já enviada', sem_telefone: 'Sem telefone', sem_whatsapp: 'Sem WhatsApp', falha: 'Falhou', erro_contato: 'Sem contato' };
+function telaAcareacoes() {
+  $('conteudo').innerHTML = cabecalho('Acareações', '<span id="acSub"></span>', '<button class="btn" id="acAtualizar" type="button">Atualizar</button>') + '<div id="acCorpo">' + esqueleto() + '</div>';
+  $('acAtualizar').addEventListener('click', () => carregarAC(false));
+  clearInterval(timerAC);
+  timerAC = setInterval(() => { if (E.aba === 'acareacoes' && !document.hidden) carregarAC(true); }, 20000);
+  carregarAC(false);
 }
-
+async function carregarAC(silencioso) {
+  const meu = ++tokenAC;
+  try {
+    const r = await lerTudo('/rest/v1/acareacoes?select=*&order=atualizado_em.desc', 10);
+    if (meu !== tokenAC || !$('acCorpo')) return;
+    const assin = r.itens.length + '|' + (r.itens[0] ? r.itens[0].atualizado_em : '') + '|' + r.itens.reduce((n, x) => n + (x.obs ? 1 : 0), 0);
+    if (silencioso && dadosAC && dadosAC.assin === assin) return; // nada novo: não redesenha (preserva busca e foco)
+    dadosAC = { linhas: r.itens, completo: r.completo, assin };
+    const ult = r.itens[0];
+    $('acSub').textContent = ult ? 'Última atualização: ' + dataBR(ult.atualizado_em) + ' às ' + horaCurta(ult.atualizado_em) + ' · ' + r.itens.length + ' pacote(s) no histórico' : '';
+    desenharAC();
+  } catch (e) { if (meu === tokenAC && $('acCorpo')) $('acCorpo').innerHTML = `<div class="aviso erro">${esc(/acareacoes|schema cache|relation/i.test(e.message) ? 'A tabela das acareações ainda não existe: rode o script 06 no Supabase. (' + e.message + ')' : e.message)}</div>`; }
+}
+function desenharAC() {
+  if (!dadosAC || !$('acCorpo')) return;
+  const todas = dadosAC.linhas;
+  if (!todas.length) {
+    $('acCorpo').innerHTML = '<section class="cartao"><div class="vazio"><b>Nenhuma acareação enviada ainda</b>Na extensão do computador (3.16.0 ou mais nova), abra Acareações e use normalmente. O histórico sobe sozinho, em poucos segundos, e aparece aqui. Só administrador e monitor enviam.</div></section>';
+    return;
+  }
+  const noPeriodo = filtrarAcareacoes(todas, { dias: estAC.dias });
+  const res = resumoAcareacoes(noPeriodo);
+  const vis = filtrarAcareacoes(todas, estAC);
+  const filtrando = !!(estAC.filtro || estAC.busca.trim());
+  const NOMES = { enviadas: 'Enviadas', problema: 'Com problema', prontas: 'Prontas (não enviadas)', obs: 'Com observação', grupo: 'Foram ao grupo' };
+  const tile = (f, rotulo, n, sub, cls) => `<button type="button" class="tile ${cls || ''} ${estAC.filtro === f ? 'sel' : ''}" data-tf="${esc(f)}" aria-pressed="${estAC.filtro === f}"><span>${rotulo}</span><b>${n}</b><small>${sub}</small></button>`;
+  const etq = (e) => { const g = grupoAcareacao(e); return `<span class="etq ${g === 'enviadas' ? 'ok' : g === 'problema' ? (e === 'falha' || e === 'erro_contato' ? 'erro' : 'divergencia') : 'neutro'}">${esc(ROT_AC[e] || e)}</span>`; };
+  const quando = (x) => x ? dataBR(x) + ' ' + horaCurta(x) : '—';
+  const listaLinhas = () => `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Pacote</th><th>Situação</th><th>Cliente</th><th>Local</th><th>Baixa por</th><th>Enviada</th><th>Observação</th></tr></thead><tbody>
+    ${vis.slice(0, estAC.limite).map((x) => `<tr><td data-r="Pacote"><a class="awb" data-awb="${esc(x.awb)}" tabindex="0" role="link">${esc(x.awb)}</a>${x.ticket ? `<br><span class="sub">ticket ${esc(x.ticket)}</span>` : ''}${x.manual ? ' <span class="etq neutro">à mão</span>' : ''}</td>
+      <td data-r="Situação">${etq(x.estado)}${x.no_grupo_em ? '<br><span class="sub">no grupo ' + esc(horaCurta(x.no_grupo_em)) + '</span>' : ''}</td>
+      <td data-r="Cliente">${esc(x.cliente || '—')}${x.telefone_fim ? `<br><span class="sub">final ${esc(x.telefone_fim)}</span>` : ''}</td>
+      <td data-r="Local">${esc([x.bairro, x.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Baixa por">${esc(x.baixa_por || '—')}</td>
+      <td data-r="Enviada" style="white-space:nowrap">${esc(quando(x.enviado_em))}</td><td data-r="Observação">${esc(x.obs || '—')}</td></tr>`).join('')}
+    </tbody></table></div>${vis.length > estAC.limite ? `<p style="text-align:center"><button class="btn" type="button" id="acMais">Mostrar mais (${vis.length - estAC.limite})</button></p>` : ''}`;
+  const gr = agruparAcareacoes(vis);
+  const listaGrupos = () => `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Quem deu a baixa</th><th class="n">Pacotes</th><th class="n">Enviadas</th><th class="n">Com problema</th><th class="n">Prontas</th></tr></thead><tbody>
+    ${gr.map((g) => `<tr class="ac-grupo" data-b="${esc(g.nome)}" tabindex="0" role="button" title="Ver só estes pacotes"><td><b>${esc(g.nome)}</b></td><td class="n" data-r="Pacotes">${g.total}</td><td class="n" data-r="Enviadas">${g.enviadas}</td><td class="n ${g.problema ? 'txt-alerta' : ''}" data-r="Com problema">${g.problema}</td><td class="n" data-r="Prontas">${g.prontas}</td></tr>`).join('')}
+    </tbody></table></div>`;
+  $('acCorpo').innerHTML = `
+    <div class="tiles">
+      ${tile('', 'Acareações', res.total, 'no período · ver todas')}
+      ${tile('enviadas', 'Enviadas', res.enviadas, res.total ? Math.round(res.enviadas / res.total * 100) + '% do período' : '—', 'ok')}
+      ${tile('problema', 'Com problema', res.problema, res.problema ? 'sem telefone, sem WhatsApp, falha · ver quais' : 'nenhuma', res.problema ? 'alerta' : '')}
+      ${tile('prontas', 'Prontas', res.prontas, 'ainda não enviadas', '')}
+      ${tile('obs', 'Com observação', res.obs, 'anotadas pela equipe', '')}</div>
+    <section class="cartao">
+      <div class="filtros" style="margin-bottom:12px">
+        <div class="seg" id="acPer" role="group" aria-label="Período">${[[1, 'Hoje'], [7, '7 dias'], [30, '30 dias'], [0, 'Tudo']].map(([k, n]) => `<button type="button" data-d="${k}" aria-pressed="${estAC.dias === k}">${n}</button>`).join('')}</div>
+        <label class="busca-in"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="acBusca" type="search" placeholder="Pacote, cliente, cidade, motorista ou observação" aria-label="Buscar nas acareações" value="${esc(estAC.busca)}" /></label>
+        <div class="seg" id="acVisao" role="group" aria-label="Modo de exibição"><button type="button" data-v="lista" aria-pressed="${estAC.visao === 'lista'}">Lista</button><button type="button" data-v="motorista" aria-pressed="${estAC.visao === 'motorista'}">Por quem deu a baixa</button></div>
+        <button class="btn" id="acCsv" type="button">Baixar CSV${filtrando ? ' (filtrado)' : ''}</button></div>
+      <div class="bl-resumo" aria-live="polite"><b>${vis.length} acareaç${vis.length === 1 ? 'ão' : 'ões'}</b>
+        ${estAC.filtro ? `<span class="chip-f">${esc(NOMES[estAC.filtro])}</span>` : ''}${estAC.busca.trim() ? `<span class="chip-f">“${esc(estAC.busca.trim())}”</span>` : ''}
+        ${filtrando ? '<button class="btn mini" id="acLimpar" type="button">Limpar filtros</button>' : ''}</div>
+      ${vis.length ? (estAC.visao === 'lista' ? listaLinhas() : listaGrupos()) : `<div class="vazio"><b>Nada por aqui</b>Nenhuma acareação com esse filtro neste período.<br><button class="btn mini" id="acLimpar" type="button" style="margin-top:10px">Limpar filtros</button></div>`}
+      ${dadosAC.completo === false ? '<div class="aviso" style="margin-top:12px">Há muitos registros: lista parcial. Escolha um período menor.</div>' : ''}
+    </section>`;
+  const redesenhar = () => desenharAC(), B = $('acCorpo');
+  B.querySelectorAll('button[data-tf]').forEach((b) => b.addEventListener('click', () => { estAC.filtro = estAC.filtro === b.dataset.tf ? '' : b.dataset.tf; estAC.limite = 100; redesenhar(); }));
+  $('acPer').addEventListener('click', (e) => { const b = e.target.closest('button[data-d]'); if (b) { estAC.dias = Number(b.dataset.d); estAC.limite = 100; redesenhar(); } });
+  $('acVisao').addEventListener('click', (e) => { const b = e.target.closest('button[data-v]'); if (b) { estAC.visao = b.dataset.v; redesenhar(); } });
+  $('acBusca').addEventListener('input', (e) => { estAC.busca = e.target.value; estAC.limite = 100; const pos = e.target.selectionStart; redesenhar(); const n = $('acBusca'); n.focus(); n.setSelectionRange(pos, pos); });
+  B.querySelectorAll('#acLimpar').forEach((b) => b.addEventListener('click', () => { estAC.filtro = ''; estAC.busca = ''; estAC.limite = 100; redesenhar(); }));
+  const mais = $('acMais'); if (mais) mais.addEventListener('click', () => { estAC.limite += 200; redesenhar(); });
+  B.querySelectorAll('.ac-grupo').forEach((tr) => {
+    const ir = () => { estAC.busca = tr.dataset.b === SEM_BAIXA_AC ? '' : tr.dataset.b; estAC.visao = 'lista'; redesenhar(); };
+    tr.addEventListener('click', ir); tr.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); ir(); } });
+  });
+  B.querySelectorAll('a.awb').forEach((a) => { a.addEventListener('click', () => irPara('pacote', a.dataset.awb)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') irPara('pacote', a.dataset.awb); }); });
+  $('acCsv').addEventListener('click', () => baixar('acareacoes' + (filtrando ? '-filtrado' : '') + '-' + hojeSP() + '.csv', paraCsv(['AWB', 'Ticket', 'Situação', 'Cliente', 'Final do telefone', 'Cidade', 'Bairro', 'Baixa por', 'Enviada em', 'No grupo em', 'Observação', 'Atualizado em'],
+    vis.map((x) => [x.awb, x.ticket, ROT_AC[x.estado] || x.estado, x.cliente, x.telefone_fim, x.cidade, x.bairro, x.baixa_por, x.enviado_em ? dataBR(x.enviado_em) + ' ' + horaCurta(x.enviado_em) : '', x.no_grupo_em ? dataBR(x.no_grupo_em) + ' ' + horaCurta(x.no_grupo_em) : '', x.obs, dataBR(x.atualizado_em) + ' ' + horaCurta(x.atualizado_em)]))));
+}
 
 /* ===================== NÃO RECEBIDOS ===================== */
 const estNR = { filtro: 'todos', busca: '' };
@@ -1425,7 +1526,7 @@ $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[
   if (s && s.refresh) { E.sessao = s; if (await renovar()) { await iniciarApp(); return; } }
   mostrarLogin();
 })();
-if (typeof module !== 'undefined') module.exports = { filtrarBacklog, textoCobrancaBL, faixaDias, agruparBacklog, juntarNaoRecebidos, textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
+if (typeof module !== 'undefined') module.exports = { grupoAcareacao, filtrarAcareacoes, resumoAcareacoes, agruparAcareacoes, filtrarBacklog, textoCobrancaBL, faixaDias, agruparBacklog, juntarNaoRecebidos, textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
 </script>
 </body>
 </html>
