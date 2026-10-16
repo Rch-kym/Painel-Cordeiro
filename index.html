@@ -447,7 +447,7 @@ td{font-size:13.5px}
     <nav id="abas" aria-label="Seções"></nav>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.13</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.13.1</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -1577,9 +1577,11 @@ async function telaEquipe() {
     if (id !== E.sessao.id) { dados.papel = tr.querySelector('.eqPapel').value; dados.ativo = tr.querySelector('.eqAtivo').checked; }
     b.disabled = true;
     try {
-      await api('PATCH', '/rest/v1/perfis?id=eq.' + eFiltroSeguro(id), dados, { Prefer: 'return=minimal' });
-      E.perfis.set(id, { ...E.perfis.get(id), ...dados });
-      b.textContent = 'Salvo ✓'; aviso('Alterações salvas'); setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
+      const volta = await api('PATCH', '/rest/v1/perfis?id=eq.' + eFiltroSeguro(id), dados, { Prefer: 'return=representation' });
+      if (!Array.isArray(volta) || !volta.length) throw new Error('O banco não aplicou a alteração. Confirme que o script 03-permissoes.sql foi executado e que o seu acesso é de Administrador do banco de dados.');
+      E.perfis.set(id, { ...E.perfis.get(id), ...volta[0] });
+      aviso(dados.ativo === false ? 'Acesso desativado' : (E.perfis.get(id).ativo && tr.classList.contains('inativa') ? 'Acesso ativado ✓' : 'Alterações salvas'));
+      telaEquipe();
     } catch (e) { b.disabled = false; aviso(e.message, true); }
   }));
   $('metaSalvar').addEventListener('click', async () => {
