@@ -505,7 +505,7 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
     <nav id="abas" aria-label="Seções"></nav>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.15.1</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.15</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -865,7 +865,6 @@ const ABAS = [
   { id: 'painel', nome: 'Painel do dia', curto: 'Painel', papeis: TODOS },
   { id: 'acareacoes', nome: 'Acareações', curto: 'Acareações', papeis: GESTAO },
   { id: 'motoristas', nome: 'Motoristas e rotas', curto: 'Rotas', papeis: TODOS },
-  { id: 'produtividade', nome: 'Produtividade', curto: 'Produtiv.', papeis: TODOS },
   { id: 'bipagem', nome: 'Bipagem e histórico', curto: 'Bipagem', papeis: TODOS },
   { id: 'sacas', nome: 'Sacas', curto: 'Sacas', papeis: TODOS },
   { id: 'naorecebidos', nome: 'Não recebidos', curto: 'Não receb.', papeis: GESTAO },
@@ -933,10 +932,10 @@ async function iniciarApp() {
   iniciarTempoReal();
 }
 function irPara(id, arg) {
-  if (id === 'bipagem') id = E.sub === 'pacote' ? 'pacote' : 'problemas';
+  if (id === 'bipagem') id = E.sub || 'produtividade';
   if (id === 'rotas') id = 'motoristas';
   E.aba = id;
-  const nav = id === 'produtividade' ? id : (SUBTELAS[id] ? 'bipagem' : id);
+  const nav = SUBTELAS[id] ? 'bipagem' : id;
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
     acareacoes: telaAcareacoes, sacas: telaSacas, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
