@@ -334,6 +334,24 @@ h3.sec .sub { font-weight:500; }
 
 .tiles4 { grid-template-columns:repeat(4,minmax(0,1fr)); }
 .tabela tr.achado td { background:var(--ok-fundo); }
+.tabela tr.falta td { background:var(--erro-fundo); }
+.tabela tr.falta td:first-child { box-shadow:inset 4px 0 0 var(--erro); }
+.tabela tr.falta a.awb { color:var(--erro); font-weight:800; }
+.tabela tr.falta:hover td { background:var(--erro-fundo); }
+.tabela tr.grupo-cidade td { background:var(--superficie-2); font-weight:800; padding:10px 12px; border-top:1px solid var(--linha); }
+.tabela tr.grupo-cidade td small { font-weight:700; margin-left:8px; }
+.tabela tr.grupo-cidade .v { color:var(--erro); } .tabela tr.grupo-cidade .g { color:var(--ok); }
+.etq.nao { background:var(--erro); color:#fff; }
+.seg button.vermelho[aria-pressed="true"] { background:var(--erro); color:#fff; }
+.seg button.verde[aria-pressed="true"] { background:var(--ok); color:#fff; }
+.chips-cidade { display:flex; gap:6px; flex-wrap:wrap; margin:0 0 14px; }
+.chips-cidade button { border:1px solid var(--linha); background:var(--superficie); color:var(--tinta-2); border-radius:20px; padding:5px 12px; font:inherit; font-size:13px; font-weight:700; cursor:pointer; }
+.chips-cidade button[aria-pressed="true"] { background:var(--tinta); color:var(--superficie); border-color:var(--tinta); }
+.ao-vivo { display:inline-flex; align-items:center; gap:6px; font-size:12.5px; font-weight:700; color:var(--tinta-2); }
+.ao-vivo i { width:8px; height:8px; border-radius:50%; background:var(--tinta-2); opacity:.5; }
+.ao-vivo.on { color:var(--ok); } .ao-vivo.on i { background:var(--ok); opacity:1; animation:pulsa 1.8s infinite; }
+@keyframes pulsa { 0% { box-shadow:0 0 0 0 rgba(27,110,68,.5); } 70% { box-shadow:0 0 0 7px rgba(27,110,68,0); } 100% { box-shadow:0 0 0 0 rgba(27,110,68,0); } }
+@keyframes piscar { from { background:var(--ok-fundo); } to { background:transparent; } }
 .tabela tr.achado:hover td { background:var(--ok-fundo); }
 .tabela tr.bl-linha { cursor:pointer; }
 .tabela tr.bl-det > td { background:var(--superficie-2); padding:6px 14px 14px; }
@@ -365,6 +383,8 @@ h3.sec .sub { font-weight:500; }
   .tabela.empilha td { border:0; padding:3px 0; }
   .tabela.empilha td[data-r]::before { content:attr(data-r) ": "; color:var(--tinta-2); font-weight:700; font-size:12.5px; }
   .tabela.empilha tbody tr:hover td { background:none; }
+  .tabela.empilha tr.grupo-cidade { padding:0; border-bottom:0; } .tabela.empilha tr.grupo-cidade td { padding:10px 12px; }
+  .tabela.empilha tr.falta { border-left:4px solid var(--erro); padding-left:8px; } .tabela.empilha tr.falta td:first-child { box-shadow:none; }
 }
 @media (max-width:560px) { .cards { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; } .prob { padding:14px 12px 12px; } .prob b { font-size:30px; } .prob span { font-size:13.5px; } .prob small { font-size:11.5px; } .pagina-topo h1 { font-size:25px; } }
 @media (max-width:760px) {
@@ -408,6 +428,44 @@ td{font-size:13.5px}
 }
 @media (max-width:860px){.pagina-topo{padding-bottom:14px}.pagina-topo h1{font-size:20px}main{padding-left:16px;padding-right:16px}}
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation:none !important; transition:none !important; } }
+/* ===== 1.15: Corrigido, Sacas ===== */
+.seg button.verde[aria-pressed="true"] { background:var(--ok); color:#fff; }
+.sw { position:relative; width:44px; height:24px; border-radius:99px; border:1px solid var(--erro); background:var(--erro-fundo); flex:none; padding:0; cursor:pointer; transition:.18s; }
+.sw::after { content:""; position:absolute; top:2px; left:2px; width:18px; height:18px; border-radius:50%; background:var(--erro); transition:.18s; }
+.sw[aria-checked="true"] { background:var(--ok-fundo); border-color:var(--ok); }
+.sw[aria-checked="true"]::after { left:22px; background:var(--ok); }
+.sw:focus-visible { outline:2px solid var(--azul); outline-offset:2px; }
+.sw[disabled] { opacity:.55; cursor:default; }
+.cor { display:flex; align-items:center; gap:10px; }
+.cor-t b { display:block; font-size:13px; font-weight:750; line-height:1.15; }
+.cor-t small { font-size:11.5px; color:var(--tinta-2); display:block; max-width:230px; }
+.cor.pend .cor-t b { color:var(--alerta); } .cor.pend.velha .cor-t b { color:var(--erro); } .cor.feito .cor-t b { color:var(--ok); }
+tr.l-pend td:first-child { box-shadow:inset 3px 0 0 var(--alerta); } tr.l-pend.velha td:first-child { box-shadow:inset 3px 0 0 var(--erro); }
+tr.l-feito td { opacity:.66; } tr.l-feito td.cx { opacity:1; }
+.etq.auto { background:var(--azul-fundo); color:var(--azul); padding:1px 6px; font-size:11px; }
+.ver-prova { border:0; background:none; color:var(--azul); font-weight:700; font-size:11.5px; padding:0; text-decoration:underline; cursor:pointer; }
+tr.prova td { background:var(--superficie-2); }
+.prova-grade { display:flex; gap:22px; flex-wrap:wrap; font-size:13px; }
+.prova-grade .t { font-size:11px; text-transform:uppercase; letter-spacing:.8px; font-weight:800; color:var(--tinta-2); margin-bottom:3px; }
+.lock { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--alerta); }
+.lock svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
+.ativos { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:16px; }
+.ativo { text-align:left; border:1px solid var(--linha); background:var(--superficie); border-radius:12px; padding:12px 14px; cursor:pointer; display:flex; flex-direction:column; gap:8px; color:var(--tinta); }
+.ativo:hover { border-color:var(--tinta-2); } .ativo.sel { border-color:var(--alerta); box-shadow:0 0 0 1px var(--alerta); }
+.ativo .t { display:flex; align-items:center; gap:8px; } .ativo .t .n { margin-left:auto; font-weight:850; font-size:22px; }
+.barra-s { height:8px; border-radius:5px; background:var(--superficie-2); overflow:hidden; } .barra-s i { display:block; height:100%; background:var(--alerta); border-radius:5px; } .barra-s.par i { background:var(--erro); }
+.pill { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:800; white-space:nowrap; }
+.pill i { width:7px; height:7px; border-radius:50%; background:currentColor; }
+.pill.andamento { background:var(--alerta-fundo); color:var(--alerta); } .pill.fechada { background:var(--ok-fundo); color:var(--ok); } .pill.parada { background:var(--erro-fundo); color:var(--erro); }
+.sac-grade { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:16px; align-items:start; }
+@media (max-width:1000px) { .sac-grade { grid-template-columns:1fr; } }
+.gaveta { position:sticky; top:12px; }
+tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); } tr.clic.sel td { background:var(--superficie-2); }
+.pk-lista { display:flex; flex-direction:column; gap:6px; max-height:360px; overflow:auto; margin-top:8px; }
+.pk { display:grid; grid-template-columns:48px 1fr auto; gap:10px; align-items:center; padding:9px 10px; border:1px solid var(--linha); border-radius:9px; background:var(--superficie-2); cursor:pointer; width:100%; text-align:left; color:var(--tinta); }
+.pk:hover { border-color:var(--tinta-2); } .pk time { font-size:12px; color:var(--tinta-2); }
+.volta { border:0; background:none; color:var(--azul); font-weight:700; font-size:13px; padding:0; margin-bottom:8px; cursor:pointer; }
+.dl { display:grid; grid-template-columns:100px 1fr; gap:6px 10px; font-size:13px; margin:10px 0; } .dl dt { color:var(--tinta-2); } .dl dd { margin:0; font-weight:600; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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" />
 <link rel="apple-touch-icon" href="data:image/png;base64,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" />
@@ -447,7 +505,7 @@ td{font-size:13.5px}
     <nav id="abas" aria-label="Seções"></nav>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.13.1</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.15</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -599,6 +657,17 @@ function juntarNaoRecebidos(itens, achados) {
   out.sort((a, b) => String(a.cidade || '').localeCompare(String(b.cidade || ''), 'pt-BR') || String(a.bairro || '').localeCompare(String(b.bairro || ''), 'pt-BR') || String(a.waybillNo).localeCompare(String(b.waybillNo)));
   return { itens: out, achados: out.filter((i) => i.achado).length };
 }
+// Agrupa os itens da lista por cidade (sem diferenciar maiúsculas): quem falta e quem foi achado.
+// Cidades com mais pacotes faltando vêm primeiro; "Sem cidade" por último.
+function agruparCidadesNR(itens) {
+  const por = new Map();
+  for (const i of itens || []) {
+    const nome = String(i.cidade || '').trim() || 'Sem cidade', k = nome.toLowerCase();
+    if (!por.has(k)) por.set(k, { cidade: nome, faltam: [], achados: [] });
+    (i.achado ? por.get(k).achados : por.get(k).faltam).push(i);
+  }
+  return [...por.values()].sort((a, b) => (a.cidade === 'Sem cidade') - (b.cidade === 'Sem cidade') || b.faltam.length - a.faltam.length || a.cidade.localeCompare(b.cidade, 'pt-BR'));
+}
 // Backlog: filtro (tiles/faixas), cidade e busca. p.g = grupo do motorista.
 function passaFiltroBL(p, f) {
   switch (f) {
@@ -651,6 +720,44 @@ function agruparAcareacoes(linhas) {
   return [...por.values()].sort((a, b) => (a.nome === SEM_BAIXA_AC) - (b.nome === SEM_BAIXA_AC) || b.total - a.total || a.nome.localeCompare(b.nome, 'pt-BR'));
 }
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
+// ---- Corrigido (1.15) ----
+function resumoCorrecao(linhas, agoraMs) {
+  const r = { total: linhas.length, pendentes: 0, corrigidas: 0, auto: 0, manual: 0, velhas: 0, taxa: 0 };
+  for (const e of linhas) {
+    if (e.corrigido) { r.corrigidas += 1; if (e.automatico) r.auto += 1; else r.manual += 1; }
+    else { r.pendentes += 1; if (agoraMs - new Date(e.ocorreu_em).getTime() > 24 * 3600 * 1000) r.velhas += 1; }
+  }
+  r.taxa = r.total ? Math.round(r.corrigidas / r.total * 100) : 0;
+  return r;
+}
+function haTempo(ms) {
+  const m = Math.max(0, Math.floor(ms / 60000));
+  if (m < 1) return 'agora';
+  if (m < 60) return m + ' min';
+  const h = Math.floor(m / 60);
+  if (h < 24) return h + ' h' + (m % 60 ? ' ' + (m % 60) + ' min' : '');
+  return Math.floor(h / 24) + ' d';
+}
+// Saca parada = em andamento e sem bipe há mais de 10 minutos.
+function estadoSaca(s, agoraMs) {
+  if (s.status === 'fechada') return 'fechada';
+  const ult = new Date(s.ultimo_bipe_em || s.aberta_em).getTime();
+  return agoraMs - ult > 10 * 60000 ? 'parada' : 'andamento';
+}
+// Pacotes de uma saca: um por AWB, com o último estado (erro/divergência/ok), do mais recente para o mais antigo.
+function pacotesDaSaca(eventos) {
+  const por = new Map();
+  for (const e of eventos) {
+    const t = new Date(e.ocorreu_em).getTime();
+    let o = por.get(e.awb);
+    if (!o) { o = { awb: e.awb, hora: e.ocorreu_em, t: 0, operador_id: e.operador_id, estado: 'ok', motivo: '', det: {}, hist: [] }; por.set(e.awb, o); }
+    o.hist.push(e);
+    if (e.tipo === 'atribuicao' && t >= o.t) { o.t = t; o.hora = e.ocorreu_em; o.operador_id = e.operador_id; o.det = e.detalhe || {}; }
+    if (e.tipo === 'erro') { o.estado = 'erro'; o.motivo = e.motivo || ''; }
+    else if (e.tipo === 'divergencia' && o.estado !== 'erro') { o.estado = 'divergencia'; o.motivo = e.motivo || ''; }
+  }
+  return [...por.values()].sort((a, b) => new Date(b.hora) - new Date(a.hora));
+}
 /* PURAS:FIM */
 
 
@@ -709,6 +816,7 @@ async function lerTudo(caminho, maxPaginas) {
 /* ===================== ENTRAR / SAIR ===================== */
 const $ = (id) => document.getElementById(id);
 function mostrarLogin() {
+  pararTempoReal();
   $('telaApp').hidden = true; $('telaLogin').hidden = false; E.perfil = null;
 }
 async function entrar() {
@@ -751,12 +859,14 @@ ICONES.motoristas = ICONES.rotas;
 ICONES.bipagem = ICONES.produtividade;
 ICONES.naorecebidos = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5M8.5 11h5"/></svg>';
 ICONES.backlog = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
+ICONES.sacas = '<svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-1 12H6L5 8z"/><path d="M9 4v4h6V4"/></svg>';
 ICONES.fechamento = '<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 9l2 2 4-4.5M8.5 15.5h7"/></svg>';
 const ABAS = [
   { id: 'painel', nome: 'Painel do dia', curto: 'Painel', papeis: TODOS },
   { id: 'acareacoes', nome: 'Acareações', curto: 'Acareações', papeis: GESTAO },
   { id: 'motoristas', nome: 'Motoristas e rotas', curto: 'Rotas', papeis: TODOS },
   { id: 'bipagem', nome: 'Bipagem e histórico', curto: 'Bipagem', papeis: TODOS },
+  { id: 'sacas', nome: 'Sacas', curto: 'Sacas', papeis: TODOS },
   { id: 'naorecebidos', nome: 'Não recebidos', curto: 'Não receb.', papeis: GESTAO },
   { id: 'backlog', nome: 'Backlog', curto: 'Backlog', papeis: GESTAO },
   { id: 'fechamento', nome: 'Fechamento', curto: 'Fechar', papeis: GESTAO },
@@ -819,6 +929,7 @@ async function iniciarApp() {
   }).join('');
   window.ABAS_OK = lista.map((a) => a.id);
   irPara(window.ABAS_OK.includes(E.aba) || SUBTELAS[E.aba] ? E.aba : lista[0].id);
+  iniciarTempoReal();
 }
 function irPara(id, arg) {
   if (id === 'bipagem') id = E.sub || 'produtividade';
@@ -827,7 +938,7 @@ function irPara(id, arg) {
   const nav = SUBTELAS[id] ? 'bipagem' : id;
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
-    acareacoes: telaAcareacoes, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
+    acareacoes: telaAcareacoes, sacas: telaSacas, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
     cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
@@ -890,29 +1001,31 @@ async function carregarProdutividade(silencioso) {
   if (!corpo) return;
   if (!silencioso) corpo.innerHTML = esqueleto();
   try {
-    const [vis, ev] = await Promise.all([
+    const [vis, ev, sacasP] = await Promise.all([
       lerTudo('/rest/v1/produtividade_dia?select=dia,operador_id,operador,tipo,pacotes_unicos,total&' + faixa(estProd)),
-      lerTudo('/rest/v1/eventos?select=ocorreu_em,tipo&tipo=in.(chegada,atribuicao)&' + faixa(estProd), 12),
+      lerTudo('/rest/v1/eventos?select=ocorreu_em,tipo&tipo=eq.atribuicao&' + faixa(estProd), 12),
+      lerTudo('/rest/v1/sacas_resumo?select=id,motorista,numero,operador_id,status,rota&' + faixa(estProd)).catch(() => ({ itens: [] })),
     ]);
+    const sc = new Map();
+    for (const x of (sacasP && sacasP.itens) || []) { const o = sc.get(x.operador_id) || { feitas: 0, agora: null }; if (x.status === 'fechada') o.feitas += 1; else o.agora = x; sc.set(x.operador_id, o); }
     if (meu !== tokenProd || !$('prodCorpo')) return;
-    const lista = agregar(vis.itens), t = totais(lista);
+    const lista = agregar(vis.itens).map((o) => ({ ...o, pacotes: o.atribuicao, taxaErro: (o.tot.atribuicao + o.tot.erro) ? o.tot.erro / (o.tot.atribuicao + o.tot.erro) : 0 })).sort((a, b) => b.atribuicao - a.atribuicao || a.nome.localeCompare(b.nome, 'pt-BR')), t = totais(lista);
     const meta = E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0;
     const umDia = estProd.de === estProd.ate, usaMeta = meta > 0 && umDia;
     const escala = Math.max(1, usaMeta ? meta : 0, ...lista.map((o) => o.pacotes)) * 1.04;
     const h = porHora(ev.itens), pk = pico(h);
     const so = E.perfil.papel === 'bipador';
     $('prodRotulo').textContent = rotuloPeriodo(estProd, hojeSP()) + ' · atualizado às ' + horaAgora();
-    const pc = t.pacotes ? Math.round(t.chegada / t.pacotes * 100) : 0;
+    const nSacF = [...sc.values()].reduce((a, o) => a + o.feitas, 0), nSacA = [...sc.values()].filter((o) => o.agora).length;
     const tile = (k, cls, n, nome, alvo) => `<button type="button" class="prob ${cls}${n ? '' : ' zero'}" data-ir="${alvo}"><b>${n}</b><span>${nome}</span><small>${n ? 'Ver ocorrências' : 'Nenhuma no período'}</small></button>`;
     const pistas = lista.map((o, i) => {
       const extras = [
         o.erro ? `<span class="etq erro">${o.erro} erro${o.erro > 1 ? 's' : ''} · ${(o.taxaErro * 100).toFixed(1).replace('.', ',')}%</span>` : '',
         o.divergencia ? `<span class="etq divergencia">${o.divergencia} divergência${o.divergencia > 1 ? 's' : ''}</span>` : '',
-        o.repetido ? `<span class="etq repetido">${o.repetido} repetido${o.repetido > 1 ? 's' : ''}</span>` : '',
         usaMeta ? `<span class="etq ${o.pacotes >= meta ? 'ok' : 'neutro'}">${Math.round(o.pacotes / meta * 100)}% da meta</span>` : '',
       ].join('');
       return `<li class="pista"><span class="pos">${i + 1}</span><span class="av" aria-hidden="true">${esc(iniciais(o.nome))}</span>
-        <div><div class="pista-topo"><b>${esc(o.nome)}</b><span class="sub">${o.chegada} chegadas · ${o.atribuicao} atribuições</span></div>
+        <div><div class="pista-topo"><b>${esc(o.nome)}</b><span class="sub">${o.atribuicao} atribuições · ${(sc.get(o.id) || { feitas: 0 }).feitas} saca${(sc.get(o.id) || { feitas: 0 }).feitas === 1 ? '' : 's'} fechada${(sc.get(o.id) || { feitas: 0 }).feitas === 1 ? '' : 's'}</span>${(sc.get(o.id) || {}).agora ? `<span class="lock">${ICO_CADEADO}Saca do ${esc(sc.get(o.id).agora.motorista)} · nº ${esc(sc.get(o.id).agora.numero)}</span>` : ''}</div>
           <div class="via" role="img" aria-label="${esc(o.nome)}: ${o.pacotes} pacotes"><i class="via-fill" style="--w:${(o.pacotes / escala * 100).toFixed(1)}%"></i>${usaMeta ? `<u class="meta-marca" style="left:${(meta / escala * 100).toFixed(1)}%" title="Meta: ${meta}"></u>` : ''}</div></div>
         <div class="pista-n"><b>${o.pacotes}</b><span class="sub">pacotes</span></div>
         <div class="pista-extra">${extras}</div></li>`;
@@ -925,27 +1038,28 @@ async function carregarProdutividade(silencioso) {
     corpo.innerHTML = `
       ${so ? '<div class="aviso">Você vê apenas os seus próprios bipes.</div>' : ''}
       <div class="cards">
-        <section class="total"><h2>Pacotes bipados</h2><div class="total-n">${t.pacotes}</div>
-          ${t.pacotes ? `<div class="divide" aria-hidden="true"><i class="d-ch" style="width:${pc}%"></i><i class="d-at" style="width:${100 - pc}%"></i></div>` : ''}
-          <div class="legenda"><span class="l-ch">Chegadas <b>${t.chegada}</b></span><span class="l-at">Atribuições <b>${t.atribuicao}</b></span></div></section>
-        ${tile('erro', 'erro', t.erro, 'Erros', 'erro')}${tile('div', 'diverg', t.divergencia, 'Divergências', 'divergencia')}${tile('rep', 'rep', t.repetido, 'Repetidos', 'repetido')}
+        <section class="total"><h2>Atribuições</h2><div class="total-n">${t.atribuicao}</div>
+          <div class="legenda"><span class="l-at">Sacas fechadas <b>${nSacF}</b></span><span class="l-ch">Em andamento <b>${nSacA}</b></span></div></section>
+        ${tile('erro', 'erro', t.erro, 'Erros', 'erro')}${tile('div', 'diverg', t.divergencia, 'Divergências', 'divergencia')}
+        <button type="button" class="prob rep" data-saca="1"><b>${nSacF + nSacA}</b><span>Sacas</span><small>Ver quem está em cada uma</small></button>
       </div>
       <section class="cartao"><div class="cartao-topo"><h2>${so ? 'Meu desempenho' : 'Ranking da equipe'}</h2>${lista.length ? '<button class="btn mini" id="prodCsv" type="button">Baixar CSV</button>' : ''}</div>
         ${lista.length ? `<ol class="pistas">${pistas}</ol>
-          <p class="sub nota-pistas">${usaMeta ? '<span>A linha vertical marca a meta de ' + meta + ' pacotes.</span>' : ''}<span>Cada pacote conta uma vez por tipo, colaborador e dia.</span></p>`
-          : `<div class="vazio"><b>Nenhum bipe neste período</b>Os bipes aparecem aqui assim que alguém bipar com a Nuvem Cordeiro ligada no app ou na extensão.</div>`}
+          <p class="sub nota-pistas">${usaMeta ? '<span>A linha vertical marca a meta de ' + meta + ' pacotes.</span>' : ''}<span>Cada pacote conta uma vez por colaborador e dia.</span></p>`
+          : `<div class="vazio"><b>Nenhum bipe neste período</b>Aqui contam só as atribuições (as chegadas ficam de fora). Os bipes aparecem assim que alguém bipar com a Nuvem Cordeiro ligada.</div>`}
         ${vis.completo ? '' : '<div class="aviso" style="margin-top:12px">Há muitos dados: mostrando só parte. Escolha um período menor.</div>'}
       </section>
       <section class="cartao"><div class="cartao-topo"><h2>Ritmo do dia</h2><span class="sub">${pk.valor ? 'Pico às ' + pk.hora + 'h, com ' + pk.valor + ' pacotes' : ''}</span></div>
         ${ev.itens.length ? `<div class="ritmo">${barras}</div>` : '<div class="vazio">Sem bipes para mostrar por hora.</div>'}
         ${ev.completo ? '' : '<p class="sub">Gráfico com parte dos dados (período grande).</p>'}</section>`;
+    corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => irPara('sacas')));
     corpo.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => {
-      estPro.tipo2 = b.dataset.ir; estPro.tipo = estProd.tipo; estPro.de = estProd.de; estPro.ate = estProd.ate; irPara('problemas');
+      estPro.estado = 'todas'; estPro.tipo2 = b.dataset.ir; estPro.tipo = estProd.tipo; estPro.de = estProd.de; estPro.ate = estProd.ate; irPara('problemas');
     }));
     const b = $('prodCsv');
     if (b) b.addEventListener('click', () => baixar('produtividade-' + estProd.de + '_' + estProd.ate + '.csv', paraCsv(
-      ['Colaborador', 'Chegadas', 'Atribuições', 'Pacotes', 'Erros', 'Divergências', 'Repetidos', '% erro'],
-      lista.map((o) => [o.nome, o.chegada, o.atribuicao, o.pacotes, o.erro, o.divergencia, o.repetido, (o.taxaErro * 100).toFixed(1).replace('.', ',')]))));
+      ['Colaborador', 'Atribuições', 'Sacas fechadas', 'Erros', 'Divergências', '% erro'],
+      lista.map((o) => [o.nome, o.atribuicao, (sc.get(o.id) || { feitas: 0 }).feitas, o.erro, o.divergencia, (o.taxaErro * 100).toFixed(1).replace('.', ',')]))));
   } catch (e) { if (meu === tokenProd && $('prodCorpo') && !silencioso) $('prodCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 
@@ -1216,13 +1330,15 @@ function desenharAC() {
 }
 
 /* ===================== NÃO RECEBIDOS ===================== */
-const estNR = { filtro: 'todos', busca: '' };
+const estNR = { filtro: 'faltam', cidade: '', busca: '' };
 let tokenNR = 0, timerNR = null, dadosNR = null;
 function telaNaoRecebidos() {
-  $('conteudo').innerHTML = cabecalho('Não recebidos', '<span id="nrSub"></span>', '<button class="btn" id="nrAtualizar" type="button">Atualizar</button>') + '<div id="nrCorpo">' + esqueleto() + '</div>';
+  $('conteudo').innerHTML = cabecalho('Não recebidos', '<span id="nrSub"></span> <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>', '<button class="btn" id="nrAtualizar" type="button">Atualizar</button>') + '<div id="nrCorpo">' + esqueleto() + '</div>';
   $('nrAtualizar').addEventListener('click', () => carregarNR(false));
   clearInterval(timerNR);
-  timerNR = setInterval(() => { if (E.aba === 'naorecebidos' && !document.hidden) carregarNR(true); }, 15000);
+  // O tempo real avisa na hora; este relógio é só a rede de segurança.
+  timerNR = setInterval(() => { if (E.aba === 'naorecebidos' && !document.hidden) carregarNR(true); }, 30000);
+  mostrarVivo();
   carregarNR(false);
 }
 async function carregarNR(silencioso) {
@@ -1243,35 +1359,112 @@ function desenharNR() {
   if (!dadosNR || !$('nrCorpo')) return;
   const todos = dadosNR.itens, ach = dadosNR.achados, falta = todos.length - ach;
   const q = estNR.busca.trim().toLowerCase();
-  const vis = todos.filter((i) => (estNR.filtro === 'todos' || (estNR.filtro === 'achados') === !!i.achado)
-    && (!q || [i.waybillNo, i.bairro, i.cidade, i.rota, i.veiculo].join(' ').toLowerCase().includes(q)));
+  const grupos = agruparCidadesNR(todos);
+  const nomeCid = (i) => String(i.cidade || '').trim() || 'Sem cidade';
+  if (estNR.cidade && !grupos.some((g) => g.cidade === estNR.cidade)) estNR.cidade = '';
+  const passa = (i) => (estNR.filtro === 'todos' || (estNR.filtro === 'achados') === !!i.achado)
+    && (!estNR.cidade || nomeCid(i) === estNR.cidade)
+    && (!q || [i.waybillNo, i.bairro, i.cidade, i.rota, i.veiculo].join(' ').toLowerCase().includes(q));
+  const vis = todos.filter(passa);
   const pc = todos.length ? Math.round(ach / todos.length * 100) : 0;
+  const nAba = (g) => estNR.filtro === 'faltam' ? g.faltam.length : estNR.filtro === 'achados' ? g.achados.length : g.faltam.length + g.achados.length;
+  const linha = (i) => `<tr class="${i.achado ? 'achado' : 'falta'}" data-awb="${esc(i.waybillNo)}"><td><a class="awb" data-awb="${esc(i.waybillNo)}" tabindex="0" role="link">${esc(i.waybillNo)}</a></td>
+          <td data-r="Local">${esc([i.bairro, i.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Rota">${esc([i.rota, i.veiculo].filter(Boolean).join(' · ') || '—')}</td>
+          <td data-r="Situação">${i.achado ? `<span class="etq ok">✔ Encontrado</span> <span class="sub">${esc(i.achado.motorista ? i.achado.motorista + ' · ' : '')}${esc(nomeOperador(i.achado.achado_por))} às ${esc(horaCurta(i.achado.achado_em))}</span>` : '<span class="etq nao">✖ Não encontrado</span>'}</td></tr>`;
+  const corpo = grupos.map((g) => {
+    const itens = vis.filter((i) => nomeCid(i).toLowerCase() === g.cidade.toLowerCase());
+    if (!itens.length) return '';
+    return `<tr class="grupo-cidade"><td colspan="4">${esc(g.cidade)}<small class="v">${g.faltam.length} faltam</small><small class="g">${g.achados.length} encontrados</small></td></tr>` + itens.map(linha).join('');
+  }).join('');
   $('nrCorpo').innerHTML = `
     <div class="tiles tiles4">
       <div class="tile"><span>Na lista</span><b>${todos.length}</b><small>pacotes não recebidos</small></div>
-      <div class="tile ok"><span>Achados</span><b>${ach}</b><small>${pc}% da lista</small></div>
-      <div class="tile ${falta ? 'alerta' : 'ok'}"><span>Faltam</span><b>${falta}</b><small>${falta ? 'ainda sem achar' : 'tudo achado'}</small></div>
+      <div class="tile ${falta ? 'alerta' : 'ok'}" style="${falta ? 'border-color:var(--erro)' : ''}"><span>Não encontrados</span><b style="${falta ? 'color:var(--erro)' : ''}">${falta}</b><small>${falta ? 'ainda sem achar' : 'tudo encontrado'}</small></div>
+      <div class="tile ok"><span>Encontrados</span><b>${ach}</b><small>${pc}% da lista</small></div>
       <div class="tile"><span>Progresso</span><b>${pc}%</b><small><span class="barra-av" style="margin-top:6px"><i style="width:${pc}%;background:var(--ok)"></i></span></small></div></div>
     <section class="cartao">
-      <div class="filtros" style="margin-bottom:14px">
-        <div class="seg" id="nrSeg">${[['todos', 'Todos · ' + todos.length], ['faltam', 'Faltam · ' + falta], ['achados', 'Achados · ' + ach]].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${estNR.filtro === k}">${n}</button>`).join('')}</div>
+      <div class="filtros" style="margin-bottom:12px">
+        <div class="seg" id="nrSeg">${[['faltam', 'Não encontrados · ' + falta, 'vermelho'], ['achados', 'Encontrados · ' + ach, 'verde'], ['todos', 'Todos · ' + todos.length, '']].map(([k, n, cl]) => `<button type="button" class="${cl}" data-f="${k}" aria-pressed="${estNR.filtro === k}">${n}</button>`).join('')}</div>
         <label class="busca-in"><span class="sr-only"></span><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="nrBusca" type="search" placeholder="AWB, bairro, cidade ou rota" value="${esc(estNR.busca)}" /></label>
         <button class="btn" id="nrCopiar" type="button">Copiar os que faltam</button><button class="btn" id="nrCsv" type="button">Baixar CSV</button></div>
-      ${vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Pacote</th><th>Local</th><th>Rota · veículo</th><th>Situação</th></tr></thead><tbody>
-        ${vis.map((i) => `<tr class="${i.achado ? 'achado' : ''}"><td><a class="awb" data-awb="${esc(i.waybillNo)}" tabindex="0" role="link">${esc(i.waybillNo)}</a></td>
-          <td data-r="Local">${esc([i.bairro, i.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Rota">${esc([i.rota, i.veiculo].filter(Boolean).join(' · ') || '—')}</td>
-          <td data-r="Situação">${i.achado ? `<span class="etq ok">✔ Achado</span> <span class="sub">${esc(i.achado.motorista ? i.achado.motorista + ' · ' : '')}${esc(nomeOperador(i.achado.achado_por))} às ${esc(horaCurta(i.achado.achado_em))}</span>` : '<span class="etq neutro">Falta</span>'}</td></tr>`).join('')}
-        </tbody></table></div>` : '<div class="vazio"><b>Nada por aqui</b>Nenhum pacote com esse filtro.</div>'}
+      <div class="chips-cidade" id="nrCidades" role="group" aria-label="Cidade"><button type="button" data-c="" aria-pressed="${!estNR.cidade}">Todas as cidades · ${grupos.reduce((n, g) => n + nAba(g), 0)}</button>${grupos.filter((g) => nAba(g) > 0).map((g) => `<button type="button" data-c="${esc(g.cidade)}" aria-pressed="${estNR.cidade === g.cidade}">${esc(g.cidade)} · ${nAba(g)}</button>`).join('')}</div>
+      ${vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Pacote</th><th>Local</th><th>Rota · veículo</th><th>Situação</th></tr></thead><tbody>${corpo}</tbody></table></div>`
+        : `<div class="vazio"><b>${estNR.filtro === 'faltam' && !q && !estNR.cidade ? 'Tudo encontrado!' : 'Nada por aqui'}</b>${estNR.filtro === 'faltam' && !q && !estNR.cidade ? 'Nenhum pacote faltando.' : 'Nenhum pacote com esse filtro.'}</div>`}
     </section>`;
   $('nrSeg').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estNR.filtro = b.dataset.f; desenharNR(); } });
+  $('nrCidades').addEventListener('click', (e) => { const b = e.target.closest('button[data-c]'); if (b) { estNR.cidade = b.dataset.c; desenharNR(); } });
   $('nrBusca').addEventListener('input', (e) => { estNR.busca = e.target.value; const pos = e.target.selectionStart; desenharNR(); const n = $('nrBusca'); n.focus(); n.setSelectionRange(pos, pos); });
   document.querySelectorAll('#nrCorpo a.awb').forEach((a) => { a.addEventListener('click', () => irPara('pacote', a.dataset.awb)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') irPara('pacote', a.dataset.awb); }); });
   $('nrCopiar').addEventListener('click', async () => {
-    const t = todos.filter((i) => !i.achado).map((i, n) => `${n + 1}. ${i.waybillNo}${i.bairro || i.cidade ? ' — ' + [i.bairro, i.cidade].filter(Boolean).join(', ') : ''}`).join('\n');
-    try { await navigator.clipboard.writeText(`*Não recebidos ${dataBR(dadosNR.lista.dia)} — faltam ${falta}*\n${t}`); aviso('Lista copiada'); } catch (_) { aviso('Não consegui copiar', true); }
+    const t = grupos.filter((g) => g.faltam.length && (!estNR.cidade || g.cidade === estNR.cidade)).map((g) => `*${g.cidade}* (${g.faltam.length})\n` + g.faltam.map((i, n) => `${n + 1}. ${i.waybillNo}${i.bairro ? ' — ' + i.bairro : ''}`).join('\n')).join('\n\n');
+    const faltamTotal = grupos.filter((g) => !estNR.cidade || g.cidade === estNR.cidade).reduce((n, g) => n + g.faltam.length, 0);
+    try { await navigator.clipboard.writeText(`*Não recebidos ${dataBR(dadosNR.lista.dia)} — faltam ${faltamTotal}*\n\n${t}`); aviso('Lista copiada'); } catch (_) { aviso('Não consegui copiar', true); }
   });
-  $('nrCsv').addEventListener('click', () => baixar('nao-recebidos-' + dadosNR.lista.dia + '.csv', paraCsv(['AWB', 'Bairro', 'Cidade', 'Rota', 'Veículo', 'Situação', 'Achado por', 'Achado em'],
-    todos.map((i) => [i.waybillNo, i.bairro || '', i.cidade || '', i.rota || '', i.veiculo || '', i.achado ? 'Achado' : 'Falta', i.achado ? nomeOperador(i.achado.achado_por) : '', i.achado ? dataHoraBR(i.achado.achado_em) : '']))));
+  $('nrCsv').addEventListener('click', () => baixar('nao-recebidos-' + dadosNR.lista.dia + '.csv', paraCsv(['AWB', 'Bairro', 'Cidade', 'Rota', 'Veículo', 'Situação', 'Encontrado por', 'Encontrado em'],
+    todos.map((i) => [i.waybillNo, i.bairro || '', i.cidade || '', i.rota || '', i.veiculo || '', i.achado ? 'Encontrado' : 'Não encontrado', i.achado ? nomeOperador(i.achado.achado_por) : '', i.achado ? dataHoraBR(i.achado.achado_em) : '']))));
+}
+
+/* ===================== TEMPO REAL ===================== */
+// Conexão direta com o Supabase Realtime (WebSocket): quando alguém marca um pacote
+// como encontrado, o painel é avisado na hora. Se cair, tenta de novo sozinho; as telas
+// continuam atualizando por intervalo como rede de segurança.
+const TR = { ws: null, hb: null, rel: null, dep: null, tent: 0, vivo: false, ligado: false, token: '', ref: 1 };
+const TOPICO_TR = 'realtime:cordeiro';
+function mostrarVivo() {
+  const el = $('nrVivo'); if (!el) return;
+  el.classList.toggle('on', TR.vivo); el.lastElementChild.textContent = TR.vivo ? 'Ao vivo' : 'Sem tempo real (atualiza a cada 30 s)';
+}
+function enviarTR(m) { try { if (TR.ws && TR.ws.readyState === 1) TR.ws.send(JSON.stringify(m)); } catch (_) {} }
+function pararTempoReal() {
+  TR.ligado = false; clearTimeout(TR.rel); clearInterval(TR.hb); clearTimeout(TR.dep);
+  const w = TR.ws; TR.ws = null; TR.vivo = false; mostrarVivo();
+  try { if (w) { w.onclose = null; w.close(); } } catch (_) {}
+}
+function iniciarTempoReal() { if (TR.ligado) return; TR.ligado = true; abrirTR(); }
+function religarTR() {
+  if (!TR.ligado) return; clearTimeout(TR.rel);
+  TR.rel = setTimeout(abrirTR, Math.min(60, 2 << Math.min(TR.tent, 5)) * 1000); TR.tent += 1;
+}
+function caiuTR() {
+  clearInterval(TR.hb); const w = TR.ws; TR.ws = null; TR.vivo = false; mostrarVivo();
+  try { if (w) { w.onclose = null; w.close(); } } catch (_) {}
+  religarTR();
+}
+function abrirTR() {
+  if (!TR.ligado || TR.ws || !E.sessao) return;
+  let w;
+  try { w = new WebSocket('wss://' + new URL(URL_BASE).host + '/realtime/v1/websocket?apikey=' + encodeURIComponent(CHAVE) + '&vsn=1.0.0'); } catch (_) { religarTR(); return; }
+  TR.ws = w;
+  w.onopen = () => {
+    TR.token = E.sessao ? E.sessao.access : '';
+    enviarTR({ topic: TOPICO_TR, event: 'phx_join', ref: '1', join_ref: '1', payload: { config: { broadcast: { ack: false, self: false }, presence: { key: '' }, postgres_changes: [{ event: '*', schema: 'public', table: 'nr_achados' }, { event: '*', schema: 'public', table: 'nr_listas' }, { event: '*', schema: 'public', table: 'sacas' }, { event: '*', schema: 'public', table: 'resolucoes' }, { event: '*', schema: 'public', table: 'eventos' }] }, access_token: TR.token } });
+    clearInterval(TR.hb);
+    TR.hb = setInterval(() => {
+      enviarTR({ topic: 'phoenix', event: 'heartbeat', payload: {}, ref: String(++TR.ref) });
+      if (E.sessao && E.sessao.access !== TR.token) { TR.token = E.sessao.access; enviarTR({ topic: TOPICO_TR, event: 'access_token', payload: { access_token: TR.token }, ref: String(++TR.ref) }); }
+    }, 25000);
+  };
+  w.onmessage = (m) => { try { receberTR(JSON.parse(m.data)); } catch (_) {} };
+  w.onerror = () => {};
+  w.onclose = () => { if (TR.ws === w) caiuTR(); };
+}
+function receberTR(m) {
+  if (!m) return;
+  if (m.event === 'phx_reply' && m.topic === TOPICO_TR) {
+    if (m.payload && m.payload.status === 'ok') { TR.tent = 0; TR.vivo = true; mostrarVivo(); } else caiuTR();
+  } else if (m.event === 'phx_error' || m.event === 'phx_close') caiuTR();
+  else if (m.event === 'postgres_changes') {
+    const d = m.payload && m.payload.data ? m.payload.data : {};
+    if (d.table === 'nr_achados' && d.type === 'INSERT' && d.record && E.aba === 'naorecebidos') aviso('Pacote encontrado: ' + d.record.chave + ' · ' + nomeOperador(d.record.achado_por));
+    clearTimeout(TR.dep); // junta rajadas (vários bipes seguidos) numa atualização só
+    const nr = d.table === 'nr_achados' || d.table === 'nr_listas';
+    TR.dep = setTimeout(() => {
+      if (nr) { if (E.aba === 'naorecebidos' && $('nrCorpo')) carregarNR(true); return; }
+      if (E.aba === 'sacas' && $('sacCorpo')) carregarSacas(true);
+      else if (E.aba === 'problemas' && $('prCorpo')) carregarProblemas(true);
+      else if (E.aba === 'produtividade' && $('prodCorpo') && estProd.ate === hojeSP()) carregarProdutividade(true);
+    }, nr ? 350 : 1200);
+  }
 }
 
 /* ===================== BACKLOG ===================== */
@@ -1378,58 +1571,243 @@ function desenharBL() {
 }
 
 /* ===================== ERROS E DIVERGÊNCIAS ===================== */
-const estPro = { ...novoEstadoPeriodo('hoje'), tipo2: 'erro,divergencia', operador: '', busca: '' };
-let tokenPro = 0, linhasPro = [];
 const ICO_BUSCA = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg>';
+const estPro = { ...novoEstadoPeriodo('hoje'), tipo2: 'erro,divergencia', operador: '', busca: '', estado: 'pen' };
+let tokenPro = 0, linhasPro = [];
+const provasAbertas = new Set();
 function telaProblemas() {
   const opts = [...E.perfis.values()].filter((p) => p.ativo).map((p) => `<option value="${esc(p.id)}" ${estPro.operador === p.id ? 'selected' : ''}>${esc(p.nome)}</option>`).join('');
-  raizTela().innerHTML = cabecalho('Erros e divergências', 'Tudo o que não deu certo ou saiu da rota esperada. Toque no código do pacote para ver a história dele.', seletorPeriodo(estPro)) + datasLivres(estPro) +
+  raizTela().innerHTML = cabecalho('Erros e divergências', 'Tudo o que não deu certo ou saiu da rota esperada. Marque o que já foi corrigido.', seletorPeriodo(estPro)) + datasLivres(estPro) +
+    '<div id="prNota"></div><div id="prKpis"></div>' +
     `<div class="cartao"><div class="filtros">
+      <div class="seg" id="prEst" role="group" aria-label="Situação"><button type="button" class="vermelho" data-e="pen" aria-pressed="${estPro.estado === 'pen'}">Pendentes</button><button type="button" class="verde" data-e="cor" aria-pressed="${estPro.estado === 'cor'}">Corrigidas</button><button type="button" data-e="todas" aria-pressed="${estPro.estado === 'todas'}">Todas</button></div>
       <label class="c">Tipo<select id="prTipo"><option value="erro,divergencia">Erros e divergências</option><option value="erro">Só erros</option><option value="divergencia">Só divergências</option><option value="repetido">Repetidos</option></select></label>
       ${E.perfil.papel === 'bipador' ? '' : `<label class="c">Colaborador<select id="prOp"><option value="">Todos</option>${opts}</select></label>`}
       <label class="c">Buscar<span class="busca-in">${ICO_BUSCA}<input id="prBusca" placeholder="AWB, motorista ou motivo" value="${esc(estPro.busca)}" /></span></label></div></div><div id="prCorpo">${esqueleto()}</div>`;
   $('prTipo').value = estPro.tipo2;
   ligarFiltroPeriodo(estPro, carregarProblemas);
   $('prTipo').addEventListener('change', () => { estPro.tipo2 = $('prTipo').value; carregarProblemas(); });
+  $('prEst').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-e]'); if (!b) return; estPro.estado = b.dataset.e; document.querySelectorAll('#prEst button').forEach((x) => x.setAttribute('aria-pressed', String(x === b))); desenharProblemas(); });
   if ($('prOp')) $('prOp').addEventListener('change', () => { estPro.operador = $('prOp').value; carregarProblemas(); });
   $('prBusca').addEventListener('input', () => { estPro.busca = $('prBusca').value; desenharProblemas(); });
   carregarProblemas();
 }
-async function carregarProblemas() {
+function comCorrecao() { return estPro.tipo2 !== 'repetido'; }
+async function carregarProblemas(silencioso) {
   const meu = ++tokenPro, corpo = $('prCorpo');
   if (!corpo) return;
-  corpo.innerHTML = esqueleto();
+  if (!silencioso) corpo.innerHTML = esqueleto();
   try {
     const op = estPro.operador ? '&operador_id=eq.' + eFiltroSeguro(estPro.operador) : '';
-    const r = await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10);
+    const r = comCorrecao()
+      ? await lerTudo('/rest/v1/erros_resolucao?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo,corrigido,automatico,corrigido_em,corrigido_por_id,prova&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10)
+      : await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10);
     if (meu !== tokenPro) return;
     linhasPro = r.itens; linhasPro._completo = r.completo;
     desenharProblemas();
-  } catch (e) { if (meu === tokenPro && $('prCorpo')) $('prCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+  } catch (e) { if (meu === tokenPro && $('prCorpo') && !silencioso) $('prCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
-function filtrarProblemas() {
+function filtrarProblemas(comEstado) {
   const q = estPro.busca.trim().toLowerCase();
-  if (!q) return linhasPro;
-  return linhasPro.filter((e) => [e.awb, e.motorista, e.motivo, e.rota, e.cidade, nomeOperador(e.operador_id)].some((v) => String(v || '').toLowerCase().includes(q)));
+  let l = linhasPro;
+  if (q) l = l.filter((e) => [e.awb, e.motorista, e.motivo, e.rota, e.cidade, nomeOperador(e.operador_id)].some((v) => String(v || '').toLowerCase().includes(q)));
+  if (comEstado && comCorrecao() && estPro.estado !== 'todas') l = l.filter((e) => (estPro.estado === 'cor') === !!e.corrigido);
+  return l;
 }
 const ROTULO_TIPO = { erro: 'Erro', divergencia: 'Divergência', repetido: 'Repetido', chegada: 'Chegada', atribuicao: 'Atribuição' };
+function avisoDesfazer(texto, fn) {
+  const c = $('toasts'), d = document.createElement('div');
+  d.className = 'toast'; d.textContent = texto + ' ';
+  const b = document.createElement('button'); b.type = 'button'; b.className = 'btn mini'; b.textContent = 'Desfazer';
+  b.addEventListener('click', () => { d.remove(); fn(); });
+  d.appendChild(b); c.appendChild(d); setTimeout(() => d.remove(), 6000);
+}
+async function gravarCorrecao(id, valor) {
+  await api('POST', '/rest/v1/resolucoes?on_conflict=evento_id', { evento_id: id, corrigido: valor, por_operador_id: E.sessao.id, em: new Date().toISOString(), automatico: false, manual_travado: true }, { Prefer: 'resolution=merge-duplicates,return=representation' });
+}
+async function alternarCorrecao(id) {
+  const e = linhasPro.find((x) => x.id === id); if (!e) return;
+  const antes = { corrigido: e.corrigido, automatico: e.automatico, corrigido_em: e.corrigido_em, corrigido_por_id: e.corrigido_por_id };
+  const agora = !e.corrigido;
+  const aplicar = (c, auto, em, por) => { e.corrigido = c; e.automatico = auto; e.corrigido_em = em; e.corrigido_por_id = por; };
+  try {
+    await gravarCorrecao(id, agora);
+    aplicar(agora, false, new Date().toISOString(), E.sessao.id); desenharProblemas();
+    avisoDesfazer(agora ? e.awb + ' marcado como corrigido.' : e.awb + ' voltou para pendente.' + (antes.automatico ? ' O sistema não vai marcar de novo.' : ''), async () => {
+      try { await gravarCorrecao(id, antes.corrigido); aplicar(antes.corrigido, false, antes.corrigido_em, antes.corrigido_por_id); desenharProblemas(); } catch (err) { aviso(err.message, true); }
+    });
+  } catch (err) { aviso(err.message, true); desenharProblemas(); }
+}
+function formaCorrecao(e) {
+  if (!e.corrigido) return '';
+  const quem = e.automatico ? ((e.prova && e.prova.para_motorista) ? 'Reatribuído para ' + e.prova.para_motorista : 'Reatribuído') : 'Manual';
+  return quem + (e.corrigido_por_id ? ' · ' + nomeOperador(e.corrigido_por_id) : '') + (e.corrigido_em ? ' ' + horaCurta(e.corrigido_em) : '');
+}
 function desenharProblemas() {
   const corpo = $('prCorpo'); if (!corpo) return;
-  const l = filtrarProblemas(), mostrados = l.slice(0, 500);
-  corpo.innerHTML = `<div class="cartao"><div class="cartao-topo"><h2>${l.length} ocorrência${l.length === 1 ? '' : 's'}</h2>${l.length ? '<button class="btn mini" id="prCsv" type="button">Baixar CSV</button>' : ''}</div>
-    ${l.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Quando</th><th>Tipo</th><th>AWB</th><th>Colaborador</th><th>Motorista</th><th>Rota e cidade</th><th>Motivo</th><th>Origem</th></tr></thead><tbody>
-    ${mostrados.map((e) => `<tr><td style="white-space:nowrap">${esc(dataHoraBR(e.ocorreu_em))}</td><td><span class="etq ${esc(e.tipo)}">${esc(ROTULO_TIPO[e.tipo] || e.tipo)}</span></td>
+  const cc = comCorrecao(), agora = Date.now(), gestao = E.perfil.papel !== 'bipador';
+  const base = filtrarProblemas(false), l = filtrarProblemas(true), mostrados = l.slice(0, 500);
+  const rc = resumoCorrecao(base, agora);
+  if ($('prNota')) $('prNota').innerHTML = cc ? '<div class="aviso azul" style="margin-bottom:14px"><b>Como o “Corrigido” funciona:</b> quando o colaborador reatribui o pacote para a rota certa no app, a linha vira <b>Corrigido</b> sozinha e mostra a prova (<u>ver prova</u>). Você pode ligar ou desligar à mão a qualquer momento: a sua decisão sempre vale e o sistema não mexe mais naquela linha.</div>' : '';
+  if ($('prKpis')) $('prKpis').innerHTML = cc ? `<div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px">
+    <div class="prob zero" style="cursor:default"><b>${rc.total}</b><span>Ocorrências</span><small>no período</small></div>
+    <div class="prob ${rc.pendentes ? 'erro' : 'zero'}" style="cursor:default"><b>${rc.pendentes}</b><span>Pendentes</span><small>${rc.velhas ? rc.velhas + ' há mais de 24 h' : 'nenhuma atrasada'}</small></div>
+    <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${rc.corrigidas}</b><span>Corrigidas</span><small>${rc.auto} automáticas · ${rc.manual} manuais</small></div>
+    <div class="prob zero" style="cursor:default"><b>${rc.taxa}%</b><span>Taxa de correção</span><small>das ocorrências</small></div></div>` : '';
+  const cab = '<th>Quando</th><th>Tipo</th><th>AWB</th><th>Colaborador</th><th>Motorista</th><th>Rota e cidade</th><th>Motivo</th><th>Origem</th>' + (cc ? '<th>Corrigido</th>' : '');
+  const linhaHtml = (e) => {
+    const velha = !e.corrigido && agora - new Date(e.ocorreu_em).getTime() > 24 * 3600 * 1000;
+    const cor = cc ? `<td class="cx" data-r="Corrigido"><div class="cor ${e.corrigido ? 'feito' : 'pend' + (velha ? ' velha' : '')}">
+        <button type="button" class="sw" role="switch" aria-checked="${!!e.corrigido}" aria-label="Corrigido: ${esc(e.awb)}" data-cor="${esc(e.id)}" ${gestao ? '' : 'disabled'}></button>
+        <div class="cor-t"><b>${e.corrigido ? 'Corrigido' : 'Pendente'}</b><small>${e.corrigido ? (e.automatico ? '<span class="etq auto">AUTO</span> ' : '') + esc(formaCorrecao(e)) + (e.automatico && e.prova ? ' <button type="button" class="ver-prova" data-prova="' + esc(e.id) + '">ver prova</button>' : '') : 'há ' + haTempo(agora - new Date(e.ocorreu_em).getTime())}</small></div></div></td>` : '';
+    const trCls = cc ? (e.corrigido ? 'l-feito' : 'l-pend' + (velha ? ' velha' : '')) : '';
+    let html = `<tr class="${trCls}"><td style="white-space:nowrap">${esc(dataHoraBR(e.ocorreu_em))}</td><td><span class="etq ${esc(e.tipo)}">${esc(ROTULO_TIPO[e.tipo] || e.tipo)}</span></td>
       <td data-r="AWB"><a class="awb" data-awb="${esc(e.awb)}" tabindex="0" role="link">${esc(e.awb)}</a></td><td data-r="Colaborador">${esc(nomeOperador(e.operador_id))}</td><td data-r="Motorista">${esc(e.motorista || '—')}</td>
-      <td data-r="Rota">${esc([e.rota, e.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Motivo">${esc(e.motivo || '—')}</td><td data-r="Origem">${esc(e.origem === 'app' ? 'App' : 'Extensão')}</td></tr>`).join('')}
-    </tbody></table></div>` : `<div class="vazio"><b>Nada por aqui</b>${estPro.busca ? 'Nenhuma ocorrência combina com a busca.' : 'Nenhuma ocorrência neste período. Bom sinal.'}</div>`}
+      <td data-r="Rota">${esc([e.rota, e.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Motivo">${esc(e.motivo || '—')}</td><td data-r="Origem">${esc(e.origem === 'app' ? 'App' : 'Extensão')}</td>${cor}</tr>`;
+    if (cc && e.corrigido && e.automatico && e.prova && provasAbertas.has(e.id)) {
+      const p = e.prova;
+      html += `<tr class="prova"><td colspan="9"><div class="prova-grade"><div><div class="t">Ocorrência</div>${esc(dataHoraBR(e.ocorreu_em))} · ${esc(ROTULO_TIPO[e.tipo])}<br><span class="sub">${esc([p.de_rota, p.de_motorista].filter(Boolean).join(' · ') || '—')} (rota errada)</span></div>
+        <div><div class="t">Reatribuição (manual, no app)</div>${esc(p.reatribuido_em ? dataHoraBR(p.reatribuido_em) : '')} · por <b>${esc(nomeOperador(e.corrigido_por_id))}</b><br><span class="sub">para ${esc([p.para_rota, p.para_motorista].filter(Boolean).join(' · ') || '—')}</span></div>
+        <div><div class="t">Resultado</div><span class="etq ok">Pacote na rota certa</span><br><span class="sub">Se algo estiver errado, desligue a chave.</span></div></div></td></tr>`;
+    }
+    return html;
+  };
+  corpo.innerHTML = `<div class="cartao"><div class="cartao-topo"><h2>${l.length} ocorrência${l.length === 1 ? '' : 's'}</h2>${l.length ? '<button class="btn mini" id="prCsv" type="button">Baixar CSV</button>' : ''}</div>
+    ${l.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr>${cab}</tr></thead><tbody>${mostrados.map(linhaHtml).join('')}</tbody></table></div>`
+      : `<div class="vazio"><b>${cc && estPro.estado === 'pen' && !estPro.busca ? 'Nada pendente.' : 'Nada por aqui'}</b>${estPro.busca ? 'Nenhuma ocorrência combina com a busca.' : cc && estPro.estado === 'pen' ? 'Todas as ocorrências deste filtro foram corrigidas.' : 'Nenhuma ocorrência neste período. Bom sinal.'}</div>`}
     ${l.length > 500 ? '<p class="sub">Mostrando as 500 mais recentes. O CSV leva todas.</p>' : ''}
     ${linhasPro._completo === false ? '<div class="aviso">Há muitos dados: lista parcial. Escolha um período menor.</div>' : ''}</div>`;
   const abrir = (a) => irPara('pacote', a.dataset.awb);
   corpo.querySelectorAll('a.awb').forEach((a) => { a.addEventListener('click', () => abrir(a)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') abrir(a); }); });
+  corpo.querySelectorAll('.sw[data-cor]').forEach((b) => b.addEventListener('click', () => alternarCorrecao(b.dataset.cor)));
+  corpo.querySelectorAll('.ver-prova').forEach((b) => b.addEventListener('click', () => { const id = b.dataset.prova; if (provasAbertas.has(id)) provasAbertas.delete(id); else provasAbertas.add(id); desenharProblemas(); }));
   const b = $('prCsv');
   if (b) b.addEventListener('click', () => baixar('ocorrencias-' + estPro.de + '_' + estPro.ate + '.csv', paraCsv(
-    ['Quando', 'Tipo', 'AWB', 'Colaborador', 'Motorista', 'Rota', 'Cidade', 'Motivo', 'Origem'],
-    l.map((e) => [dataHoraBR(e.ocorreu_em), e.tipo, e.awb, nomeOperador(e.operador_id), e.motorista, e.rota, e.cidade, e.motivo, e.origem]))));
+    ['Quando', 'Tipo', 'AWB', 'Colaborador', 'Motorista', 'Rota', 'Cidade', 'Motivo', 'Origem'].concat(cc ? ['Corrigido', 'Corrigido por', 'Corrigido em', 'Forma'] : []),
+    l.map((e) => [dataHoraBR(e.ocorreu_em), e.tipo, e.awb, nomeOperador(e.operador_id), e.motorista, e.rota, e.cidade, e.motivo, e.origem].concat(cc ? [e.corrigido ? 'Sim' : 'Não', e.corrigido && e.corrigido_por_id ? nomeOperador(e.corrigido_por_id) : '', e.corrigido && e.corrigido_em ? dataHoraBR(e.corrigido_em) : '', e.corrigido ? (e.automatico ? 'Automático (reatribuição)' : 'Manual') : ''] : [])))));
+}
+
+
+/* ===================== SACAS ===================== */
+const estSac = { ...novoEstadoPeriodo('hoje'), estado: 'and', cidade: '', op: '', busca: '', sel: null, pac: null };
+let tokenSac = 0, dadosSac = [], pacotesSac = { id: null, lista: [], produtos: new Map() }, timerSac = null;
+function telaSacas() {
+  raizTela().innerHTML = cabecalho('Sacas', 'Cada saca é de um motorista. Veja quem está nela agora e o histórico de quem bipou.', seletorPeriodo(estSac) + '<button class="btn" id="sacAtualizar" type="button">Atualizar</button>') + datasLivres(estSac) + '<div id="sacCorpo">' + esqueleto() + '</div>';
+  ligarFiltroPeriodo(estSac, () => carregarSacas(false));
+  $('sacAtualizar').addEventListener('click', () => carregarSacas(false));
+  clearInterval(timerSac);
+  timerSac = setInterval(() => { if (E.aba === 'sacas' && !document.hidden) carregarSacas(true); }, 60000);
+  carregarSacas(false);
+}
+async function carregarSacas(silencioso) {
+  const meu = ++tokenSac;
+  try {
+    const r = await lerTudo('/rest/v1/sacas_resumo?select=id,motorista,rota,cidade,numero,dia,status,aberta_em,fechada_em,operador_id,pacotes,erros,pessoas,ultimo_bipe_em&or=(and(dia.gte.' + eFiltroSeguro(estSac.de) + ',dia.lte.' + eFiltroSeguro(estSac.ate) + '),status.eq.em_andamento)&order=aberta_em.desc', 10);
+    if (meu !== tokenSac || !$('sacCorpo')) return;
+    dadosSac = r.itens;
+    if (!estSac.sel || !dadosSac.some((x) => x.id === estSac.sel)) { const a = dadosSac.find((x) => x.status !== 'fechada'); estSac.sel = a ? a.id : (dadosSac[0] ? dadosSac[0].id : null); estSac.pac = null; }
+    desenharSacas();
+    if (estSac.sel) carregarPacotesSaca(estSac.sel, silencioso);
+  } catch (e) { if (meu === tokenSac && $('sacCorpo') && !silencioso) $('sacCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+async function carregarPacotesSaca(id, silencioso) {
+  try {
+    const ev = await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,motivo,detalhe&saca_id=eq.' + eFiltroSeguro(id) + '&tipo=in.(atribuicao,erro,divergencia)&order=ocorreu_em.desc', 5);
+    if (estSac.sel !== id) return;
+    pacotesSac = { id, lista: pacotesDaSaca(ev.itens), produtos: pacotesSac.produtos };
+    const falta = pacotesSac.lista.map((x) => x.awb).filter((a) => !pacotesSac.produtos.has(a)).slice(0, 200);
+    if (falta.length) {
+      try {
+        const pr = await api('GET', '/rest/v1/produtos?select=awb,produto&awb=in.(' + falta.map((a) => '"' + eFiltroSeguro(a) + '"').join(',') + ')');
+        for (const x of pr || []) pacotesSac.produtos.set(x.awb, x.produto);
+      } catch (_) {}
+    }
+    if (estSac.sel === id && $('sacGaveta')) desenharGavetaSaca();
+  } catch (e) { if (!silencioso && $('sacGaveta')) $('sacGaveta').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+}
+function pilulaSaca(est) { return `<span class="pill ${est}"><i></i>${est === 'andamento' ? 'Em andamento' : est === 'parada' ? 'Parada +10 min' : 'Fechada'}</span>`; }
+function desenharSacas() {
+  const corpo = $('sacCorpo'); if (!corpo) return;
+  const agora = Date.now(), com = dadosSac.map((x) => ({ ...x, est: estadoSaca(x, agora) }));
+  const ativas = com.filter((x) => x.est !== 'fechada'), fechadas = com.filter((x) => x.est === 'fechada');
+  const paradas = ativas.filter((x) => x.est === 'parada'), maior = ativas.reduce((a, x) => (x.pacotes > (a ? a.pacotes : -1) ? x : a), null);
+  const pessoas = new Set(ativas.map((x) => x.operador_id)).size;
+  const mediaF = fechadas.length ? Math.round(fechadas.reduce((a, x) => a + Number(x.pacotes), 0) / fechadas.length) : 0;
+  const cidades = [...new Set(com.map((x) => x.cidade).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'pt-BR'));
+  const ops = [...new Set(com.map((x) => x.operador_id))];
+  const q = estSac.busca.trim().toLowerCase();
+  const lista = com.filter((x) => (estSac.estado === 'todas' || (estSac.estado === 'fech') === (x.est === 'fechada'))
+    && (!estSac.cidade || x.cidade === estSac.cidade) && (!estSac.op || x.operador_id === estSac.op)
+    && (!q || [x.motorista, x.rota, x.cidade, nomeOperador(x.operador_id), 'nº ' + x.numero].some((v) => String(v || '').toLowerCase().includes(q))));
+  const nomeSaca = (x) => `${esc(x.motorista)} · nº ${esc(x.numero)}`;
+  corpo.innerHTML = `
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px">
+      <div class="prob zero" style="cursor:default"><b>${ativas.length}</b><span>Em andamento</span><small>${pessoas} colaborador${pessoas === 1 ? '' : 'es'}</small></div>
+      <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${fechadas.length}</b><span>Fechadas</span><small>${fechadas.length ? 'média ' + mediaF + ' pacotes' : 'no período'}</small></div>
+      <div class="prob zero" style="cursor:default"><b>${ativas.reduce((a, x) => a + Number(x.pacotes), 0)}</b><span>Pacotes em sacas abertas</span><small>${maior ? 'maior: ' + nomeSaca(maior) + ' · ' + maior.pacotes : '—'}</small></div>
+      <div class="prob ${paradas.length ? 'erro' : 'zero'}" style="cursor:default"><b>${paradas.length}</b><span>Paradas há +10 min</span><small>${paradas.length ? nomeSaca(paradas[0]) + ' · ' + esc(nomeOperador(paradas[0].operador_id)) : 'nenhuma'}</small></div></div>
+    <h2 class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800;margin:4px 0 10px">Quem está fazendo o quê agora</h2>
+    ${ativas.length ? `<div class="ativos">${ativas.map((x) => `<button type="button" class="ativo ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><div class="t"><span class="av" aria-hidden="true">${esc(iniciais(nomeOperador(x.operador_id)))}</span><b>${esc(nomeOperador(x.operador_id))}</b><span class="lock">${ICO_CADEADO}</span><span class="n">${x.pacotes}</span></div>
+      <div class="sub"><b style="color:var(--tinta)">Saca do ${esc(x.motorista)}</b> · ${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div>
+      <div class="barra-s ${x.est === 'parada' ? 'par' : ''}"><i style="width:${Math.min(100, Number(x.pacotes) / Math.max(1, maior ? maior.pacotes : 1) * 100)}%"></i></div>
+      <div class="sub" style="display:flex;justify-content:space-between"><span>iniciada ${esc(horaCurta(x.aberta_em))}</span><span style="${x.est === 'parada' ? 'color:var(--erro);font-weight:700' : ''}">último bipe há ${esc(haTempo(agora - new Date(x.ultimo_bipe_em || x.aberta_em).getTime()))}</span></div></button>`).join('')}</div>`
+      : '<div class="vazio" style="margin-bottom:14px"><b>Nenhuma saca em andamento</b>Quando alguém começar a bipar para um motorista, a saca aparece aqui.</div>'}
+    <div class="sac-grade"><div class="cartao"><div class="filtros">
+      <div class="seg" id="sacEst" role="group" aria-label="Situação"><button type="button" data-e="and" aria-pressed="${estSac.estado === 'and'}">Em andamento · ${ativas.length}</button><button type="button" data-e="fech" aria-pressed="${estSac.estado === 'fech'}">Fechadas · ${fechadas.length}</button><button type="button" data-e="todas" aria-pressed="${estSac.estado === 'todas'}">Todas · ${com.length}</button></div>
+      <label class="c">Cidade<select id="sacCid"><option value="">Todas</option>${cidades.map((c) => `<option ${estSac.cidade === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
+      <label class="c">Colaborador<select id="sacOp"><option value="">Todos</option>${ops.map((o) => `<option value="${esc(o)}" ${estSac.op === o ? 'selected' : ''}>${esc(nomeOperador(o))}</option>`).join('')}</select></label>
+      <label class="c">Buscar<span class="busca-in">${ICO_BUSCA}<input id="sacBusca" placeholder="Motorista, rota ou colaborador" value="${esc(estSac.busca)}" /></span></label></div>
+      ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Saca</th><th>Colaborador</th><th>Status</th><th class="num">Pacotes</th><th>Último bipe</th></tr></thead><tbody>
+      ${lista.map((x) => `<tr class="clic ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><td><b>${nomeSaca(x)}</b><div class="sub">${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div></td>
+        <td data-r="Colaborador">${esc(nomeOperador(x.operador_id))} ${x.est !== 'fechada' ? `<span class="lock">${ICO_CADEADO}</span>` : ''}</td><td data-r="Status">${pilulaSaca(x.est)}</td><td class="num" data-r="Pacotes"><b>${x.pacotes}</b></td>
+        <td data-r="Último bipe">${x.ultimo_bipe_em ? esc(horaCurta(x.ultimo_bipe_em)) : '—'}<div class="sub" style="${x.est === 'parada' ? 'color:var(--erro)' : ''}">${x.ultimo_bipe_em ? 'há ' + esc(haTempo(agora - new Date(x.ultimo_bipe_em).getTime())) : ''}</div></td></tr>`).join('')}</tbody></table></div>`
+        : '<div class="vazio"><b>Nenhuma saca aqui</b>Mude o filtro ou o período.</div>'}
+      ${lista.length ? '<div style="margin-top:10px"><button class="btn mini" id="sacCsv" type="button">Baixar CSV</button></div>' : ''}</div>
+      <div class="cartao gaveta" id="sacGaveta"></div></div>`;
+  corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); }));
+  $('sacEst').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-e]'); if (b) { estSac.estado = b.dataset.e; desenharSacas(); } });
+  $('sacCid').addEventListener('change', () => { estSac.cidade = $('sacCid').value; desenharSacas(); });
+  $('sacOp').addEventListener('change', () => { estSac.op = $('sacOp').value; desenharSacas(); });
+  $('sacBusca').addEventListener('input', () => { estSac.busca = $('sacBusca').value; const pos = $('sacBusca').selectionStart; desenharSacas(); const n = $('sacBusca'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } });
+  const c = $('sacCsv');
+  if (c) c.addEventListener('click', () => baixar('sacas-' + estSac.de + '_' + estSac.ate + '.csv', paraCsv(
+    ['Saca', 'Motorista', 'Nº', 'Rota', 'Cidade', 'Colaborador', 'Status', 'Pacotes', 'Erros', 'Aberta em', 'Fechada em', 'Último bipe'],
+    lista.map((x) => ['Saca do ' + x.motorista + ' nº ' + x.numero, x.motorista, x.numero, x.rota, x.cidade, nomeOperador(x.operador_id), x.est === 'fechada' ? 'Fechada' : x.est === 'parada' ? 'Parada' : 'Em andamento', x.pacotes, x.erros, dataHoraBR(x.aberta_em), x.fechada_em ? dataHoraBR(x.fechada_em) : '', x.ultimo_bipe_em ? dataHoraBR(x.ultimo_bipe_em) : '']))));
+  desenharGavetaSaca();
+}
+function desenharGavetaSaca() {
+  const g = $('sacGaveta'); if (!g) return;
+  const s = dadosSac.find((x) => x.id === estSac.sel);
+  if (!s) { g.innerHTML = '<div class="vazio">Escolha uma saca.</div>'; return; }
+  const agora = Date.now(), est = estadoSaca(s, agora), prod = pacotesSac.produtos;
+  if (estSac.pac) {
+    const p = pacotesSac.lista.find((x) => x.awb === estSac.pac);
+    if (p) {
+      const d = p.det || {}, produto = prod.get(p.awb);
+      g.innerHTML = `<button type="button" class="volta" id="sacVolta">‹ Voltar para a saca ${esc(s.motorista)} · nº ${esc(s.numero)}</button>
+        <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b style="font-size:19px">${esc(p.awb)}</b><span class="etq ${p.estado === 'ok' ? 'ok' : esc(p.estado)}">${p.estado === 'ok' ? 'Atribuído' : p.estado === 'erro' ? 'Erro' : 'Divergência'}</span></div>
+        <dl class="dl"><dt>Saca</dt><dd>${esc(s.motorista)} · nº ${esc(s.numero)} · ${esc(s.rota || '—')}</dd><dt>Bipado por</dt><dd>${esc(nomeOperador(p.operador_id))} às ${esc(horaCurta(p.hora))}</dd>
+          <dt>Produto</dt><dd>${produto ? esc(produto) : '<span class="sub">Ainda não buscado. Abra o pacote no aplicativo e toque em “Mostrar produto”.</span>'}</dd>
+          <dt>Bairro</dt><dd>${esc(d.bairro || '—')}</dd><dt>Endereço</dt><dd>${esc(d.endereco || '—')}</dd><dt>CEP</dt><dd>${esc(d.cep || '—')}</dd><dt>Cidade</dt><dd>${esc(s.cidade || '—')}</dd></dl>
+        ${p.motivo ? `<div class="aviso" style="margin:8px 0">Motivo: <b>${esc(p.motivo)}</b></div>` : ''}
+        <div class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800">Histórico deste pacote nesta saca</div>
+        <ul style="list-style:none;padding:0;margin:8px 0;display:flex;flex-direction:column;gap:6px">${p.hist.slice().sort((a, b) => new Date(a.ocorreu_em) - new Date(b.ocorreu_em)).map((h) => `<li>${esc(horaCurta(h.ocorreu_em))} · <span class="etq ${esc(h.tipo)}">${esc(ROTULO_TIPO[h.tipo] || h.tipo)}</span> · ${esc(nomeOperador(h.operador_id))}</li>`).join('')}</ul>
+        <button class="btn" type="button" id="sacFicha" style="width:100%">Abrir a ficha completa do pacote</button>`;
+      $('sacVolta').addEventListener('click', () => { estSac.pac = null; desenharGavetaSaca(); });
+      $('sacFicha').addEventListener('click', () => irPara('pacote', p.awb));
+      return;
+    }
+    estSac.pac = null;
+  }
+  const lista = pacotesSac.id === s.id ? pacotesSac.lista : null;
+  g.innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b style="font-size:19px">Saca do ${esc(s.motorista)} · nº ${esc(s.numero)}</b>${pilulaSaca(est)}${est !== 'fechada' ? `<span class="lock">${ICO_CADEADO} ${esc(nomeOperador(s.operador_id))} está nesta saca</span>` : ''}</div>
+    <div class="sub" style="margin:4px 0 12px">${esc([s.cidade, s.rota].filter(Boolean).join(' · '))} · iniciada ${esc(horaCurta(s.aberta_em))} por ${esc(nomeOperador(s.operador_id))}${s.fechada_em ? ' · fechada ' + esc(horaCurta(s.fechada_em)) : ''}</div>
+    <div class="cards" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px"><div class="prob zero" style="cursor:default;padding:10px"><b style="font-size:24px">${s.pacotes}</b><span>Pacotes</span></div>
+      <div class="prob zero" style="cursor:default;padding:10px"><b style="font-size:24px">${s.ultimo_bipe_em ? esc(horaCurta(s.ultimo_bipe_em)) : '—'}</b><span>Último bipe</span></div>
+      <div class="prob ${Number(s.erros) ? 'erro' : 'zero'}" style="cursor:default;padding:10px"><b style="font-size:24px">${s.erros}</b><span>Erros</span></div></div>
+    <div class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800">Pacotes da saca <span style="font-weight:500;text-transform:none;letter-spacing:0">· clique para ver detalhes</span></div>
+    ${lista === null ? '<div class="esq" style="height:120px;margin-top:8px"></div>' : lista.length ? `<div class="pk-lista">${lista.slice(0, 300).map((p) => `<button type="button" class="pk" data-awb="${esc(p.awb)}"><time>${esc(horaCurta(p.hora))}</time><span><span class="awb">${esc(p.awb)}</span>${prod.get(p.awb) ? ` <span class="sub">· ${esc(String(prod.get(p.awb)).slice(0, 38))}</span>` : (p.det && p.det.bairro ? ` <span class="sub">· ${esc(p.det.bairro)}</span>` : '')}</span>${p.estado === 'ok' ? '<span class="sub">›</span>' : `<span class="etq ${esc(p.estado)}">${p.estado === 'erro' ? 'erro' : 'diverg.'}</span>`}</button>`).join('')}</div>` : '<div class="vazio" style="margin-top:8px">Nenhum pacote visível nesta saca para o seu acesso.</div>'}`;
+  g.querySelectorAll('.pk').forEach((b) => b.addEventListener('click', () => { estSac.pac = b.dataset.awb; desenharGavetaSaca(); }));
 }
 
 /* ===================== PACOTE ===================== */
@@ -1606,7 +1984,7 @@ $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[
   if (s && s.refresh) { E.sessao = s; if (await renovar()) { await iniciarApp(); return; } }
   mostrarLogin();
 })();
-if (typeof module !== 'undefined') module.exports = { grupoAcareacao, filtrarAcareacoes, resumoAcareacoes, agruparAcareacoes, filtrarBacklog, textoCobrancaBL, faixaDias, agruparBacklog, juntarNaoRecebidos, textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
+if (typeof module !== 'undefined') module.exports = { agruparCidadesNR, grupoAcareacao, filtrarAcareacoes, resumoAcareacoes, agruparAcareacoes, filtrarBacklog, textoCobrancaBL, faixaDias, agruparBacklog, juntarNaoRecebidos, textoFechamento, situacaoRotas, limparLocais, esc, hojeSP, somarDias, periodo, agregar, totais, porHora, paraCsv, csvCelula, eFiltroSeguro };
 </script>
 </body>
 </html>
