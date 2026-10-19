@@ -179,8 +179,8 @@ input::placeholder { color:var(--tinta-2); opacity:.7; }
 .resumo-rotas { display:flex; gap:10px 14px; flex-wrap:wrap; margin-bottom:16px; }
 
 /* ---------- Ritmo do dia ---------- */
-.ritmo { display:flex; align-items:flex-end; gap:5px; height:150px; padding-top:22px; }
-.ritmo > div { flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; position:relative; }
+.ritmo { display:flex; align-items:flex-end; gap:5px; height:150px; padding-top:4px; }
+.ritmo > div { box-sizing:border-box; padding-top:18px; flex:1; min-width:0; height:100%; display:flex; flex-direction:column; justify-content:flex-end; align-items:center; gap:6px; position:relative; }
 .ritmo i { display:block; width:100%; border-radius:5px 5px 2px 2px; background:var(--barra); min-height:3px; }
 .ritmo .pico i { background:var(--ambar); }
 .ritmo em { font-style:normal; font-size:12px; font-weight:800; position:absolute; top:-1px; }
@@ -294,8 +294,8 @@ button.tile:focus-visible, .ord:focus-visible, .bl-linha:focus-visible { outline
 a.mot { cursor:pointer; color:var(--tinta); font-weight:700; text-decoration:underline dotted; }
 .tile.erro small, .tile.erro b { color:var(--erro); } .tile.alerta small { color:var(--alerta); } .tile.ok small { color:var(--ok); }
 .grade2 { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:16px; align-items:start; }
-.ritmo.alto { height:230px; padding-top:26px; gap:10px; }
-.ritmo.alto em { top:2px; }
+.ritmo.alto { height:230px; padding-top:4px; gap:10px; }
+.ritmo.alto em { top:0; }
 .atencao { list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:10px; }
 .atencao li > * { display:block; width:100%; text-align:left; border:0; border-radius:10px; padding:11px 14px 11px 30px; position:relative; font:inherit; color:inherit; }
 .atencao li > button { cursor:pointer; }
@@ -449,16 +449,24 @@ tr.prova td { background:var(--superficie-2); }
 .prova-grade .t { font-size:11px; text-transform:uppercase; letter-spacing:.8px; font-weight:800; color:var(--tinta-2); margin-bottom:3px; }
 .lock { display:inline-flex; align-items:center; gap:4px; font-size:12px; font-weight:700; color:var(--alerta); }
 .lock svg { width:13px; height:13px; stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round; }
-.ativos { display:grid; grid-template-columns:repeat(auto-fit,minmax(240px,1fr)); gap:12px; margin-bottom:16px; }
-.ativo { text-align:left; border:1px solid var(--linha); background:var(--superficie); border-radius:12px; padding:12px 14px; cursor:pointer; display:flex; flex-direction:column; gap:8px; color:var(--tinta); }
+.ativos { display:grid; grid-template-columns:repeat(auto-fill,minmax(min(100%,270px),1fr)); gap:12px; margin-bottom:16px; align-items:stretch; }
+.ativo { text-align:left; border:1px solid var(--linha); background:var(--superficie); border-radius:12px; padding:12px 14px; cursor:pointer; display:flex; flex-direction:column; gap:8px; color:var(--tinta); min-width:0; overflow:hidden; font:inherit; }
+.ativo > .tempo { margin-top:auto; }
+.ativo .quem { display:flex; flex-direction:column; gap:1px; min-width:0; min-height:56px; }
+.ativo .quem b { font-size:14.5px; line-height:1.25; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; overflow-wrap:anywhere; }
+.ativo .tempo > div { padding:8px 10px; } .ativo .tempo small { white-space:nowrap; font-size:10px; letter-spacing:.2px; } .ativo .tempo > div { padding-left:8px; padding-right:6px; } .ativo .tempo b { white-space:nowrap; font-size:16px; }
+.ativo .quem span { font-size:12.5px; color:var(--tinta-2); white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-height:16px; }
+.ativo .lin { display:flex; justify-content:space-between; gap:4px 10px; flex-wrap:wrap; font-size:12.5px; color:var(--tinta-2); }
 .ativo:hover { border-color:var(--tinta-2); } .ativo.sel { border-color:var(--alerta); box-shadow:0 0 0 1px var(--alerta); }
-.ativo .t { display:flex; align-items:center; gap:8px; } .ativo .t .n { margin-left:auto; font-weight:850; font-size:22px; }
+.ativo .t { display:flex; align-items:center; gap:8px; min-width:0; } .ativo .t > b { flex:1 1 auto; min-width:0; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; } .ativo .t .lock, .ativo .t .av { flex:none; } .ativo .t .n { flex:none; margin-left:auto; font-weight:850; font-size:22px; font-variant-numeric:tabular-nums; }
 .barra-s { height:8px; border-radius:5px; background:var(--superficie-2); overflow:hidden; } .barra-s i { display:block; height:100%; background:var(--alerta); border-radius:5px; } .barra-s.par i { background:var(--erro); }
 .pill { display:inline-flex; align-items:center; gap:6px; padding:3px 10px; border-radius:20px; font-size:12px; font-weight:800; white-space:nowrap; }
 .pill i { width:7px; height:7px; border-radius:50%; background:currentColor; }
 .pill.andamento { background:var(--alerta-fundo); color:var(--alerta); } .pill.fechada { background:var(--ok-fundo); color:var(--ok); } .pill.parada { background:var(--erro-fundo); color:var(--erro); }
-.sac-grade { display:grid; grid-template-columns:minmax(0,1.7fr) minmax(0,1fr); gap:16px; align-items:start; }
-@media (max-width:1000px) { .sac-grade { grid-template-columns:1fr; } }
+.sac-grade { display:grid; grid-template-columns:minmax(0,2fr) minmax(300px,.85fr); gap:16px; align-items:start; }
+.sac-grade .tabela td, .sac-grade .tabela th { padding-left:7px; padding-right:7px; } .sac-grade .tabela td:first-child { min-width:150px; } .sac-grade .tabela td:nth-child(2) { max-width:150px; }
+.sac-grade .tabela td[data-r="Último bipe"] { white-space:nowrap; }
+@media (max-width:1280px) { .sac-grade { grid-template-columns:1fr; } .gaveta { position:static; } }
 .gaveta { position:sticky; top:12px; }
 tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); } tr.clic.sel td { background:var(--superficie-2); }
 .pk-lista { display:flex; flex-direction:column; gap:6px; max-height:360px; overflow:auto; margin-top:8px; }
@@ -466,6 +474,13 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
 .pk:hover { border-color:var(--tinta-2); } .pk time { font-size:12px; color:var(--tinta-2); }
 .volta { border:0; background:none; color:var(--azul); font-weight:700; font-size:13px; padding:0; margin-bottom:8px; cursor:pointer; }
 .dl { display:grid; grid-template-columns:100px 1fr; gap:6px 10px; font-size:13px; margin:10px 0; } .dl dt { color:var(--tinta-2); } .dl dd { margin:0; font-weight:600; }
+/* Meta do dia: 4 cartões, sem sobra no celular */
+.tiles4 { grid-template-columns:repeat(4,minmax(0,1fr)); } @media (max-width:900px) { .tiles4 { grid-template-columns:repeat(2,minmax(0,1fr)); } }
+/* ---- 1.17: nada estoura o cartão (e-mails e nomes longos quebram ou viram …) ---- */
+.pista-topo b, .rota-pessoa b, .tile b, .tile span, .tile small { overflow-wrap:anywhere; min-width:0; }
+.rota-pessoa > div, .pista > div { min-width:0; }
+.tabela td { overflow-wrap:break-word; }
+.tabela td.n, .tabela td.num, .tabela td[data-r="Início"], .tabela td[data-r="Duração"], .tabela td[data-r="Status"] { white-space:nowrap; }
 /* ---- 1.16: tempos, conciliação, modal ---- */
 .tempo { display:flex; border:1px solid var(--linha); border-radius:10px; overflow:hidden; background:var(--superficie-2); margin-top:8px; }
 .tempo > div { flex:1; padding:8px 12px; border-right:1px solid var(--linha); min-width:0; }
@@ -973,7 +988,7 @@ async function iniciarApp() {
     const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo administrador. Peça a ele para ativar em Equipe.'; m.hidden = false; return;
   }
   try { const c = await api('GET', '/rest/v1/cadastros?select=valor&chave=eq.metas'); E.meta = c && c[0] ? c[0].valor : null; } catch (_) { E.meta = null; }
-  $('euNome').textContent = E.perfil.nome; $('euAv').textContent = iniciais(E.perfil.nome);
+  $('euNome').textContent = String(E.perfil.nome || '').split('@')[0]; $('euNome').title = E.perfil.nome; $('euAv').textContent = iniciais(E.perfil.nome);
   $('quemSou').textContent = PAPEL_NOME[E.perfil.papel] || E.perfil.papel;
   $('telaApp').hidden = false;
   const lista = ABAS.filter((a) => a.papeis.includes(E.perfil.papel));
@@ -1787,6 +1802,8 @@ async function carregarPacotesSaca(id, silencioso) {
   } catch (e) { if (!silencioso && $('sacGaveta')) $('sacGaveta').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 function pilulaSaca(est) { return `<span class="pill ${est}"><i></i>${est === 'andamento' ? 'Em andamento' : est === 'parada' ? 'Parada +10 min' : 'Fechada'}</span>`; }
+// E-mail como nome: mostra só a parte antes do @ (o nome completo fica no title).
+function nomeCurto(n) { const t = String(n || ''); return t.includes('@') ? t.split('@')[0] : t; }
 function desenharSacas() {
   const corpo = $('sacCorpo'); if (!corpo) return;
   const agora = Date.now(), com = dadosSac.map((x) => ({ ...x, est: estadoSaca(x, agora) }));
@@ -1808,10 +1825,10 @@ function desenharSacas() {
       <div class="prob zero" style="cursor:default"><b>${ativas.reduce((a, x) => a + Number(x.pacotes), 0)}</b><span>Pacotes em sacas abertas</span><small>${maior ? 'maior: ' + nomeSaca(maior) + ' · ' + maior.pacotes : '—'}</small></div>
       <div class="prob ${paradas.length ? 'erro' : 'zero'}" style="cursor:default"><b>${paradas.length}</b><span>Paradas há +10 min</span><small>${paradas.length ? nomeSaca(paradas[0]) + ' · ' + esc(nomeOperador(paradas[0].operador_id)) : 'nenhuma'}</small></div>${kpiTempoSacas(fechadas)}</div>
     <h2 class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800;margin:4px 0 10px">Quem está fazendo o quê agora</h2>
-    ${ativas.length ? `<div class="ativos">${ativas.map((x) => `<button type="button" class="ativo ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><div class="t"><span class="av" aria-hidden="true">${esc(iniciais(nomeOperador(x.operador_id)))}</span><b>${esc(nomeOperador(x.operador_id))}</b><span class="lock">${ICO_CADEADO}</span><span class="n">${x.pacotes}</span></div>
-      <div class="sub"><b style="color:var(--tinta)">Saca do ${esc(x.motorista)}</b> · ${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div>
-      <div class="barra-s ${x.est === 'parada' ? 'par' : ''}"><i style="width:${Math.min(100, Number(x.pacotes) / Math.max(1, maior ? maior.pacotes : 1) * 100)}%"></i></div>
-      <div class="sub" style="display:flex;justify-content:space-between"><span>iniciada ${esc(horaCurta(x.aberta_em))}</span><span style="${x.est === 'parada' ? 'color:var(--erro);font-weight:700' : ''}">último bipe há ${esc(haTempo(agora - new Date(x.ultimo_bipe_em || x.aberta_em).getTime()))}</span></div>${tempoSaca(x, agora)}</button>`).join('')}</div>`
+    ${ativas.length ? `<div class="ativos">${ativas.map((x) => `<button type="button" class="ativo ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><div class="t"><span class="av" aria-hidden="true">${esc(iniciais(nomeOperador(x.operador_id)))}</span><b title="${esc(nomeOperador(x.operador_id))}">${esc(nomeCurto(nomeOperador(x.operador_id)))}</b><span class="lock" title="Saca travada para este colaborador">${ICO_CADEADO}</span><span class="n" title="Pacotes na saca">${x.pacotes}</span></div>
+      <div class="quem"><b title="Saca do ${esc(x.motorista)}">Saca do ${esc(x.motorista)}</b><span title="${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}">${esc([x.cidade, x.rota].filter(Boolean).join(' · ')) || '&nbsp;'}</span></div>
+      <div class="barra-s ${x.est === 'parada' ? 'par' : ''}" role="img" aria-label="${x.pacotes} pacotes"><i style="width:${Math.max(3, Math.min(100, Number(x.pacotes) / Math.max(1, maior ? maior.pacotes : 1) * 100))}%"></i></div>
+      <div class="lin"><span>iniciada ${esc(horaCurta(x.aberta_em))}</span><span style="${x.est === 'parada' ? 'color:var(--erro);font-weight:700' : ''}">último bipe há ${esc(haTempo(agora - new Date(x.ultimo_bipe_em || x.aberta_em).getTime()))}</span></div>${tempoSaca(x, agora)}</button>`).join('')}</div>`
       : '<div class="vazio" style="margin-bottom:14px"><b>Nenhuma saca em andamento</b>Quando alguém começar a bipar para um motorista, a saca aparece aqui.</div>'}
     <div class="sac-grade"><div class="cartao"><div class="filtros">
       <div class="seg" id="sacEst" role="group" aria-label="Situação"><button type="button" data-e="and" aria-pressed="${estSac.estado === 'and'}">Em andamento · ${ativas.length}</button><button type="button" data-e="fech" aria-pressed="${estSac.estado === 'fech'}">Fechadas · ${fechadas.length}</button><button type="button" data-e="todas" aria-pressed="${estSac.estado === 'todas'}">Todas · ${com.length}</button></div>
@@ -1820,12 +1837,12 @@ function desenharSacas() {
       <label class="c">Buscar<span class="busca-in">${ICO_BUSCA}<input id="sacBusca" placeholder="Motorista, rota ou colaborador" value="${esc(estSac.busca)}" /></span></label></div>
       ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Saca</th><th>Colaborador</th><th>Status</th><th class="num">Pacotes</th><th>Início</th><th>Último bipe</th><th class="num">Duração</th></tr></thead><tbody>
       ${lista.map((x) => `<tr class="clic ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><td><b>${nomeSaca(x)}</b><div class="sub">${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div></td>
-        <td data-r="Colaborador">${esc(nomeOperador(x.operador_id))} ${x.est !== 'fechada' ? `<span class="lock">${ICO_CADEADO}</span>` : ''}</td><td data-r="Status">${pilulaSaca(x.est)}</td><td class="num" data-r="Pacotes"><b>${x.pacotes}</b></td><td data-r="Início">${esc(horaCurta(x.primeiro_bipe_em || x.aberta_em))}</td>
+        <td data-r="Colaborador" title="${esc(nomeOperador(x.operador_id))}">${esc(nomeCurto(nomeOperador(x.operador_id)))} ${x.est !== 'fechada' ? `<span class="lock">${ICO_CADEADO}</span>` : ''}</td><td data-r="Status">${pilulaSaca(x.est)}</td><td class="num" data-r="Pacotes"><b>${x.pacotes}</b></td><td data-r="Início">${esc(horaCurta(x.primeiro_bipe_em || x.aberta_em))}</td>
         <td data-r="Último bipe">${x.ultimo_bipe_em ? esc(horaCurta(x.ultimo_bipe_em)) : '—'}<div class="sub" style="${x.est === 'parada' ? 'color:var(--erro)' : ''}">${x.ultimo_bipe_em ? 'há ' + esc(haTempo(agora - new Date(x.ultimo_bipe_em).getTime())) : ''}</div></td><td class="num" data-r="Duração"><b>${esc(resumoTempo(x.primeiro_bipe_em || x.aberta_em, x.ultimo_bipe_em || x.aberta_em, agora).total)}</b></td></tr>`).join('')}</tbody></table></div>`
         : '<div class="vazio"><b>Nenhuma saca aqui</b>Mude o filtro ou o período.</div>'}
       ${lista.length ? '<div style="margin-top:10px"><button class="btn mini" id="sacCsv" type="button">Baixar CSV</button></div>' : ''}</div>
       <div class="cartao gaveta" id="sacGaveta"></div></div>`;
-  corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); }));
+  corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); if (window.innerWidth <= 1280) { const g = $('sacGaveta'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
   $('sacEst').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-e]'); if (b) { estSac.estado = b.dataset.e; desenharSacas(); } });
   $('sacCid').addEventListener('change', () => { estSac.cidade = $('sacCid').value; desenharSacas(); });
   $('sacOp').addEventListener('change', () => { estSac.op = $('sacOp').value; desenharSacas(); });
@@ -2203,24 +2220,23 @@ function desenharMeta() {
     (semTabela ? '<div class="aviso">A tabela de ajustes ainda não existe: rode o script 10-meta-dia.sql no Supabase. A meta abaixo usa a regra padrão.</div>' : '') +
     (dsAviso.length ? `<div class="aviso">Divergência com o DS — ${dsAviso.map(esc).join(' · ')}</div>` : '') +
     (r.universo ? '' : '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Quando os pacotes forem bipados no modo Chegada, a meta aparece aqui.</div></div>') +
-    (r.universo ? `<div class="tiles">
+    (r.universo ? `<div class="tiles tiles4">
       ${tile('Atribuídos', fmtPct(r.taxa), esc(r.atribuidos + ' de ' + r.universo + ' · meta ' + r.pct + '%'), cor)}
       ${tile('Meta em pacotes', r.meta, esc(bateu ? 'meta batida ✓' : 'faltam ' + r.faltam + (ritmo ? ' · ' : '')) + (bateu ? '' : esc(ritmo)), bateu ? 'ok' : '')}
       ${tile('Chegaram', r.universo, aj ? 'com ajuste manual' : 'no dia')}
       ${tile('A expedir', r.a_expedir, 'sem motorista ainda')}
-      ${tile('Atribuídos (pacotes)', r.atribuidos, aj ? 'com ajuste manual' : 'no dia')}
     </div>
     <div class="cartao"><div class="cartao-topo"><h2>Progresso</h2><span class="sub">${esc(fmtPct(r.taxa))} de ${esc(String(r.pct))}% exigidos</span></div>
       <div style="position:relative;height:16px;background:var(--linha);border-radius:9px;overflow:hidden"><div style="height:100%;width:${Math.min(100, r.taxa).toFixed(1)}%;background:var(${bateu ? '--ok' : cor === 'erro' ? '--erro' : '--ambar'})"></div>
       <div style="position:absolute;top:0;bottom:0;left:${Math.min(100, r.pct)}%;width:2px;background:var(--tinta)"></div></div></div>` : '') +
-    (motoristas.length ? `<div class="cartao"><div class="cartao-topo"><h2>Atribuídos por motorista</h2><span class="sub">${pk.length} pacote${pk.length === 1 ? '' : 's'}</span></div><div class="rolagem"><table class="tabela"><thead><tr><th>Motorista</th><th>Pacotes</th><th>% do total</th></tr></thead><tbody>
+    (motoristas.length ? `<div class="cartao"><div class="cartao-topo"><h2>Atribuídos por motorista</h2><span class="sub">${pk.length} pacote${pk.length === 1 ? '' : 's'}</span></div><div class="rolagem"><table class="tabela"><thead><tr><th>Motorista</th><th class="n">Pacotes</th><th class="n">% do total</th></tr></thead><tbody>
       ${motoristas.map(([n, q]) => `<tr><td><b>${esc(n)}</b></td><td class="n" data-r="Pacotes">${q}</td><td class="n" data-r="% do total">${esc(fmtPct(q / pk.length * 100))}</td></tr>`).join('')}</tbody></table></div></div>` : '') +
     (gestao ? `<div class="cartao" id="metForm"><div class="cartao-topo"><h2>Ajuste manual deste dia</h2><span class="sub">${cm && cm.por_nome ? 'Último ajuste: ' + esc(cm.por_nome) + ' · ' + esc(horaCurta(cm.atualizado_em)) : 'Sem ajustes — vale a regra padrão'}</span></div>
       <div class="filtros">
         <label class="c">Percentual da meta (%)<input id="mfPct" type="number" min="1" max="100" step="0.5" value="${cm && cm.percentual != null ? esc(cm.percentual) : ''}" placeholder="${PCT_PADRAO}" style="width:130px" /></label>
         <label class="c">Ajuste em “chegaram” (+/−)<input id="mfUni" type="number" step="1" value="${cm ? esc(cm.ajuste_universo || 0) : 0}" style="width:130px" /></label>
         <label class="c">Ajuste em “atribuídos” (+/−)<input id="mfAtr" type="number" step="1" value="${cm ? esc(cm.ajuste_atribuidos || 0) : 0}" style="width:130px" /></label>
-        <label class="c">Horário de corte<input id="mfCorte" type="time" value="${esc(r.corte)}" style="width:120px" /></label>
+        <label class="c">Horário de corte<input id="mfCorte" type="time" value="${esc(r.corte)}" style="width:150px" /></label>
       </div>
       <div class="filtros" style="margin-top:10px">
         <label class="c">Chegada no DS (Entregue)<input id="mfDsC" type="number" min="0" value="${cm && cm.ds_chegada != null ? esc(cm.ds_chegada) : ''}" style="width:150px" /></label>
