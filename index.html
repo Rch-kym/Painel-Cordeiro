@@ -466,6 +466,31 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
 .pk:hover { border-color:var(--tinta-2); } .pk time { font-size:12px; color:var(--tinta-2); }
 .volta { border:0; background:none; color:var(--azul); font-weight:700; font-size:13px; padding:0; margin-bottom:8px; cursor:pointer; }
 .dl { display:grid; grid-template-columns:100px 1fr; gap:6px 10px; font-size:13px; margin:10px 0; } .dl dt { color:var(--tinta-2); } .dl dd { margin:0; font-weight:600; }
+/* ---- 1.16: tempos, conciliação, modal ---- */
+.tempo { display:flex; border:1px solid var(--linha); border-radius:10px; overflow:hidden; background:var(--superficie-2); margin-top:8px; }
+.tempo > div { flex:1; padding:8px 12px; border-right:1px solid var(--linha); min-width:0; }
+.tempo > div:last-child { border-right:0; }
+.tempo small { display:block; font-size:11px; letter-spacing:.7px; text-transform:uppercase; color:var(--tinta-2); font-weight:800; }
+.tempo b { font-size:17px; font-weight:750; letter-spacing:-.3px; }
+.tempo.grande b { font-size:24px; }
+.tempo .tt { background:var(--alerta-fundo); } .tempo .tt b { color:var(--alerta); }
+.cid { border:1px solid var(--linha); border-radius:12px; background:var(--superficie); margin-bottom:10px; overflow:hidden; }
+.cid.falta { border-color:var(--alerta); } .cid.ok2 { border-color:var(--ok); }
+.cid .cab { display:grid; grid-template-columns:minmax(150px,1.2fr) minmax(0,2fr) auto auto; gap:18px; align-items:center; padding:14px 18px; width:100%; text-align:left; background:none; border:0; color:inherit; font:inherit; cursor:pointer; }
+.cid .cab:disabled { cursor:default; }
+.cid .cab .nome { font-size:16px; }
+.cid .num { display:flex; gap:18px; font-size:12px; color:var(--tinta-2); } .cid .num b { display:block; font-size:18px; color:var(--tinta); }
+.barra-c { height:8px; border-radius:5px; background:var(--superficie-2); overflow:hidden; margin-top:8px; } .barra-c i { display:block; height:100%; background:var(--ambar); border-radius:5px; } .barra-c.ok i { background:var(--ok); }
+.cid .corpo2 { border-top:1px solid var(--linha); padding:6px 18px 14px; background:var(--superficie-2); }
+.cid .chev { color:var(--tinta-2); font-size:18px; width:14px; }
+.badge { display:inline-flex; align-items:center; gap:6px; padding:4px 12px; border-radius:20px; font-size:12.5px; font-weight:800; white-space:nowrap; }
+.badge.v { background:var(--ok-fundo); color:var(--ok); } .badge.a { background:var(--alerta-fundo); color:var(--alerta); }
+@media (max-width:720px) { .cid .cab { grid-template-columns:1fr auto; gap:8px 10px; padding:12px; } .cid .cab > div:nth-child(2) { grid-column:1 / -1; order:3; } .tempo.grande b { font-size:19px; } }
+.modal-fundo { position:fixed; inset:0; background:rgba(4,11,18,.6); display:grid; place-items:center; z-index:200; padding:16px; }
+.modal { background:var(--superficie); color:var(--tinta); border:1px solid var(--linha); border-radius:14px; padding:20px 22px; max-width:440px; width:100%; box-shadow:0 20px 60px rgba(0,0,0,.35); }
+.modal h2 { margin:0 0 10px; font-size:18px; } .modal p { margin:0 0 10px; line-height:1.5; }
+.modal-acoes { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
+.lcRow input { width:100%; min-width:120px; }
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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" />
 <link rel="apple-touch-icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAIAAAACACAYAAADDPmHLAAAABmJLR0QA/wD/AP+gvaeTAAAQ9UlEQVR4nO2deUAUR77Hv9UDA8ONKCoS8OBGEFDxNlySaAwaTeJGn0ferq7xmWwSj02ySfQl0VUTE7PRGIzX+oybaGTdxJPDIwpBxQMFQRTBAxWQa7gGmOl6fxhcVq6Znj5msD9/OdNdVV/s71RXV/+qfgQ8Yh8U68fotBEAMwigPgD6AsQZoHYALPls6wlAA6AKBJUArlBKM0GYdHWD5XFcP9TAVyPE2AqcAseFsKxuFmHIy6Dow4comQ6pAXAYDP22KutoEgBqTGVcDUCcA6MmspS8B2C4MQJkjCKHUvpXdc7Y74DlLJcKDDaAQ2BUOGHJBhAM4dKgjCCcZ4A3K66knDS0oN4GcHcfoapxsF1DQRcAYAxtSEZwWErpl+p69j0UHtfoW0gvA9j7RvoyDLMbBMHc9cmIAsUlsIrJVVcTC/Q5vVMDOAfGjGYp/RmAk9HiZMSB0FIGzJSK7ORTnZ3aYVfuEBA1ngVNhHzxzQtKerCgiY7+0eM6O7XdHsA5MGY0C5oIChW/6mRERAOKuKqclKT2TmjTAPa+kb6MgkmH/MvvCqgZloyuyE2+3NbBVrcAd/cRKoZhdkO++F0FB5ah++2CY13bOtjKADX2Np/Ko/0uh4dCq9uONnp8RcsPDoFR4QD5pq0TZcweb1X3/hWaBwWnW37ZsgcghCUbIE/ydFkowSfdgiPcW3736GI7B0ZNlKd3uzx2Oq3F5y2/eGSA317syHR56IuOfpGDmz8xAOAUEBMK+a3ekwKhDPNB8wcGAFjKzpROj4zYECDOITDCC/jNAIQhL0srSUZkCKGK/wYAxt430leO5HkimQEADKMgkVIrkZEED2f/2IHMwwBOmScRyuhiGYD6Si1ERipICAOgn9QyZKSBUhpkAcBBaiF84Oxoj9AAL/h7ecDLszc83HrB1cUR3ZzsYWergqWFBQBAo2lETb0G5RVVKCopw807JbhacAtX8m7hct4NaBqaJP5LRKUXcQyIbgCglFqJoVgoFBgxOADjRoVh7NAg+PR/yug6G5u0uHjlOo6fzsThXzKQe/0WD0pNmgbiGBBt1MICsQn08cQrcVGYHDMS3ZyE7byuFRZhz8ET2H3gBErKKgVtSyrMwgCEEMSMDMVr/xWH4aH+orff2KTFT8lp2PjdfuRcvyl6+0Ji8gaIHB6Cd177HYJ8pR+rUkqx/2g6Vn/zPW7cvi+1HF4wWQP07dMTHy96FdEjQ6WW0oomrRZbfjiEz77dgzoNb+s0JcHkDEAIwdxpE/Dn134HlZVpj01v3yvB2yvikZqRJbUUziise/RfLrWIZnp0c8SW1Yswe2osLC0UnReQGEd7W7z47FjYWFsh7fwVsNSkfkt6YTI9QGiAF7asWoRert2klsKJX8/nYN5f1qKsolpqKQZhEvF/EyLCsffrZWZ78QFgRJg/fvr2EzzVu83oa5NFcgO8EheF+BVvwdratO/3+tDPvRd2b/gAri7ms6RCUgNMnxSNz96dB4VCch/yhqebKzatfAsWCtMfwwASGiAuZgRWL/0DCOl6SxDCB/lhwcw4qWXohSQGCB/khy8/XNilfvmP8+acKejt6iK1jE6xELvB3q4u2LxqEayUwjSt07HIvlaIC9n5yCu4jaLiMlRWVUPT+PAtn8paCVcXZ3i4ucLfywODg3zg6cb/wM3aWon/mRWH9z/bxnvdfCLqY6CFQoG93yzD0CB+Y1C0Oh2OpWdi35FTSEm7CHVNrUHlPdxcMf7pcEx9dgwG+vblTVdtvQaDxs8z6dlCUXuAP706hdeLr9E04v/2JWHTPw6iqPiB3uVUVkqMHRYMfy8PWCuVKCp+gMSTGYj/x34MCfLBwlmTMG70YKPHJ7Yqa4wbMxj/Skozqh4hEc0Afl4eeGPOZF7qopQi4cgprPh6F+6XlOtdTqFgMH/683h99iQ42Nm2Op6SdgEfrN2GOUs+xdBgH6ydGwZ3VSUIYwGL7gOhcDX8vcSYIQNlAxBCsObPcx9F5RhDSVkl3vp4I46lXzSonNLSAptXLUbMqPYvYvTIUAwN9sG8pSsxP/AKet7NQnN8UOO1BFi4DYdq8CKA0f/vCA30Mkin2IgyDJ/67BgMCfIxup4zmbkYN3OpwRcfAJb/aXaHF78ZBztbfPN7Twx2b73vovZuOhpvJhrUrqd7L4POFxvBDaC0tMDSPxq/8Gj/0XRMe/1jlJZXGVzWz8sDs6Z0ul/SIywrL7V7THvvrEFt21hbmfQsp+C3gGkTI+Deq4dRdew/mo4FH/wNWp2OU/npz0eCYfQf0FFtffsHOzrWDgrGdGcFBe0BGIZg/oznjaojNSMLC5d9xfniA8CQYMOePBj79gNMGQcPg+rS6VhoGkz3MVBQA0SNCEE/I+6Bd+6XYu57X6CxSWuUjm6O9gadb+U9FSCt/2uIwgrKAYZN8ZaUVUCn47SPsygIaoAZk2I4l2VZioXL1qNSXWO0juoaw7ptRY8g2Az/EIxjv4dGIAooXPyhGrMCjL175xW0ICfftEPLBRsDdHNyQNTIEM7lt+09gjOZubxouZSbj0AfT4PKKFwHwdb1c1BdAwAFiILbf9Xpi/z8DUIhWA8w/ukhnJ/7yyvVWBP/A29aDv+SwbksUVhxvvgAcMSItsVAMAPEjh3KueyGnT+huqaONy3H0zNRXFrBW336knE5D3kFd0Rv1xAEMYClhQVGhgVwKltdU4cdCcm86mnSahH//QFe69SHjd/9LHqbhiKIAYL9+sFWZc2pbMKRVNTWGf6s3RnbfzyMW3dLeK+3Pc5k5uLwCcMmjaRAEAOEBnCf/957+BcelfwbTUMTFq2MB8sK//a7TtOARSvjQc0gTFwQAxg64m6mtLwK57Ov8azm36RmZGHt5j2C1Q88fFO5ZGU88m/eFbQdvhDEAF59DXtWbubUuSzBf6HrtiXg73vb3T7faD76aif+mZgqWP18I4gBPPv05FTuYnY+z0paQynFe59twbqtCbx20U1aLZau2oT4Xft5q1MMeDeA0tICLk6GTb02k5MvztJrSinWbPoBc5Z8ysu6/4I79zH1tf/Fzn0pPKgTF94N4OxkzzmU6s7dUp7VdEzSqXMY/fKbWL/jX5yePB5UqPHx+p2InrEYGZfzBFAoPLxPBdvZcE8xVFqh5lGJftTU1mPl17vw1Y59eCF2FMZHDMXQYD/YWFu1eb66phapGdk4cOw0Dh4/bfZ7CvFuAKUl9xzR9Rq98x3yzsMJqCTsSEiChUKB/h698VTvHrD5bT5DXV2H2/eKUVhULMqjpFiIvi7AHNDqdMgruGPy07h8wPsYoKmJe5eosmq725URDt4NUFvPPfrFxblLbFloVvBugIoq7gO5Pr2686hERh94N4CmoYlzFI8fD5s9yhiGIDOBNzm+dTPmJZIMNwQxwDWOo+eRgwN5ViLTGYIYIPsatyldt54uGOjTl18xMh0iiAEuXrnOueyUZ0bzqESmMwQxQGZOPucp0pcmRMDaivtsooxhCGIATUMTTmde4VTWxdkeLz8Xwa8gmXYRLCo4+eR5zmXfmP2CSS+o7EoIZoADJ85wfmni1tMFC2dO4lmRTFsIZoD7JeVGbaK8cNZk+Htxiy2U0R9B1wbu+vko57JKSwts/Oj1dt/Ly/CDoAY4eOyMQXv4PI5P/6ew7sMFBq3tlzEMQbeLZ1kWIAQRw7jnpvTp5w4nRzsc+zWTR2XcUSgY+A3wgL+XB/r0dEFdfSPqTXgbuM4QfJ9AG2sr/JrwFXp0czSqnu0/JuL9z7dKFo2jslJiwcw4zJ76DLq3eG3NshRp57KxZtMPZhkXKHjCiCatDg0NjUanfgkJGIAAL08kp11Ak5EbRhjKAI/e2L3hQzwfPQI2qv8ckxBC4NHHFdMmRqK+oQEZl8zLBKJkDMm6WogJEeHobmQv4NW3D56LCMe5rGsofiDOat8Xx4/FtjVLOt33lxCCp8ODUVRchqy8QlG08YFoW8WGD/JDwsblvAzomrRabP7+ED7fuleQhaTAw6RVH739ql5by7WkprYew6e+gfJK8SOcuSBazqCi4gdwcrBF2EBvo+tSMAyGBvtielwUWEqRm3+bt9uCh5sr3pn/Ctb+ZT68+/YxuLxSaYkHFWqzGQ+Iulm0tbUSBzevgJ+XYTttdUZNbT32JaXhn4mncDbzqsE7itmqrBE9KhRTx49F1PAQo7exP5Z+ETPe/KtRdYiF6EmjvDzdcGjbStgasYCkI9Q1tUi/kIOLOfnIu3EHRfcfoLyqBuqaOigUDBztbNCjmyM8+vSE/wAPhA30RmigF5SW/EXI5924jYjpi3mrT0gkyRoWO2YItq5e3GUneC5fLcAzs9+RWoZeSJKyI/FkBpZ9sV2KpkXhav5tqSXojWQ5W7bsOYxPN+2WqnlB+floutQS9EbSpD1fbN2LNZv42w7OFDiffQ0padxjIcRG8tSx6RdyUFapRsSwELMfE5SWV2HW26tQwcPupmJhEmm7tv+YiNmL1/C6N6DY5N24jcnzPkRhUbHUUgzCJAwAAEd/vYDxr76L7Dxxdgnhk4Qjp/Dc799HwZ37UksxGMlvAS2pUNdg94FjsLJUIizQ2+RvCZXqGixeGY+1m39Ek1bcF1R8YTLZwx8nxH8AVr8zF0G+/aSW0gpKKfYlpWH5ur9zymBiSpisAYCHCSdemhCBJXNfgltP08jCefbyVaxYv4u3ncylxqQN0IyV0gLTJkbij9MnGpWAwhhSM7KwfsdPOHHGNCKT+MIsDNAMwxBEDg/BK3FRiBkVxuv8fVtUVFUjITEVO/clm9XsniGYlQFa4mBni9ixgzFuVBjGDA2Ck4MdL/UWFhXjRPolJJ06h5NnL5vt4E5fzNYALWEYAu9+7ggN8EKAtye8+7rBvZcr3Hq6QGXV9gqjiqpq3C8tR8GdYlwvLMLlqwU4n30d90rKRFYvLV3CAB1hba2ElaUS9rYqNDY1oaFRi5q6OpNO5CQmXX6bOI2mERpNI6qqzWd6VkwYAOYb1C5jLA0MCDWP6EUZIahmwJJ7UquQkQw1A0K5L+GVMXduMATEfKIXZHiFUFxlCAPh8qfImDSUIZkED+cCbgHgluhHxmyhROfNAKAA3Sm1GBnRuanOPn6dAQCWJdsAdOkZQZnHINgN/BYSVp2bkkcoxM+tKiMZDMFOoEVMIMvgI+nkyIgJAU2tyEq5BLQwgDo75SyAvZKpkhENlpBPmv/9H1HBCkbxFoBa0RXJiAahSFNnpxxu/qxoebC+JF+t6t6vDoQ8K740GcEh0BGQFzSlNx7Fr7daF1CZc/RLAIcf/17G/KEs/VvlleQLLb9ra2EI1TKYA6BrBsE9qRByTt1k9e7jX7e5Mqg2K6WYYTARQLXgwmTEoAyEnYbrh1rFfrS7NKwiK+USKKYCkC6dpwwf1FFKJlZlHW0zNXuHawOrclKSQBEHAmG24pIRmjpKyBR1TnK7GxZ0uji0KicliQGJBaHipvaWMZYySkm0Ojv5SEcn6bU6uCI7+RTRseGguMSPNhlBIeQcGDqso19+M4rOTmhG86CwssHOc7uVJWNDgGEATHvp7pMIgY5S+qW6UTm9ITdJrx6b00V0DogewwLrAIRxKS/DP4QiDYQsfPw5v9Ny3JtczjgEnJzOAO9SIIB7PTLGQEBTWUI+aTm9a1h5HjQ4+sdEg6F/AMV4AHIKcOG5CZA9DIsdFbnJl42piN/7eOBLSkdSFkEpGU4oggEaCBAnAE4ArHltq+vTCKAGQBmAmyDIA8hFCu0xdfZx7pk5H+P/AUW5Z0IRps0tAAAAAElFTkSuQmCC" />
@@ -505,7 +530,7 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
     <nav id="abas" aria-label="Seções"></nav>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.15</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.16</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -758,6 +783,32 @@ function pacotesDaSaca(eventos) {
   }
   return [...por.values()].sort((a, b) => new Date(b.hora) - new Date(a.hora));
 }
+// "1h 35min", "38min", "45s". Sem dados: "—".
+function duracaoTotal(ms) {
+  if (!Number.isFinite(ms) || ms < 0) return '—';
+  const seg = Math.round(ms / 1000);
+  if (seg < 60) return seg + 's';
+  const m = Math.floor(seg / 60);
+  if (m < 60) return m + 'min';
+  const h = Math.floor(m / 60), r = m % 60;
+  return h + 'h' + (r ? ' ' + r + 'min' : '');
+}
+// Primeiro e último bipe -> início, fim e tempo total. "ativo" = último bipe há menos de 15 min.
+function resumoTempo(ini, fim, agoraMs) {
+  if (!ini || !fim) return { inicio: '', fim: '', total: '—', ms: 0, ativo: false };
+  const a = new Date(ini).getTime(), b = new Date(fim).getTime();
+  return { inicio: horaCurta(ini), fim: horaCurta(fim), total: duracaoTotal(b - a), ms: b - a, ativo: Number.isFinite(agoraMs) ? agoraMs - b < 15 * 60000 : false };
+}
+function estadoCidadeConc(c) { return Number(c.faltam) === 0 ? 'concluida' : 'faltando'; }
+function pctConc(c) { const t = Number(c.chegaram); return t ? Math.round(Number(c.atribuidos) / t * 100) : 0; }
+function ritmoMin(pacotes, ms) { return ms > 0 ? Math.round(pacotes / (ms / 60000) * 10) / 10 : 0; }
+// Cidades da conciliação: as que faltam pacote primeiro (mais pacotes faltando antes), depois as concluídas.
+function ordenarCidadesConc(lista) {
+  return [...lista].sort((a, b) => (estadoCidadeConc(a) === estadoCidadeConc(b) ? 0 : estadoCidadeConc(a) === 'faltando' ? -1 : 1)
+    || Number(b.faltam) - Number(a.faltam) || String(a.cidade).localeCompare(String(b.cidade), 'pt-BR'));
+}
+// Chave de comparação de um local (igual à do banco: minúsculas, termo|cidade).
+function chaveLocal(termo, cidade) { return String(termo || '').trim().toLowerCase() + '|' + String(cidade || '').trim().toLowerCase(); }
 /* PURAS:FIM */
 
 
@@ -860,13 +911,16 @@ ICONES.bipagem = ICONES.produtividade;
 ICONES.naorecebidos = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5M8.5 11h5"/></svg>';
 ICONES.backlog = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
 ICONES.sacas = '<svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-1 12H6L5 8z"/><path d="M9 4v4h6V4"/></svg>';
+ICONES.chegada = '<svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>';
 ICONES.fechamento = '<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 9l2 2 4-4.5M8.5 15.5h7"/></svg>';
 const ABAS = [
   { id: 'painel', nome: 'Painel do dia', curto: 'Painel', papeis: TODOS },
   { id: 'acareacoes', nome: 'Acareações', curto: 'Acareações', papeis: GESTAO },
   { id: 'motoristas', nome: 'Motoristas e rotas', curto: 'Rotas', papeis: TODOS },
+  { id: 'produtividade', nome: 'Produtividade', curto: 'Produtiv.', papeis: TODOS },
   { id: 'bipagem', nome: 'Bipagem e histórico', curto: 'Bipagem', papeis: TODOS },
   { id: 'sacas', nome: 'Sacas', curto: 'Sacas', papeis: TODOS },
+  { id: 'chegada', nome: 'Chegada e conciliação', curto: 'Chegada', papeis: TODOS },
   { id: 'naorecebidos', nome: 'Não recebidos', curto: 'Não receb.', papeis: GESTAO },
   { id: 'backlog', nome: 'Backlog', curto: 'Backlog', papeis: GESTAO },
   { id: 'fechamento', nome: 'Fechamento', curto: 'Fechar', papeis: GESTAO },
@@ -932,13 +986,13 @@ async function iniciarApp() {
   iniciarTempoReal();
 }
 function irPara(id, arg) {
-  if (id === 'bipagem') id = E.sub || 'produtividade';
+  if (id === 'bipagem') id = E.sub === 'pacote' ? 'pacote' : 'problemas';
   if (id === 'rotas') id = 'motoristas';
   E.aba = id;
-  const nav = SUBTELAS[id] ? 'bipagem' : id;
+  const nav = id === 'produtividade' ? id : (SUBTELAS[id] ? 'bipagem' : id);
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
-    acareacoes: telaAcareacoes, sacas: telaSacas, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
+    acareacoes: telaAcareacoes, sacas: telaSacas, chegada: telaChegada, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
     cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
@@ -1437,7 +1491,7 @@ function abrirTR() {
   TR.ws = w;
   w.onopen = () => {
     TR.token = E.sessao ? E.sessao.access : '';
-    enviarTR({ topic: TOPICO_TR, event: 'phx_join', ref: '1', join_ref: '1', payload: { config: { broadcast: { ack: false, self: false }, presence: { key: '' }, postgres_changes: [{ event: '*', schema: 'public', table: 'nr_achados' }, { event: '*', schema: 'public', table: 'nr_listas' }, { event: '*', schema: 'public', table: 'sacas' }, { event: '*', schema: 'public', table: 'resolucoes' }, { event: '*', schema: 'public', table: 'eventos' }] }, access_token: TR.token } });
+    enviarTR({ topic: TOPICO_TR, event: 'phx_join', ref: '1', join_ref: '1', payload: { config: { broadcast: { ack: false, self: false }, presence: { key: '' }, postgres_changes: [{ event: '*', schema: 'public', table: 'nr_achados' }, { event: '*', schema: 'public', table: 'nr_listas' }, { event: '*', schema: 'public', table: 'sacas' }, { event: '*', schema: 'public', table: 'resolucoes' }, { event: '*', schema: 'public', table: 'eventos' }, { event: '*', schema: 'public', table: 'locais_rota' }] }, access_token: TR.token } });
     clearInterval(TR.hb);
     TR.hb = setInterval(() => {
       enviarTR({ topic: 'phoenix', event: 'heartbeat', payload: {}, ref: String(++TR.ref) });
@@ -1456,9 +1510,12 @@ function receberTR(m) {
   else if (m.event === 'postgres_changes') {
     const d = m.payload && m.payload.data ? m.payload.data : {};
     if (d.table === 'nr_achados' && d.type === 'INSERT' && d.record && E.aba === 'naorecebidos') aviso('Pacote encontrado: ' + d.record.chave + ' · ' + nomeOperador(d.record.achado_por));
+    if (d.table === 'locais_rota' && d.record && E.sessao && d.record.atualizado_por !== E.sessao.id) aviso('Local ' + (d.record.removido ? 'removido' : 'atualizado') + ' por ' + (d.record.por_nome || 'alguém') + ': ' + d.record.termo + ' → ' + d.record.rota);
     clearTimeout(TR.dep); // junta rajadas (vários bipes seguidos) numa atualização só
     const nr = d.table === 'nr_achados' || d.table === 'nr_listas';
     TR.dep = setTimeout(() => {
+      if (d.table === 'locais_rota') { if (E.aba === 'locais' && $('lcCorpo')) carregarLocais(true); return; }
+      if (E.aba === 'chegada' && $('cheCorpo')) { carregarChegada(true); return; }
       if (nr) { if (E.aba === 'naorecebidos' && $('nrCorpo')) carregarNR(true); return; }
       if (E.aba === 'sacas' && $('sacCorpo')) carregarSacas(true);
       else if (E.aba === 'problemas' && $('prCorpo')) carregarProblemas(true);
@@ -1702,7 +1759,8 @@ function telaSacas() {
 async function carregarSacas(silencioso) {
   const meu = ++tokenSac;
   try {
-    const r = await lerTudo('/rest/v1/sacas_resumo?select=id,motorista,rota,cidade,numero,dia,status,aberta_em,fechada_em,operador_id,pacotes,erros,pessoas,ultimo_bipe_em&or=(and(dia.gte.' + eFiltroSeguro(estSac.de) + ',dia.lte.' + eFiltroSeguro(estSac.ate) + '),status.eq.em_andamento)&order=aberta_em.desc', 10);
+    const urlSacas = (extra) => '/rest/v1/sacas_resumo?select=id,motorista,rota,cidade,numero,dia,status,aberta_em,fechada_em,operador_id,pacotes,erros,pessoas,ultimo_bipe_em' + extra + '&or=(and(dia.gte.' + eFiltroSeguro(estSac.de) + ',dia.lte.' + eFiltroSeguro(estSac.ate) + '),status.eq.em_andamento)&order=aberta_em.desc';
+    let r; try { r = await lerTudo(urlSacas(',primeiro_bipe_em'), 10); } catch (_) { r = await lerTudo(urlSacas(''), 10); } // sem o SQL 09 ainda
     if (meu !== tokenSac || !$('sacCorpo')) return;
     dadosSac = r.itens;
     if (!estSac.sel || !dadosSac.some((x) => x.id === estSac.sel)) { const a = dadosSac.find((x) => x.status !== 'fechada'); estSac.sel = a ? a.id : (dadosSac[0] ? dadosSac[0].id : null); estSac.pac = null; }
@@ -1745,22 +1803,22 @@ function desenharSacas() {
       <div class="prob zero" style="cursor:default"><b>${ativas.length}</b><span>Em andamento</span><small>${pessoas} colaborador${pessoas === 1 ? '' : 'es'}</small></div>
       <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${fechadas.length}</b><span>Fechadas</span><small>${fechadas.length ? 'média ' + mediaF + ' pacotes' : 'no período'}</small></div>
       <div class="prob zero" style="cursor:default"><b>${ativas.reduce((a, x) => a + Number(x.pacotes), 0)}</b><span>Pacotes em sacas abertas</span><small>${maior ? 'maior: ' + nomeSaca(maior) + ' · ' + maior.pacotes : '—'}</small></div>
-      <div class="prob ${paradas.length ? 'erro' : 'zero'}" style="cursor:default"><b>${paradas.length}</b><span>Paradas há +10 min</span><small>${paradas.length ? nomeSaca(paradas[0]) + ' · ' + esc(nomeOperador(paradas[0].operador_id)) : 'nenhuma'}</small></div></div>
+      <div class="prob ${paradas.length ? 'erro' : 'zero'}" style="cursor:default"><b>${paradas.length}</b><span>Paradas há +10 min</span><small>${paradas.length ? nomeSaca(paradas[0]) + ' · ' + esc(nomeOperador(paradas[0].operador_id)) : 'nenhuma'}</small></div>${kpiTempoSacas(fechadas)}</div>
     <h2 class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800;margin:4px 0 10px">Quem está fazendo o quê agora</h2>
     ${ativas.length ? `<div class="ativos">${ativas.map((x) => `<button type="button" class="ativo ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><div class="t"><span class="av" aria-hidden="true">${esc(iniciais(nomeOperador(x.operador_id)))}</span><b>${esc(nomeOperador(x.operador_id))}</b><span class="lock">${ICO_CADEADO}</span><span class="n">${x.pacotes}</span></div>
       <div class="sub"><b style="color:var(--tinta)">Saca do ${esc(x.motorista)}</b> · ${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div>
       <div class="barra-s ${x.est === 'parada' ? 'par' : ''}"><i style="width:${Math.min(100, Number(x.pacotes) / Math.max(1, maior ? maior.pacotes : 1) * 100)}%"></i></div>
-      <div class="sub" style="display:flex;justify-content:space-between"><span>iniciada ${esc(horaCurta(x.aberta_em))}</span><span style="${x.est === 'parada' ? 'color:var(--erro);font-weight:700' : ''}">último bipe há ${esc(haTempo(agora - new Date(x.ultimo_bipe_em || x.aberta_em).getTime()))}</span></div></button>`).join('')}</div>`
+      <div class="sub" style="display:flex;justify-content:space-between"><span>iniciada ${esc(horaCurta(x.aberta_em))}</span><span style="${x.est === 'parada' ? 'color:var(--erro);font-weight:700' : ''}">último bipe há ${esc(haTempo(agora - new Date(x.ultimo_bipe_em || x.aberta_em).getTime()))}</span></div>${tempoSaca(x, agora)}</button>`).join('')}</div>`
       : '<div class="vazio" style="margin-bottom:14px"><b>Nenhuma saca em andamento</b>Quando alguém começar a bipar para um motorista, a saca aparece aqui.</div>'}
     <div class="sac-grade"><div class="cartao"><div class="filtros">
       <div class="seg" id="sacEst" role="group" aria-label="Situação"><button type="button" data-e="and" aria-pressed="${estSac.estado === 'and'}">Em andamento · ${ativas.length}</button><button type="button" data-e="fech" aria-pressed="${estSac.estado === 'fech'}">Fechadas · ${fechadas.length}</button><button type="button" data-e="todas" aria-pressed="${estSac.estado === 'todas'}">Todas · ${com.length}</button></div>
       <label class="c">Cidade<select id="sacCid"><option value="">Todas</option>${cidades.map((c) => `<option ${estSac.cidade === c ? 'selected' : ''}>${esc(c)}</option>`).join('')}</select></label>
       <label class="c">Colaborador<select id="sacOp"><option value="">Todos</option>${ops.map((o) => `<option value="${esc(o)}" ${estSac.op === o ? 'selected' : ''}>${esc(nomeOperador(o))}</option>`).join('')}</select></label>
       <label class="c">Buscar<span class="busca-in">${ICO_BUSCA}<input id="sacBusca" placeholder="Motorista, rota ou colaborador" value="${esc(estSac.busca)}" /></span></label></div>
-      ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Saca</th><th>Colaborador</th><th>Status</th><th class="num">Pacotes</th><th>Último bipe</th></tr></thead><tbody>
+      ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Saca</th><th>Colaborador</th><th>Status</th><th class="num">Pacotes</th><th>Início</th><th>Último bipe</th><th class="num">Duração</th></tr></thead><tbody>
       ${lista.map((x) => `<tr class="clic ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><td><b>${nomeSaca(x)}</b><div class="sub">${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div></td>
-        <td data-r="Colaborador">${esc(nomeOperador(x.operador_id))} ${x.est !== 'fechada' ? `<span class="lock">${ICO_CADEADO}</span>` : ''}</td><td data-r="Status">${pilulaSaca(x.est)}</td><td class="num" data-r="Pacotes"><b>${x.pacotes}</b></td>
-        <td data-r="Último bipe">${x.ultimo_bipe_em ? esc(horaCurta(x.ultimo_bipe_em)) : '—'}<div class="sub" style="${x.est === 'parada' ? 'color:var(--erro)' : ''}">${x.ultimo_bipe_em ? 'há ' + esc(haTempo(agora - new Date(x.ultimo_bipe_em).getTime())) : ''}</div></td></tr>`).join('')}</tbody></table></div>`
+        <td data-r="Colaborador">${esc(nomeOperador(x.operador_id))} ${x.est !== 'fechada' ? `<span class="lock">${ICO_CADEADO}</span>` : ''}</td><td data-r="Status">${pilulaSaca(x.est)}</td><td class="num" data-r="Pacotes"><b>${x.pacotes}</b></td><td data-r="Início">${esc(horaCurta(x.primeiro_bipe_em || x.aberta_em))}</td>
+        <td data-r="Último bipe">${x.ultimo_bipe_em ? esc(horaCurta(x.ultimo_bipe_em)) : '—'}<div class="sub" style="${x.est === 'parada' ? 'color:var(--erro)' : ''}">${x.ultimo_bipe_em ? 'há ' + esc(haTempo(agora - new Date(x.ultimo_bipe_em).getTime())) : ''}</div></td><td class="num" data-r="Duração"><b>${esc(resumoTempo(x.primeiro_bipe_em || x.aberta_em, x.ultimo_bipe_em || x.aberta_em, agora).total)}</b></td></tr>`).join('')}</tbody></table></div>`
         : '<div class="vazio"><b>Nenhuma saca aqui</b>Mude o filtro ou o período.</div>'}
       ${lista.length ? '<div style="margin-top:10px"><button class="btn mini" id="sacCsv" type="button">Baixar CSV</button></div>' : ''}</div>
       <div class="cartao gaveta" id="sacGaveta"></div></div>`;
@@ -1771,8 +1829,8 @@ function desenharSacas() {
   $('sacBusca').addEventListener('input', () => { estSac.busca = $('sacBusca').value; const pos = $('sacBusca').selectionStart; desenharSacas(); const n = $('sacBusca'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } });
   const c = $('sacCsv');
   if (c) c.addEventListener('click', () => baixar('sacas-' + estSac.de + '_' + estSac.ate + '.csv', paraCsv(
-    ['Saca', 'Motorista', 'Nº', 'Rota', 'Cidade', 'Colaborador', 'Status', 'Pacotes', 'Erros', 'Aberta em', 'Fechada em', 'Último bipe'],
-    lista.map((x) => ['Saca do ' + x.motorista + ' nº ' + x.numero, x.motorista, x.numero, x.rota, x.cidade, nomeOperador(x.operador_id), x.est === 'fechada' ? 'Fechada' : x.est === 'parada' ? 'Parada' : 'Em andamento', x.pacotes, x.erros, dataHoraBR(x.aberta_em), x.fechada_em ? dataHoraBR(x.fechada_em) : '', x.ultimo_bipe_em ? dataHoraBR(x.ultimo_bipe_em) : '']))));
+    ['Saca', 'Motorista', 'Nº', 'Rota', 'Cidade', 'Colaborador', 'Status', 'Pacotes', 'Erros', 'Aberta em', 'Fechada em', 'Primeiro bipe', 'Último bipe', 'Duração'],
+    lista.map((x) => ['Saca do ' + x.motorista + ' nº ' + x.numero, x.motorista, x.numero, x.rota, x.cidade, nomeOperador(x.operador_id), x.est === 'fechada' ? 'Fechada' : x.est === 'parada' ? 'Parada' : 'Em andamento', x.pacotes, x.erros, dataHoraBR(x.aberta_em), x.fechada_em ? dataHoraBR(x.fechada_em) : '', x.primeiro_bipe_em ? dataHoraBR(x.primeiro_bipe_em) : '', x.ultimo_bipe_em ? dataHoraBR(x.ultimo_bipe_em) : '', resumoTempo(x.primeiro_bipe_em || x.aberta_em, x.ultimo_bipe_em || x.aberta_em).total]))));
   desenharGavetaSaca();
 }
 function desenharGavetaSaca() {
@@ -1897,41 +1955,180 @@ function limparLocais(lista) {
   }
   return out;
 }
-async function telaLocais() {
-  const editavel = E.perfil.papel === 'dono';
-  $('conteudo').innerHTML = cabecalho('Locais por rota', 'Bairros, ruas ou trechos (como BR-101 ou Centro) que pertencem a cada rota.') + `<div id="lcRaiz">${esqueleto()}</div>`;
-  let lista = [], quando = null, quem = null;
+/* ===================== CONFIRMAR ALTERAÇÃO (modal próprio) ===================== */
+// Pede confirmação antes de uma alteração que vale para todos. "texto" já vem escapado.
+function confirmarAcao(o) {
+  return new Promise((resolve) => {
+    const f = document.createElement('div');
+    f.className = 'modal-fundo'; f.setAttribute('role', 'dialog'); f.setAttribute('aria-modal', 'true');
+    f.innerHTML = `<div class="modal"><h2>${esc(o.titulo || 'Tem certeza?')}</h2><p>${o.texto || ''}</p><p class="sub">Alteração de <b id="mdQuem">${esc(o.quem || '')}</b></p>
+      <div class="modal-acoes"><button class="btn" data-r="0" type="button">Cancelar</button><button class="btn ambar" data-r="1" type="button">${esc(o.ok || 'Sim, alterar')}</button></div></div>`;
+    const tecla = (e) => { if (e.key === 'Escape') fim(false); };
+    const fim = (v) => { document.removeEventListener('keydown', tecla); f.remove(); resolve(v); };
+    f.addEventListener('click', (e) => { const b = e.target.closest('button[data-r]'); if (b) fim(b.dataset.r === '1'); else if (e.target === f) fim(false); });
+    document.addEventListener('keydown', tecla);
+    document.body.appendChild(f);
+    f.querySelector('[data-r="0"]').focus();
+  });
+}
+
+/* ===================== CHEGADA E CONCILIAÇÃO ===================== */
+// Cruza os pacotes que deram chegada com os que foram atribuídos, por cidade.
+const estChe = { dia: null, filtro: 'todas', abertas: new Set(), todos: new Set() };
+let tokenChe = 0, dadosChe = null, timerChe = null;
+function telaChegada() {
+  if (!estChe.dia) estChe.dia = hojeSP();
+  $('conteudo').innerHTML = cabecalho('Chegada e conciliação', 'Quem deu chegada x quem foi atribuído, por cidade <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
+    '<div class="seg" id="cheAtalhos"><button type="button" data-d="hoje">Hoje</button><button type="button" data-d="ontem">Ontem</button></div><input type="date" id="cheDia" value="' + esc(estChe.dia) + '" aria-label="Dia" /><button class="btn" id="cheAtualizar" type="button">Atualizar</button>') + '<div id="cheCorpo">' + esqueleto() + '</div>';
+  mostrarVivo();
+  $('cheDia').addEventListener('change', () => { if ($('cheDia').value) { estChe.dia = $('cheDia').value; estChe.abertas.clear(); carregarChegada(false); } });
+  $('cheAtalhos').addEventListener('click', (e) => { const b = e.target.closest('button[data-d]'); if (!b) return; estChe.dia = b.dataset.d === 'hoje' ? hojeSP() : somarDias(hojeSP(), -1); $('cheDia').value = estChe.dia; estChe.abertas.clear(); carregarChegada(false); });
+  $('cheAtualizar').addEventListener('click', () => carregarChegada(false));
+  clearInterval(timerChe);
+  timerChe = setInterval(() => { if (E.aba === 'chegada' && !document.hidden) carregarChegada(true); }, 30000);
+  carregarChegada(false);
+}
+async function carregarChegada(silencioso) {
+  const meu = ++tokenChe, d = eFiltroSeguro(estChe.dia);
   try {
-    const r = await api('GET', '/rest/v1/cadastros?select=valor,atualizado_em,atualizado_por&chave=eq.locais');
-    if (r && r[0] && Array.isArray(r[0].valor)) lista = r[0].valor;
-    if (r && r[0]) { quando = r[0].atualizado_em; quem = r[0].atualizado_por; }
-  } catch (e) { $('lcRaiz').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; return; }
+    const [cd, cc, pf] = await Promise.all([
+      api('GET', '/rest/v1/chegada_dia?select=dia,pacotes,primeiro_bipe_em,ultimo_bipe_em,pessoas&dia=eq.' + d),
+      lerTudo('/rest/v1/conciliacao_cidade?select=dia,cidade,chegaram,atribuidos,faltam,primeira_chegada_em,ultima_chegada_em,concluida_em&dia=eq.' + d + '&order=cidade.asc', 5),
+      lerTudo('/rest/v1/conciliacao_pacotes?select=awb,cidade,bairro,endereco,cep,chegou_em,operador_id,operador&atribuido=eq.false&dia=eq.' + d + '&order=chegou_em.asc', 12),
+    ]);
+    if (meu !== tokenChe || !$('cheCorpo')) return;
+    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, pend: pf.itens, completo: pf.completo };
+    desenharChegada();
+  } catch (e) { if (meu === tokenChe && $('cheCorpo') && !silencioso) $('cheCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09-chegada-conciliacao-locais.sql no Supabase.</div>`; }
+}
+function desenharChegada() {
+  const corpo = $('cheCorpo'); if (!corpo || !dadosChe) return;
+  const { cd, cc, pend } = dadosChe, agora = Date.now();
+  if (!cc.length) { corpo.innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Os pacotes bipados no modo Chegada aparecem aqui, agrupados por cidade.</div></div>'; return; }
+  const t = resumoTempo(cd && cd.primeiro_bipe_em, cd && cd.ultimo_bipe_em, agora);
+  const tot = cc.reduce((a, c) => ({ che: a.che + Number(c.chegaram), atr: a.atr + Number(c.atribuidos), fal: a.fal + Number(c.faltam) }), { che: 0, atr: 0, fal: 0 });
+  const concl = cc.filter((c) => estadoCidadeConc(c) === 'concluida').length, comFalta = cc.length - concl;
+  const ritmo = ritmoMin(tot.che, t.ms);
+  const lista = ordenarCidadesConc(cc).filter((c) => estChe.filtro === 'todas' || (estChe.filtro === 'faltando') === (estadoCidadeConc(c) === 'faltando'));
+  const porCidade = new Map();
+  for (const p of pend) { const k = p.cidade || 'Sem cidade'; if (!porCidade.has(k)) porCidade.set(k, []); porCidade.get(k).push(p); }
+  const cartao = (c) => {
+    const ok = estadoCidadeConc(c) === 'concluida', aberta = estChe.abertas.has(c.cidade), falta = Number(c.faltam);
+    const badge = ok ? '<span class="badge v">✓ Concluída</span>' : `<span class="badge a">Faltando ${falta} pacote${falta > 1 ? 's' : ''}</span>`;
+    const sub = ok ? (c.concluida_em ? 'Concluída às ' + esc(horaCurta(c.concluida_em)) : 'Todos atribuídos') : (c.ultima_chegada_em ? 'Última chegada ' + esc(horaCurta(c.ultima_chegada_em)) : '');
+    const nota = c.cidade === 'Sem cidade' ? '<div class="sub" style="margin-top:2px">Pacotes sem cidade identificada (ex.: Kwai sem rota). Confira o endereço.</div>' : '';
+    let det = '';
+    if (aberta && !ok) {
+      const itens = porCidade.get(c.cidade) || [], mostra = estChe.todos.has(c.cidade) ? itens : itens.slice(0, 50);
+      det = `<div class="corpo2"><div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem deu chegada</th><th>Situação</th><th></th></tr></thead><tbody>
+        ${mostra.map((p) => `<tr><td class="mono"><b>${esc(p.awb)}</b></td><td>${esc(horaCurta(p.chegou_em))}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${esc(p.operador || nomeOperador(p.operador_id))}</td><td><span class="etq divergencia">Não atribuído</span></td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('') || '<tr><td colspan="7" class="sub">Atualizando…</td></tr>'}
+        </tbody></table></div>
+        <div class="sub" style="margin-top:8px">${itens.length > mostra.length ? `<button class="btn mini" type="button" data-todos="${esc(c.cidade)}">Mostrar todos (${itens.length})</button> ` : ''}<button class="btn mini" type="button" data-csvcid="${esc(c.cidade)}">Baixar CSV da cidade</button></div></div>`;
+    }
+    return `<div class="cid ${ok ? 'ok2' : 'falta'}"><button type="button" class="cab" data-cid="${esc(c.cidade)}" aria-expanded="${aberta && !ok}" ${ok ? 'disabled' : ''}>
+      <div><b class="nome">${esc(c.cidade)}</b><div class="sub">${sub}</div>${nota}</div>
+      <div><div class="num"><span><b>${c.chegaram}</b>chegaram</span><span><b>${c.atribuidos}</b>atribuídos</span><span><b style="color:${ok ? 'var(--ok)' : 'var(--alerta)'}">${falta}</b>faltam</span></div><div class="barra-c ${ok ? 'ok' : ''}"><i style="width:${pctConc(c)}%"></i></div></div>
+      ${badge}<span class="chev" aria-hidden="true">${ok ? '' : aberta ? '▾' : '▸'}</span></button>${det}</div>`;
+  };
+  corpo.innerHTML = `
+    <div class="cartao" style="margin-bottom:16px"><h2>Chegada do dia ${t.total === '—' ? '' : `<span class="pill ${t.ativo && estChe.dia === hojeSP() ? 'andamento' : 'fechada'}">${t.ativo && estChe.dia === hojeSP() ? 'Em andamento · último bipe há ' + esc(haTempo(agora - new Date(cd.ultimo_bipe_em).getTime())) : 'Encerrada'}</span>`}</h2>
+      <div class="tempo grande"><div><small>Primeiro bipe</small><b>${esc(t.inicio || '—')}</b></div><div><small>Último bipe</small><b>${esc(t.fim || '—')}</b></div><div class="tt"><small>Tempo total</small><b>${esc(t.total)}</b></div><div><small>Ritmo</small><b>${ritmo ? String(ritmo).replace('.', ',') + '/min' : '—'}</b></div></div>
+      <p class="sub" style="margin:10px 0 0">Início: ${esc(t.inicio || '—')} | Fim: ${esc(t.fim || '—')} | Tempo total: ${esc(t.total)}</p></div>
+    <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px">
+      <div class="prob zero" style="cursor:default"><b>${tot.che}</b><span>Chegaram</span><small>lista geral do dia</small></div>
+      <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${tot.atr}</b><span>Atribuídos</span><small>${tot.che ? Math.round(tot.atr / tot.che * 100) : 0}% dos que chegaram</small></div>
+      <div class="prob ${tot.fal ? 'diverg' : 'zero'}" style="cursor:default"><b>${tot.fal}</b><span>Faltando atribuir</span><small>${tot.fal ? 'em ' + comFalta + ' cidade' + (comFalta > 1 ? 's' : '') : 'nenhum'}</small></div>
+      <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${concl}<span class="sub"> de ${cc.length}</span></b><span>Cidades concluídas</span><small>100% atribuídas</small></div></div>
+    <div class="filtros"><div class="seg" id="cheFiltro" role="group" aria-label="Situação"><button type="button" data-f="todas" aria-pressed="${estChe.filtro === 'todas'}">Todas (${cc.length})</button><button type="button" data-f="faltando" aria-pressed="${estChe.filtro === 'faltando'}">Faltando (${comFalta})</button><button type="button" data-f="concluidas" aria-pressed="${estChe.filtro === 'concluidas'}">Concluídas (${concl})</button></div>
+      <button class="btn mini" id="cheCsv" type="button">Baixar CSV</button></div>
+    ${dadosChe.completo ? '' : '<div class="aviso">Há muitos pacotes pendentes: mostrando só parte da lista.</div>'}
+    ${lista.map(cartao).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>'}`;
+  $('cheFiltro').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estChe.filtro = b.dataset.f; desenharChegada(); } });
+  corpo.querySelectorAll('button.cab[data-cid]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.cid; if (estChe.abertas.has(k)) estChe.abertas.delete(k); else estChe.abertas.add(k); desenharChegada(); }));
+  corpo.querySelectorAll('[data-todos]').forEach((b) => b.addEventListener('click', () => { estChe.todos.add(b.dataset.todos); desenharChegada(); }));
+  corpo.querySelectorAll('[data-ficha]').forEach((b) => b.addEventListener('click', () => irPara('pacote', b.dataset.ficha)));
+  const linhasCsv = (itens) => itens.map((p) => [p.cidade || 'Sem cidade', p.awb, dataHoraBR(p.chegou_em), p.endereco || '', p.bairro || '', p.cep || '', p.operador || nomeOperador(p.operador_id)]);
+  const cab = ['Cidade', 'AWB', 'Chegou em', 'Endereço', 'Bairro', 'CEP', 'Quem deu chegada'];
+  $('cheCsv').addEventListener('click', () => baixar('chegada-pendentes-' + estChe.dia + '.csv', paraCsv(cab, linhasCsv(pend))));
+  corpo.querySelectorAll('[data-csvcid]').forEach((b) => b.addEventListener('click', () => baixar('chegada-' + estChe.dia + '-' + b.dataset.csvcid.toLowerCase().replace(/\s+/g, '-') + '.csv', paraCsv(cab, linhasCsv(porCidade.get(b.dataset.csvcid) || [])))));
+}
+
+/* ===================== LOCAIS POR REGRA (tempo real, todos editam) ===================== */
+let tokenLoc = 0;
+async function telaLocais() {
+  $('conteudo').innerHTML = cabecalho('Locais por rota', 'Bairros, ruas ou trechos (como BR-101 ou Centro) que pertencem a cada rota. Qualquer pessoa adiciona ou edita; vale na hora para todos e fica registrado quem alterou. <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>') + `<div id="lcRaiz">${esqueleto()}</div>`;
+  mostrarVivo();
+  carregarLocais(false);
+}
+const linhaLocal = (x) => `<tr class="lcRow" data-o="${esc(JSON.stringify({ termo: x.termo, rota: x.rota, cidade: x.cidade || '' }))}"><td><input class="lcTermo" value="${esc(x.termo)}" aria-label="Local" /></td>
+  <td><input class="lcRota" list="lcRotas" value="${esc(x.rota)}" aria-label="Rota" /></td>
+  <td><input class="lcCidade" value="${esc(x.cidade || '')}" placeholder="Qualquer cidade" aria-label="Cidade" /></td>
+  <td class="sub lcPor">${x.por_nome ? 'por ' + esc(x.por_nome) + (x.atualizado_em ? ' · ' + esc(dataHoraBR(x.atualizado_em)) : '') : (x.atualizado_em ? esc(dataHoraBR(x.atualizado_em)) : 'novo')}</td>
+  <td class="lcAcoes"><button class="btn mini ambar lcSalvar" type="button">Salvar</button> <button class="btn mini lcDel" type="button">Excluir</button></td></tr>`;
+function locaisSujos() {
+  return [...document.querySelectorAll('#lcCorpo .lcRow')].some((tr) => {
+    const o = tr.dataset.o ? JSON.parse(tr.dataset.o) : null;
+    return !o || tr.querySelector('.lcTermo').value !== o.termo || tr.querySelector('.lcRota').value !== o.rota || tr.querySelector('.lcCidade').value !== o.cidade;
+  });
+}
+async function carregarLocais(silencioso) {
+  const meu = ++tokenLoc;
+  if (silencioso && $('lcCorpo') && locaisSujos()) return; // não apaga o que está sendo digitado
+  let lista = [];
+  try {
+    lista = await api('GET', '/rest/v1/locais_rota?select=chave,termo,rota,cidade,por_nome,atualizado_em&removido=eq.false&order=rota.asc,termo.asc&limit=3000');
+  } catch (e) { if ($('lcRaiz') && !silencioso) $('lcRaiz').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09-chegada-conciliacao-locais.sql no Supabase.</div>`; return; }
+  if (meu !== tokenLoc || !$('lcRaiz')) return;
   lista = [...lista].sort((a, b) => String(a.rota).localeCompare(String(b.rota), 'pt-BR', { numeric: true }) || String(a.termo).localeCompare(String(b.termo), 'pt-BR'));
   const rotas = [...new Set(lista.map((x) => x.rota).filter(Boolean))];
-  const linha = (x) => `<tr><td><input class="lcTermo" value="${esc(x.termo)}" aria-label="Local" ${editavel ? '' : 'disabled'} /></td>
-    <td><input class="lcRota" list="lcRotas" value="${esc(x.rota)}" aria-label="Rota" ${editavel ? '' : 'disabled'} /></td>
-    <td><input class="lcCidade" value="${esc(x.cidade)}" placeholder="Qualquer cidade" aria-label="Cidade" ${editavel ? '' : 'disabled'} /></td>
-    ${editavel ? '<td><button class="btn mini lcDel" type="button">Excluir</button></td>' : ''}</tr>`;
   $('lcRaiz').innerHTML = `<div class="cartao">
-    <p class="sub" style="margin:0 0 14px">${editavel ? 'Ao salvar, todos os celulares e computadores recebem a lista em poucos minutos.' : 'Só o administrador edita. Você recebe a lista automaticamente.'}
-    ${quando ? ' Última alteração em ' + esc(dataHoraBR(quando)) + (quem ? ', por ' + esc(nomeOperador(quem)) : '') + '.' : ' Ainda não há lista publicada.'}</p>
     <datalist id="lcRotas">${rotas.map((r) => `<option value="${esc(r)}">`).join('')}</datalist>
-    <div class="rolagem"><table class="tabela"><thead><tr><th>Local</th><th>Rota</th><th>Cidade</th>${editavel ? '<th></th>' : ''}</tr></thead><tbody id="lcCorpo">${lista.map(linha).join('')}</tbody></table></div>
-    ${lista.length || editavel ? '' : '<div class="vazio"><b>Nada cadastrado</b>O administrador ainda não publicou locais.</div>'}
-    ${editavel ? '<div class="filtros" style="margin-top:14px"><button class="btn" id="lcAdd" type="button">Adicionar local</button><button class="btn ambar" id="lcSalvar" type="button">Salvar para todos</button><span id="lcMsg" class="sub"></span></div>' : ''}</div>`;
-  if (!editavel) return;
-  const ligarDel = () => document.querySelectorAll('.lcDel').forEach((b) => { b.onclick = () => b.closest('tr').remove(); });
-  ligarDel();
-  $('lcAdd').addEventListener('click', () => { $('lcCorpo').insertAdjacentHTML('beforeend', linha({ termo: '', rota: '', cidade: '' })); ligarDel(); $('lcCorpo').lastElementChild.querySelector('.lcTermo').focus(); });
-  $('lcSalvar').addEventListener('click', async () => {
-    const novos = limparLocais([...document.querySelectorAll('#lcCorpo tr')].map((tr) => ({ termo: tr.querySelector('.lcTermo').value, rota: tr.querySelector('.lcRota').value, cidade: tr.querySelector('.lcCidade').value })));
-    const botao = $('lcSalvar'); botao.disabled = true;
-    try {
-      await api('POST', '/rest/v1/cadastros', [{ chave: 'locais', valor: novos, atualizado_em: new Date().toISOString() }], { Prefer: 'resolution=merge-duplicates,return=minimal' });
-      $('lcMsg').textContent = novos.length + ' local(is) salvo(s) ✓'; aviso('Lista salva para todos os aparelhos');
-    } catch (e) { $('lcMsg').textContent = e.message; aviso(e.message, true); }
-    finally { botao.disabled = false; }
+    <div class="rolagem"><table class="tabela"><thead><tr><th>Local</th><th>Rota</th><th>Cidade</th><th>Última alteração</th><th></th></tr></thead><tbody id="lcCorpo">${lista.map(linhaLocal).join('')}</tbody></table></div>
+    ${lista.length ? '' : '<div class="vazio"><b>Nada cadastrado</b>Use "Adicionar local".</div>'}
+    <div class="filtros" style="margin-top:14px"><button class="btn" id="lcAdd" type="button">Adicionar local</button><span class="sub">${lista.length} local(is)</span></div></div>`;
+  $('lcAdd').addEventListener('click', () => { $('lcCorpo').insertAdjacentHTML('beforeend', linhaLocal({ termo: '', rota: '', cidade: '' }).replace(/ data-o="[^"]*"/, '')); $('lcCorpo').lastElementChild.querySelector('.lcTermo').focus(); });
+  $('lcCorpo').addEventListener('click', (ev) => {
+    const tr = ev.target.closest('.lcRow'); if (!tr) return;
+    if (ev.target.closest('.lcSalvar')) salvarLocal(tr);
+    else if (ev.target.closest('.lcDel')) excluirLocal(tr);
   });
+}
+function lerLinhaLocal(tr) { return { termo: tr.querySelector('.lcTermo').value.trim(), rota: tr.querySelector('.lcRota').value.trim(), cidade: tr.querySelector('.lcCidade').value.trim() }; }
+async function gravarLocais(corpo) {
+  await api('POST', '/rest/v1/locais_rota?on_conflict=chave', corpo, { Prefer: 'resolution=merge-duplicates,return=minimal' });
+}
+async function salvarLocal(tr) {
+  const novo = lerLinhaLocal(tr), orig = tr.dataset.o ? JSON.parse(tr.dataset.o) : null;
+  if (!novo.termo || !novo.rota) { aviso('Preencha o local e a rota.', true); return; }
+  if (orig && chaveLocal(orig.termo, orig.cidade) === chaveLocal(novo.termo, novo.cidade) && orig.rota === novo.rota && orig.termo === novo.termo && orig.cidade === novo.cidade) { aviso('Nada mudou.'); return; }
+  const texto = `<b>${esc(novo.termo)}</b> → <b>${esc(novo.rota)}</b>${novo.cidade ? ' (' + esc(novo.cidade) + ')' : ' (qualquer cidade)'}.<br>Tem certeza que deseja fazer essa alteração? Ela vale na hora para todos os aparelhos.`;
+  if (!(await confirmarAcao({ titulo: orig ? 'Editar local' : 'Adicionar local', texto, quem: E.perfil.nome }))) return;
+  const corpo = [];
+  if (orig && chaveLocal(orig.termo, orig.cidade) !== chaveLocal(novo.termo, novo.cidade)) corpo.push({ termo: orig.termo, rota: orig.rota, cidade: orig.cidade, removido: true });
+  corpo.push({ termo: novo.termo, rota: novo.rota, cidade: novo.cidade, removido: false });
+  const b = tr.querySelector('.lcSalvar'); b.disabled = true;
+  try { await gravarLocais(corpo); aviso('Local salvo para todos ✓'); await carregarLocais(false); }
+  catch (e) { aviso(e.message, true); }
+  finally { b.disabled = false; }
+}
+async function excluirLocal(tr) {
+  const orig = tr.dataset.o ? JSON.parse(tr.dataset.o) : null;
+  if (!orig) { tr.remove(); return; }
+  const texto = `Remover <b>${esc(orig.termo)}</b> (${esc(orig.rota)}).<br>Tem certeza que deseja fazer essa alteração? A regra deixa de valer na hora para todos os aparelhos.`;
+  if (!(await confirmarAcao({ titulo: 'Excluir local', texto, quem: E.perfil.nome, ok: 'Sim, excluir' }))) return;
+  try { await gravarLocais([{ termo: orig.termo, rota: orig.rota, cidade: orig.cidade, removido: true }]); aviso('Local removido para todos'); await carregarLocais(false); }
+  catch (e) { aviso(e.message, true); }
+}
+
+// Primeiro bipe, último bipe e tempo de uma saca (cartões das sacas em andamento).
+function tempoSaca(x, agora) {
+  const t = resumoTempo(x.primeiro_bipe_em || x.aberta_em, x.ultimo_bipe_em || x.aberta_em, agora);
+  return `<div class="tempo"><div><small>Início</small><b>${esc(t.inicio)}</b></div><div><small>Último bipe</small><b>${esc(t.fim)}</b></div><div class="tt"><small>Tempo</small><b>${esc(t.total)}</b></div></div>`;
+}
+function kpiTempoSacas(fechadas) {
+  const d = fechadas.filter((x) => x.primeiro_bipe_em && x.ultimo_bipe_em).map((x) => new Date(x.ultimo_bipe_em) - new Date(x.primeiro_bipe_em));
+  const med = d.length ? d.reduce((a, v) => a + v, 0) / d.length : null;
+  return `<div class="prob zero" style="cursor:default"><b>${med == null ? '—' : esc(duracaoTotal(med))}</b><span>Tempo médio</span><small>${d.length ? 'das ' + d.length + ' fechadas' : 'sem sacas fechadas'}</small></div>`;
 }
 
 /* ===================== EQUIPE (administrador) ===================== */
