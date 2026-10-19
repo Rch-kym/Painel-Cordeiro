@@ -587,7 +587,7 @@ function agregar(linhas) {
   const por = new Map();
   for (const l of linhas) {
     let o = por.get(l.operador_id);
-    if (!o) { o = { id: l.operador_id, nome: l.operador, chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0, tot: { chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0 } }; por.set(l.operador_id, o); }
+    if (!o) { o = { id: l.operador_id, nome: (E.perfis.get(l.operador_id) ? nomeOperador(l.operador_id) : l.operador), chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0, tot: { chegada: 0, atribuicao: 0, erro: 0, divergencia: 0, repetido: 0 } }; por.set(l.operador_id, o); }
     if (l.tipo in o.tot) { o[l.tipo] += Number(l.pacotes_unicos) || 0; o.tot[l.tipo] += Number(l.total) || 0; }
   }
   const lista = [...por.values()];
@@ -651,7 +651,7 @@ function situacaoRotas(itens, agora) {
   for (const r of itens || []) { if (!por.has(r.rota)) por.set(r.rota, []); por.get(r.rota).push(r); }
   const lista = [...por.entries()].map(([rota, pessoas]) => {
     const ps = pessoas.map((p) => ({
-      id: p.operador_id, nome: p.operador, desde: p.iniciada_em, concluida: !!p.concluida_em, concluidaEm: p.concluida_em || null,
+      id: p.operador_id, nome: (E.perfis.get(p.operador_id) ? nomeOperador(p.operador_id) : p.operador), desde: p.iniciada_em, concluida: !!p.concluida_em, concluidaEm: p.concluida_em || null,
       parado: !p.concluida_em && (agora || Date.now()) - new Date(p.atualizada_em).getTime() > 3 * 3600 * 1000,
     })).sort((a, b) => Number(a.concluida) - Number(b.concluida) || String(a.nome).localeCompare(String(b.nome), 'pt-BR'));
     return { rota, pessoas: ps, estado: ps.every((p) => p.concluida) ? 'concluida' : 'andamento' };
@@ -988,7 +988,7 @@ async function iniciarApp() {
     const m = $('lgMsg'); m.textContent = 'O seu acesso ainda não foi ativado pelo administrador. Peça a ele para ativar em Equipe.'; m.hidden = false; return;
   }
   try { const c = await api('GET', '/rest/v1/cadastros?select=valor&chave=eq.metas'); E.meta = c && c[0] ? c[0].valor : null; } catch (_) { E.meta = null; }
-  $('euNome').textContent = String(E.perfil.nome || '').split('@')[0]; $('euNome').title = E.perfil.nome; $('euAv').textContent = iniciais(E.perfil.nome);
+  { const nm = nomePerfil(E.perfil); $('euNome').textContent = nm.split('@')[0]; $('euNome').title = nm; $('euAv').textContent = iniciais(nm.split('@')[0]); }
   $('quemSou').textContent = PAPEL_NOME[E.perfil.papel] || E.perfil.papel;
   $('telaApp').hidden = false;
   const lista = ABAS.filter((a) => a.papeis.includes(E.perfil.papel));
@@ -1021,7 +1021,9 @@ function irPara(id, arg) {
   mapa[id](arg);
 }
 function raizTela() { return $('corpoTela') || $('conteudo'); }
-function nomeOperador(id) { const p = E.perfis.get(id); return p ? p.nome : '—'; }
+// Nome para mostrar: se o cadastro tem e-mail no lugar do nome, usa o "Nome no iMile" (Equipe).
+function nomePerfil(p) { if (!p) return '—'; const n = String(p.nome || ''); return n.includes('@') && String(p.nome_imile || '').trim() ? String(p.nome_imile).trim() : n; }
+function nomeOperador(id) { return nomePerfil(E.perfis.get(id)); }
 function baixar(nome, texto) {
   const a = document.createElement('a');
   a.href = URL.createObjectURL(new Blob([texto], { type: 'text/csv;charset=utf-8' }));
@@ -1651,7 +1653,7 @@ const estPro = { ...novoEstadoPeriodo('hoje'), tipo2: 'erro,divergencia', operad
 let tokenPro = 0, linhasPro = [];
 const provasAbertas = new Set();
 function telaProblemas() {
-  const opts = [...E.perfis.values()].filter((p) => p.ativo).map((p) => `<option value="${esc(p.id)}" ${estPro.operador === p.id ? 'selected' : ''}>${esc(p.nome)}</option>`).join('');
+  const opts = [...E.perfis.values()].filter((p) => p.ativo).map((p) => `<option value="${esc(p.id)}" ${estPro.operador === p.id ? 'selected' : ''}>${esc(nomePerfil(p))}</option>`).join('');
   raizTela().innerHTML = cabecalho('Erros e divergências', 'Tudo o que não deu certo ou saiu da rota esperada. Marque o que já foi corrigido.', seletorPeriodo(estPro)) + datasLivres(estPro) +
     '<div id="prNota"></div><div id="prKpis"></div>' +
     `<div class="cartao"><div class="filtros">
