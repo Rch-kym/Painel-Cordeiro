@@ -530,7 +530,7 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
     <nav id="abas" aria-label="Seções"></nav>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.16</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.17</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -912,6 +912,7 @@ ICONES.naorecebidos = '<svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/
 ICONES.backlog = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>';
 ICONES.sacas = '<svg viewBox="0 0 24 24"><path d="M7 4h10l2 4-1 12H6L5 8z"/><path d="M9 4v4h6V4"/></svg>';
 ICONES.chegada = '<svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 12l9 4 9-4M3 17l9 4 9-4"/></svg>';
+ICONES.meta = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>';
 ICONES.fechamento = '<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 9l2 2 4-4.5M8.5 15.5h7"/></svg>';
 const ABAS = [
   { id: 'painel', nome: 'Painel do dia', curto: 'Painel', papeis: TODOS },
@@ -920,6 +921,7 @@ const ABAS = [
   { id: 'produtividade', nome: 'Produtividade', curto: 'Produtiv.', papeis: TODOS },
   { id: 'bipagem', nome: 'Bipagem e histórico', curto: 'Bipagem', papeis: TODOS },
   { id: 'sacas', nome: 'Sacas', curto: 'Sacas', papeis: TODOS },
+  { id: 'meta', nome: 'Meta do dia', curto: 'Meta', papeis: TODOS },
   { id: 'chegada', nome: 'Chegada e conciliação', curto: 'Chegada', papeis: TODOS },
   { id: 'naorecebidos', nome: 'Não recebidos', curto: 'Não receb.', papeis: GESTAO },
   { id: 'backlog', nome: 'Backlog', curto: 'Backlog', papeis: GESTAO },
@@ -992,7 +994,7 @@ function irPara(id, arg) {
   const nav = id === 'produtividade' ? id : (SUBTELAS[id] ? 'bipagem' : id);
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
-    acareacoes: telaAcareacoes, sacas: telaSacas, chegada: telaChegada, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
+    acareacoes: telaAcareacoes, sacas: telaSacas, meta: telaMeta, chegada: telaChegada, naorecebidos: telaNaoRecebidos, backlog: telaBacklog,
     cobrancas: telaCobrancas, locais: telaLocais, equipe: telaEquipe };
   $('conteudo').innerHTML = '';
   window.scrollTo(0, 0);
@@ -1516,6 +1518,7 @@ function receberTR(m) {
     TR.dep = setTimeout(() => {
       if (d.table === 'locais_rota') { if (E.aba === 'locais' && $('lcCorpo')) carregarLocais(true); return; }
       if (E.aba === 'chegada' && $('cheCorpo')) { carregarChegada(true); return; }
+      if (E.aba === 'meta' && $('metCorpo') && !document.activeElement.closest('#metForm')) { carregarMeta(true); return; }
       if (nr) { if (E.aba === 'naorecebidos' && $('nrCorpo')) carregarNR(true); return; }
       if (E.aba === 'sacas' && $('sacCorpo')) carregarSacas(true);
       else if (E.aba === 'problemas' && $('prCorpo')) carregarProblemas(true);
@@ -2129,6 +2132,118 @@ function kpiTempoSacas(fechadas) {
   const d = fechadas.filter((x) => x.primeiro_bipe_em && x.ultimo_bipe_em).map((x) => new Date(x.ultimo_bipe_em) - new Date(x.primeiro_bipe_em));
   const med = d.length ? d.reduce((a, v) => a + v, 0) / d.length : null;
   return `<div class="prob zero" style="cursor:default"><b>${med == null ? '—' : esc(duracaoTotal(med))}</b><span>Tempo médio</span><small>${d.length ? 'das ' + d.length + ' fechadas' : 'sem sacas fechadas'}</small></div>`;
+}
+
+/* ===================== META DO DIA ===================== */
+// Regra: universo = pacotes que chegaram no dia; meta = % do universo (padrão 95%).
+// Números vêm do nosso próprio sistema (conciliacao_pacotes). Os campos do DS são
+// só conferência. Ajustes manuais ficam na tabela meta_dia (script 10).
+const PCT_PADRAO = 95, CORTE_PADRAO = '18:00';
+const estMeta = { dia: null };
+let tokenMeta = 0, dadosMeta = null, timerMeta = null;
+function calcularMeta(cc, cm) {
+  const chegaram = cc.reduce((a, c) => a + Number(c.chegaram || 0), 0);
+  const atrib = cc.reduce((a, c) => a + Number(c.atribuidos || 0), 0);
+  const aj = cm || {};
+  const pct = aj.percentual != null && aj.percentual !== '' ? Number(aj.percentual) : PCT_PADRAO;
+  const universo = Math.max(0, chegaram + Number(aj.ajuste_universo || 0));
+  const atribuidos = Math.max(0, atrib + Number(aj.ajuste_atribuidos || 0));
+  const meta = Math.ceil(universo * pct / 100);
+  return { chegaram, atrib, pct, universo, atribuidos, meta, faltam: Math.max(0, meta - atribuidos), a_expedir: Math.max(0, universo - atribuidos),
+    taxa: universo ? atribuidos / universo * 100 : 0, corte: aj.corte || CORTE_PADRAO };
+}
+function fmtPct(n) { return n.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%'; }
+function telaMeta() {
+  if (!estMeta.dia) estMeta.dia = hojeSP();
+  $('conteudo').innerHTML = cabecalho('Meta do dia', 'Atribuir pelo menos ' + PCT_PADRAO + '% do que chegou no dia <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
+    '<div class="seg" id="metAtalhos"><button type="button" data-d="hoje">Hoje</button><button type="button" data-d="ontem">Ontem</button></div><input type="date" id="metDia" value="' + esc(estMeta.dia) + '" aria-label="Dia" /><button class="btn" id="metAtualizar" type="button">Atualizar</button>') + '<div id="metCorpo">' + esqueleto() + '</div>';
+  mostrarVivo();
+  $('metDia').addEventListener('change', () => { if ($('metDia').value) { estMeta.dia = $('metDia').value; carregarMeta(false); } });
+  $('metAtalhos').addEventListener('click', (e) => { const b = e.target.closest('button[data-d]'); if (!b) return; estMeta.dia = b.dataset.d === 'hoje' ? hojeSP() : somarDias(hojeSP(), -1); $('metDia').value = estMeta.dia; carregarMeta(false); });
+  $('metAtualizar').addEventListener('click', () => carregarMeta(false));
+  clearInterval(timerMeta);
+  timerMeta = setInterval(() => { if (E.aba === 'meta' && !document.hidden && !document.activeElement.closest('#metForm')) carregarMeta(true); }, 30000);
+  carregarMeta(false);
+}
+async function carregarMeta(silencioso) {
+  const meu = ++tokenMeta, d = eFiltroSeguro(estMeta.dia);
+  try {
+    const [cc, pk, cm] = await Promise.all([
+      lerTudo('/rest/v1/conciliacao_cidade?select=cidade,chegaram,atribuidos,faltam&dia=eq.' + d, 5),
+      lerTudo('/rest/v1/conciliacao_pacotes?select=motorista,atribuido&atribuido=eq.true&dia=eq.' + d, 12),
+      api('GET', '/rest/v1/meta_dia?select=*&dia=eq.' + d).catch(() => null),
+    ]);
+    if (meu !== tokenMeta || !$('metCorpo')) return;
+    dadosMeta = { cc: cc.itens, pk: pk.itens, cm: Array.isArray(cm) && cm[0] ? cm[0] : null, semTabela: cm === null };
+    desenharMeta();
+  } catch (e) { if (meu === tokenMeta && $('metCorpo') && !silencioso) $('metCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09 e depois o 10-meta-dia.sql no Supabase.</div>`; }
+}
+function desenharMeta() {
+  const corpo = $('metCorpo'); if (!corpo || !dadosMeta) return;
+  const { cc, pk, cm, semTabela } = dadosMeta, r = calcularMeta(cc, cm), gestao = GESTAO.includes(E.perfil.papel);
+  const hoje = estMeta.dia === hojeSP();
+  const bateu = r.universo > 0 && r.atribuidos >= r.meta;
+  const cor = !r.universo ? '' : bateu ? 'ok' : (r.taxa >= r.pct - 15 ? 'alerta' : 'erro');
+  // ritmo necessário até o corte (só para o dia de hoje)
+  let ritmo = '';
+  if (hoje && !bateu && r.universo) {
+    const [h, m] = r.corte.split(':').map(Number), ag = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/Sao_Paulo' }));
+    const falta = ((h || 0) * 60 + (m || 0)) - (ag.getHours() * 60 + ag.getMinutes());
+    ritmo = falta > 0 ? '≈ ' + Math.ceil(r.faltam / (falta / 60)) + ' por hora até as ' + esc(r.corte) : 'passou do horário de corte (' + esc(r.corte) + ')';
+  }
+  const porMot = new Map();
+  for (const p of pk) { const k = (p.motorista || '').trim() || 'Sem motorista'; porMot.set(k, (porMot.get(k) || 0) + 1); }
+  const motoristas = [...porMot.entries()].sort((a, b) => b[1] - a[1]);
+  const dsAviso = [];
+  if (cm && cm.ds_chegada != null && Number(cm.ds_chegada) !== r.chegaram) dsAviso.push(`Chegada: nosso sistema ${r.chegaram} · DS ${cm.ds_chegada} (diferença ${r.chegaram - Number(cm.ds_chegada)})`);
+  if (cm && cm.ds_a_expedir != null && Number(cm.ds_a_expedir) !== r.a_expedir) dsAviso.push(`A expedir: nosso sistema ${r.a_expedir} · DS ${cm.ds_a_expedir} (diferença ${r.a_expedir - Number(cm.ds_a_expedir)})`);
+  const aj = cm && (Number(cm.ajuste_universo) || Number(cm.ajuste_atribuidos) || cm.percentual != null);
+  const tile = (nome, n, sub, c) => `<div class="tile ${c || ''}"><span>${esc(nome)}</span><b>${esc(n)}</b><small>${sub}</small></div>`;
+  corpo.innerHTML =
+    (semTabela ? '<div class="aviso">A tabela de ajustes ainda não existe: rode o script 10-meta-dia.sql no Supabase. A meta abaixo usa a regra padrão.</div>' : '') +
+    (dsAviso.length ? `<div class="aviso">Divergência com o DS — ${dsAviso.map(esc).join(' · ')}</div>` : '') +
+    (r.universo ? '' : '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Quando os pacotes forem bipados no modo Chegada, a meta aparece aqui.</div></div>') +
+    (r.universo ? `<div class="tiles">
+      ${tile('Atribuídos', fmtPct(r.taxa), esc(r.atribuidos + ' de ' + r.universo + ' · meta ' + r.pct + '%'), cor)}
+      ${tile('Meta em pacotes', r.meta, esc(bateu ? 'meta batida ✓' : 'faltam ' + r.faltam + (ritmo ? ' · ' : '')) + (bateu ? '' : esc(ritmo)), bateu ? 'ok' : '')}
+      ${tile('Chegaram', r.universo, aj ? 'com ajuste manual' : 'no dia')}
+      ${tile('A expedir', r.a_expedir, 'sem motorista ainda')}
+      ${tile('Atribuídos (pacotes)', r.atribuidos, aj ? 'com ajuste manual' : 'no dia')}
+    </div>
+    <div class="cartao"><div class="cartao-topo"><h2>Progresso</h2><span class="sub">${esc(fmtPct(r.taxa))} de ${esc(String(r.pct))}% exigidos</span></div>
+      <div style="position:relative;height:16px;background:var(--linha);border-radius:9px;overflow:hidden"><div style="height:100%;width:${Math.min(100, r.taxa).toFixed(1)}%;background:var(${bateu ? '--ok' : cor === 'erro' ? '--erro' : '--ambar'})"></div>
+      <div style="position:absolute;top:0;bottom:0;left:${Math.min(100, r.pct)}%;width:2px;background:var(--tinta)"></div></div></div>` : '') +
+    (motoristas.length ? `<div class="cartao"><div class="cartao-topo"><h2>Atribuídos por motorista</h2><span class="sub">${pk.length} pacote${pk.length === 1 ? '' : 's'}</span></div><div class="rolagem"><table class="tabela"><thead><tr><th>Motorista</th><th>Pacotes</th><th>% do total</th></tr></thead><tbody>
+      ${motoristas.map(([n, q]) => `<tr><td><b>${esc(n)}</b></td><td class="n" data-r="Pacotes">${q}</td><td class="n" data-r="% do total">${esc(fmtPct(q / pk.length * 100))}</td></tr>`).join('')}</tbody></table></div></div>` : '') +
+    (gestao ? `<div class="cartao" id="metForm"><div class="cartao-topo"><h2>Ajuste manual deste dia</h2><span class="sub">${cm && cm.por_nome ? 'Último ajuste: ' + esc(cm.por_nome) + ' · ' + esc(horaCurta(cm.atualizado_em)) : 'Sem ajustes — vale a regra padrão'}</span></div>
+      <div class="filtros">
+        <label class="c">Percentual da meta (%)<input id="mfPct" type="number" min="1" max="100" step="0.5" value="${cm && cm.percentual != null ? esc(cm.percentual) : ''}" placeholder="${PCT_PADRAO}" style="width:130px" /></label>
+        <label class="c">Ajuste em “chegaram” (+/−)<input id="mfUni" type="number" step="1" value="${cm ? esc(cm.ajuste_universo || 0) : 0}" style="width:130px" /></label>
+        <label class="c">Ajuste em “atribuídos” (+/−)<input id="mfAtr" type="number" step="1" value="${cm ? esc(cm.ajuste_atribuidos || 0) : 0}" style="width:130px" /></label>
+        <label class="c">Horário de corte<input id="mfCorte" type="time" value="${esc(r.corte)}" style="width:120px" /></label>
+      </div>
+      <div class="filtros" style="margin-top:10px">
+        <label class="c">Chegada no DS (Entregue)<input id="mfDsC" type="number" min="0" value="${cm && cm.ds_chegada != null ? esc(cm.ds_chegada) : ''}" style="width:150px" /></label>
+        <label class="c">A expedir no DS<input id="mfDsE" type="number" min="0" value="${cm && cm.ds_a_expedir != null ? esc(cm.ds_a_expedir) : ''}" style="width:150px" /></label>
+        <label class="c" style="flex:1;min-width:220px">Motivo / observação<input id="mfNota" type="text" maxlength="200" value="${cm ? esc(cm.nota || '') : ''}" placeholder="Ex.: 30 pacotes de ontem saíram hoje" /></label>
+        <button class="btn ambar" id="mfSalvar" type="button">Salvar ajuste</button>${cm ? '<button class="btn" id="mfLimpar" type="button">Voltar ao padrão</button>' : ''}
+      </div>
+      <p class="sub" style="margin:12px 0 0">Os campos do DS servem só para conferir com o nosso cálculo. Os ajustes ficam registrados com o seu nome.</p></div>` : '');
+  if (gestao) {
+    const num = (id) => { const v = $(id).value.trim(); return v === '' ? null : Number(v); };
+    const gravar = async (corpoReq, msg) => {
+      try {
+        await api('POST', '/rest/v1/meta_dia?on_conflict=dia', [corpoReq], { Prefer: 'resolution=merge-duplicates,return=minimal' });
+        aviso(msg); carregarMeta(false);
+      } catch (e) { aviso(e.message + ' (rodou o script 10-meta-dia.sql?)', true); }
+    };
+    $('mfSalvar').addEventListener('click', () => gravar({
+      dia: estMeta.dia, percentual: num('mfPct'), ajuste_universo: Math.trunc(num('mfUni') || 0), ajuste_atribuidos: Math.trunc(num('mfAtr') || 0),
+      ds_chegada: num('mfDsC'), ds_a_expedir: num('mfDsE'), corte: $('mfCorte').value || null, nota: $('mfNota').value.trim() || null,
+    }, 'Ajuste salvo ✓'));
+    const lim = $('mfLimpar');
+    if (lim) lim.addEventListener('click', () => gravar({ dia: estMeta.dia, percentual: null, ajuste_universo: 0, ajuste_atribuidos: 0, ds_chegada: null, ds_a_expedir: null, corte: null, nota: null }, 'Voltou à regra padrão'));
+  }
 }
 
 /* ===================== EQUIPE (administrador) ===================== */
