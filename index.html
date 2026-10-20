@@ -506,11 +506,49 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
 .modal h2 { margin:0 0 10px; font-size:18px; } .modal p { margin:0 0 10px; line-height:1.5; }
 .modal-acoes { display:flex; justify-content:flex-end; gap:8px; margin-top:14px; }
 .lcRow input { width:100%; min-width:120px; }
+
+/* ===================== 1.18: hierarquia, navegação e acessibilidade ===================== */
+:root{--raio:16px;--tinta-2:#52657B;--fundo:#F4F7FB;--sombra:0 3px 14px rgba(15,42,67,.035)}
+body{font-size:14px;line-height:1.5}
+.skip-link{position:fixed;left:16px;top:-80px;z-index:2000;background:var(--superficie);color:var(--tinta);padding:12px 18px;border:2px solid var(--foco);border-radius:8px}.skip-link:focus{top:12px}
+.sr-only{position:absolute!important;width:1px!important;height:1px!important;padding:0!important;margin:-1px!important;overflow:hidden!important;clip:rect(0,0,0,0)!important;white-space:nowrap!important;border:0!important}
+.shell{grid-template-columns:246px minmax(0,1fr)}.lateral{padding:22px 14px 0}.marca{padding-bottom:16px}.marca b{font-size:18px}
+#abas{gap:3px;padding-bottom:16px}#abas button{min-height:43px;padding:10px 12px;font-size:13px;line-height:1.25}#abas button[aria-current="page"]{background:rgba(232,163,61,.12);color:#FFF3D8}#abas button[aria-current="page"]::before{left:-14px}.grupo-nav{opacity:1;color:#91A6BE!important;font-size:10px!important;letter-spacing:1.25px!important;margin-top:20px!important}
+.nav-search{display:block;margin:0 6px 8px}.nav-search input{width:100%;min-width:0;background:rgba(255,255,255,.055);border-color:rgba(255,255,255,.16);color:#fff;font-size:12px;min-height:38px}.nav-search input::placeholder{color:#B7C4D5;opacity:1}.nav-empty{padding:12px;color:#B7C4D5;font-size:12px}
+.lateral-pe{gap:12px}.lateral-pe .eu b{font-size:13px}.btn-lat{min-height:38px}.coluna{min-width:0}
+.workspace-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:66px;padding:12px 32px;border-bottom:1px solid var(--linha);background:var(--superficie)}.workspace-bar strong{font-size:13px;font-weight:700}.workspace-bar small{display:block;color:var(--tinta-2);font-size:11px}.workspace-status{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--tinta-2)}.status-dot{width:7px;height:7px;background:var(--ok);border-radius:50%;flex:none}.workspace-status.offline{color:var(--alerta)}.workspace-status.offline .status-dot{background:var(--alerta)}
+main{max-width:1540px;padding:28px 32px 64px}.pagina-topo{border:0;padding-bottom:0;margin-bottom:24px;gap:16px}.pagina-topo h1{font-size:clamp(24px,2.3vw,32px);font-weight:800;letter-spacing:-.7px;line-height:1.2}.pagina-topo p{max-width:72ch;font-size:13px;line-height:1.6}.pagina-topo .acoes{gap:8px}.pagina-kicker{font-size:10px;text-transform:uppercase;letter-spacing:1.4px;color:var(--tinta-2);margin-bottom:6px;font-weight:700}
+.btn{min-height:42px;padding:10px 15px;border-radius:10px;font-size:13px;font-weight:700}.btn.main{background:#0F2A43;color:#fff;border-color:#0F2A43}.btn.ambar{background:var(--ambar);color:#0F2A43}.btn.mini{min-height:36px}.btn:disabled{cursor:wait}.btn:focus-visible,input:focus-visible,select:focus-visible,textarea:focus-visible,a:focus-visible{outline:3px solid var(--foco);outline-offset:3px}
+input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[type=checkbox]{accent-color:var(--azul);min-height:20px}input[type=search]::-webkit-search-cancel-button{cursor:pointer}.busca-in{min-width:0}.busca-in input{min-width:min(260px,100%)}label.c{font-size:12px;gap:6px}.filtros{gap:12px;align-items:flex-end}.filtros>.busca-in{flex:1 1 240px}.filtros>.c{max-width:100%}.filtros .seg{align-self:flex-end}.filtros input,.filtros select{max-width:100%}.seg{border-radius:11px;gap:3px}.seg button{min-height:36px;font-size:12px}.seg button[aria-pressed=true]{background:var(--lateral);color:#fff}.sub-seg{margin-bottom:20px}
+.cartao{border-radius:var(--raio);padding:22px;margin-bottom:20px;min-width:0}.cartao h2{font-size:16px;font-weight:800}.cartao-topo{align-items:center;margin-bottom:18px}.tiles{gap:14px}.tile{border-radius:14px;padding:18px;gap:7px}.tile>span:first-child{font-size:12px;font-weight:700}.tile b{font-size:32px;font-weight:800;letter-spacing:-.7px;line-height:1.05}.tile small{font-size:12px;line-height:1.5}.tile.sel{border-color:var(--ambar);box-shadow:inset 0 0 0 1px var(--ambar)}.tile.erro,.tile.alerta{border-top:3px solid currentColor}.total{background:#0F2A43;color:#fff;border-radius:16px}.total-n{font-size:56px}.prob{border-radius:14px;min-width:0}.prob b{font-size:34px}.prob span{font-size:13px}.prob small{font-size:12px;line-height:1.5}.prob.zero b{color:var(--tinta)}
+.rolagem{overflow:auto;max-width:100%;border-radius:10px;scrollbar-gutter:stable}.rolagem:focus-visible{outline:2px solid var(--foco);outline-offset:3px}.tabela{width:100%;border-collapse:separate;border-spacing:0}.tabela th{background:var(--superficie-2);font-size:10px!important;letter-spacing:.55px;padding:12px 14px}.tabela td{padding:14px;line-height:1.5;font-size:13px;vertical-align:top}.tabela tbody tr:last-child td{border-bottom:0}.tabela tbody tr:hover>td{background:var(--superficie-2)}.tabela td .sub{font-size:11px}.tabela .awb{font-size:12px;word-break:normal;overflow-wrap:anywhere}.tabela .n,.tabela .num{font-variant-numeric:tabular-nums}.etq{font-size:11px;padding:4px 9px;font-weight:700;line-height:1.4;max-width:100%;white-space:normal}.tabela td input{min-width:110px}.tabela td select{min-width:130px}.txt-alerta{color:var(--alerta)}
+.aviso{font-size:13px;line-height:1.6;border-radius:12px;padding:14px 16px}.vazio{padding:40px 16px}.vazio b{font-size:16px;margin-bottom:8px}.erro-retry{display:flex;align-items:center;justify-content:space-between;gap:12px}.erro-retry>span{flex:1}.toast{max-width:min(480px,calc(100vw - 32px));line-height:1.5}.pista{padding:18px 0;gap:8px 14px}.via{height:10px}.via::before,.via-fill::after{display:none}.rota-item{min-height:64px;border-radius:12px}.rota-cartao{border-radius:14px}.chip{line-height:1.5}.linha-tempo li{padding-bottom:24px}
+.sac-grade{grid-template-columns:minmax(0,1.55fr) minmax(320px,1fr);gap:18px;align-items:start}.sac-grade>.cartao{padding:18px}.sac-grade .tabela{min-width:660px;table-layout:auto}.sac-grade .tabela td,.sac-grade .tabela th{padding:12px 10px;word-break:normal;white-space:normal}.sac-grade .tabela td:first-child{min-width:160px}.sac-grade .gaveta{position:sticky;top:16px;max-height:calc(100vh - 32px);overflow:auto;scroll-margin-top:18px}.gaveta:focus{outline:none}.ativos{grid-template-columns:repeat(auto-fit,minmax(min(100%,270px),1fr));gap:14px}.ativo{border-radius:14px;padding:18px;gap:12px;min-height:220px}.ativo.sel{border-color:var(--ambar);box-shadow:inset 0 0 0 1px var(--ambar)}.ativo .t>b{min-width:0;overflow-wrap:anywhere}.ativo .tempo b{font-size:15px}.pk{min-height:50px}.pk-lista{margin-top:12px}.dl dd{overflow-wrap:anywhere}.sw{min-width:44px;min-height:24px}.ver-prova{min-height:28px}.modal-fundo{z-index:1000;padding:20px;overflow:auto}.modal{max-width:520px;max-height:calc(100dvh - 40px);overflow:auto;border-radius:18px;padding:26px}.modal h2{font-size:21px}.modal-acoes{margin-top:24px;gap:12px}.modal-acoes .btn{min-height:44px}
+.meta-hero{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(220px,1fr);gap:16px;margin-bottom:20px}.meta-hero-main{background:#0F2A43;color:#fff;border-radius:18px;padding:24px}.meta-hero-top{display:flex;justify-content:space-between;align-items:center;gap:12px}.meta-hero-main h2{font-size:15px;color:#D5E0ED;font-weight:600}.meta-hero-value{font-size:52px;font-weight:900;line-height:1.1;margin:12px 0 4px;color:#F4B74F}.meta-hero-main p{margin:6px 0;color:#E2EAF3;font-size:13px}.meta-progress{height:10px;background:#354E64;border-radius:6px;position:relative;overflow:hidden;margin-top:20px}.meta-progress>span{display:block;height:100%;background:#E8A33D;border-radius:6px}.meta-progress>i{position:absolute;top:0;bottom:0;width:3px;background:white}.meta-hero-labels{display:flex;justify-content:space-between;gap:12px;margin-top:8px;font-size:11px;color:#D5E0ED}.meta-hero-side{background:var(--superficie);border:1px solid var(--linha);border-radius:18px;padding:24px;display:flex;flex-direction:column;justify-content:center;gap:8px}.meta-hero-side b{font-size:24px;line-height:1.2}.meta-hero-side p{margin:0;font-size:12px;color:var(--tinta-2)}.meta-hero-side .btn{align-self:flex-start;margin-top:8px}.meta-inline-empty{display:flex;justify-content:space-between;gap:16px;align-items:center;padding:18px 22px;background:var(--superficie);border:1px solid var(--linha);border-radius:14px;margin-bottom:20px;font-size:13px}.meta-inline-empty p{margin:0}.quick-search{width:100%;text-align:left;border:1px solid var(--linha);border-radius:12px;padding:12px;background:var(--superficie);display:flex;gap:10px;align-items:center;color:var(--tinta);font:inherit;cursor:pointer}.quick-search:hover{border-color:var(--ambar)}.quick-results{display:flex;flex-direction:column;gap:8px;margin-top:16px}.quick-results small{color:var(--tinta-2)}.section-search{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}.section-search input{flex:1;min-width:180px}.dirty-note{color:var(--alerta);font-size:12px;margin-bottom:12px}.btn-danger{color:var(--erro);border-color:var(--erro)}
+.menu-mobile,.nav-backdrop,.menu-fechar{display:none}.topo-m{display:none}.back-link{margin-bottom:14px}.filter-notice{font-size:12px;color:var(--tinta-2);margin:12px 0}.form-dirty{box-shadow:inset 3px 0 0 var(--ambar)}
+/* Login: manter a identidade ilustrada, dar área estável ao formulário. */
+.ent-barra{border-radius:20px;padding:24px;gap:18px}.ent-campo input{min-height:52px;font-size:16px}.ent-campo .campo-senha button{min-height:44px}.ent-btn{min-height:52px}.ent-nome p{line-height:1.6}.campo-senha button:focus-visible{outline-color:var(--ambar)}
+@media(min-width:1600px){.sac-grade{grid-template-columns:minmax(0,1.8fr) minmax(360px,1fr)}}
+@media(max-width:1280px){.sac-grade{grid-template-columns:1fr}.sac-grade .gaveta{position:static;max-height:none}.tiles{grid-template-columns:repeat(auto-fit,minmax(160px,1fr))}.sac-grade .tabela{min-width:660px}.grade2{grid-template-columns:minmax(0,1.4fr) minmax(0,1fr)}}
+@media(max-width:1050px){.shell{grid-template-columns:220px minmax(0,1fr)}main{padding:24px}.workspace-bar{padding:12px 24px}.grade2{grid-template-columns:1fr}.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.meta-hero{grid-template-columns:1fr}.meta-hero-side{padding:20px}.pagina-topo .acoes{width:100%}.lateral{padding-left:10px;padding-right:10px}}
+@media(max-width:860px){
+ .shell{display:block}.lateral{position:fixed;inset:0 auto 0 0;width:min(310px,88vw);height:100dvh;z-index:500;display:flex;flex-direction:column;transform:translateX(-105%);transition:transform .2s ease;padding:22px 14px 0}.lateral.nav-open{transform:translateX(0)}#abas{display:flex;flex-direction:column;overflow:auto;gap:3px;flex:1;white-space:normal}#abas button{display:flex;width:100%;min-width:0;padding:12px;font-size:14px;min-height:46px}#abas .nome-longo{display:inline}#abas .nome-curto{display:none}.grupo-nav{display:block!important}.lateral .marca,.lateral .lateral-pe{display:flex}.lateral .marca{align-items:center}.lateral-pe{flex-direction:column}.nav-search{display:block}.menu-fechar{display:block;flex:none;width:100%;margin-bottom:14px}.nav-backdrop.show{display:block;position:fixed;inset:0;background:rgba(4,15,27,.6);z-index:490;border:0}.topo-m{display:flex;position:sticky;top:0;z-index:100;background:var(--lateral);color:white;padding:12px 16px;min-height:64px;gap:12px}.topo-m>b{flex:1;font-size:15px}.topo-m .btn-lat{flex:none;width:auto}.menu-mobile{display:inline-flex;align-items:center;justify-content:center;width:44px;min-height:44px;border:1px solid #536577;border-radius:10px;background:transparent;color:#fff;font-size:22px}.workspace-bar{padding:10px 16px;min-height:54px;flex-wrap:wrap}.workspace-bar strong{font-size:12px}.workspace-status{font-size:11px}main{padding:22px 16px 48px}.pagina-topo h1{font-size:25px}.pagina-topo{margin-bottom:20px}.cartao{padding:18px;border-radius:14px}.tiles,.tiles4{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}.tile{padding:15px}.tile b{font-size:28px}.tile small{font-size:11px}.cards{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px}.prob{padding:15px}.prob b{font-size:28px}.total{grid-column:1/-1}.grade-rotas,.grade2{grid-template-columns:1fr}.pista{grid-template-columns:20px 32px minmax(0,1fr) 56px;gap:6px 8px}.pista-n b{font-size:22px}.pista-topo b{font-size:14px}.av{width:32px;height:32px}.pista-extra{grid-column:3/5}.filtros{gap:12px}.filtros>.c,.filtros>.busca-in{flex:1 1 100%;width:100%}.filtros>.c input,.filtros>.c select{width:100%!important}.filtros>.seg{width:100%}.seg{max-width:100%;flex-wrap:wrap}.seg button{min-height:40px;padding:8px 10px}.acoes .seg{width:100%}.acoes>.btn{flex:1}.busca-in input{min-width:0;width:100%}.filtros .btn{min-height:44px}.sac-grade .tabela{min-width:0}.sac-grade .gaveta{scroll-margin-top:82px}.tabela.empilha td{padding:8px 12px;min-width:0!important}.tabela.empilha tr td:first-child{padding-top:14px}.tabela.empilha tr td:last-child{padding-bottom:14px}.tabela.empilha .grupo-cidade td{display:block}.tabela.empilha .grupo-cidade td::before{display:none}.tabela:not(.empilha){min-width:580px}.tabela td input,.tabela td select{min-width:130px}.tabela th{position:static}.etq{white-space:normal}.meta-hero-main{padding:22px}.meta-hero-value{font-size:46px}.meta-hero-top{flex-wrap:wrap}.meta-inline-empty{align-items:flex-start;flex-direction:column}.modal-fundo{padding:12px}.modal{padding:22px;max-height:calc(100dvh - 24px)}.modal-acoes .btn{flex:1}.modal-acoes{display:flex}.erro-retry{flex-direction:column;align-items:flex-start}.ent-barra{left:16px;right:16px;width:auto;transform:none;bottom:60px;padding:22px;gap:16px}.ent-nome{left:24px;right:24px;top:32px}.ent-campo{min-width:0}.ent-btn{width:100%}.ent-gigante{opacity:.45}
+}
+@media(max-width:380px){.tiles,.tiles4,.cards{grid-template-columns:1fr!important}.meta-hero-value{font-size:40px}.pista{grid-template-columns:24px minmax(0,1fr) 52px}.pista>.av{display:none}.pista-extra{grid-column:2/4}.pista-extra .etq{font-size:10px}}
+@media(prefers-color-scheme:dark){:root:not([data-tema=claro]){--fundo:#07121D;--tinta-2:#A7B9CC;--sombra:none}}
+:root[data-tema=escuro]{--fundo:#07121D;--tinta-2:#A7B9CC;--sombra:none}
+@media(prefers-reduced-motion:reduce){.lateral{transition:none}html{scroll-behavior:auto}}
+@media print{.lateral,.topo-m,.workspace-bar,.nav-backdrop,.pagina-topo .acoes,.btn,#toasts{display:none!important}.shell{display:block}main{max-width:none;padding:0}.cartao,.tile,.prob{break-inside:avoid;box-shadow:none}.rolagem{overflow:visible}.tabela{min-width:0!important}.gaveta{position:static!important;max-height:none!important}}
+
+
+.ent-campo input{color:#F2F6FA}.ent-campo input::placeholder{color:#CCD7E4;opacity:.8}
+@media(max-width:860px) and (max-height:640px){.entrar{overflow-y:auto}.ent-barra{position:relative;left:auto;right:auto;bottom:auto;width:auto;transform:none;margin:280px 16px 60px}.ent-gigante{opacity:.25}.mapa{opacity:.45}}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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" />
 <link rel="apple-touch-icon" href="data:image/png;base64,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" />
 </head>
 <body>
+<a class="skip-link" href="#conteudo">Pular para o conteúdo</a>
 
 <section id="telaLogin" class="entrar" hidden>
   <div class="ent-gigante" aria-hidden="true"><svg viewBox="0 0 1000 250" preserveAspectRatio="xMidYMid meet"><defs><linearGradient id="gGig" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F5F2EC" stop-opacity=".30"/><stop offset=".85" stop-color="#F5F2EC" stop-opacity=".04"/></linearGradient></defs><text x="500" y="215" text-anchor="middle" textLength="960" lengthAdjust="spacingAndGlyphs" font-weight="900" font-size="300" fill="url(#gGig)">CORDEIRO</text></svg></div>
@@ -532,28 +570,32 @@ tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); }
   <div class="ent-chamada" aria-hidden="true"><b>TRANSPORTES</b></div>
   <form id="formLogin" class="ent-barra" novalidate>
     <div id="lgMsg" class="aviso erro" role="alert" hidden></div>
-    <label class="ent-campo"><span>E-mail</span><input id="lgEmail" type="email" autocomplete="username" inputmode="email" placeholder="seu@email.com" /></label>
-    <label class="ent-campo"><span>Senha</span><span class="campo-senha"><input id="lgSenha" type="password" autocomplete="current-password" placeholder="••••••••" /><button type="button" id="lgVer">Mostrar</button></span></label>
+    <label class="ent-campo"><span>E-mail</span><input id="lgEmail" required type="email" autocomplete="username" inputmode="email" placeholder="seu@email.com" /></label>
+    <label class="ent-campo"><span>Senha</span><span class="campo-senha"><input id="lgSenha" required type="password" autocomplete="current-password" placeholder="••••••••" /><button type="button" id="lgVer" aria-label="Mostrar senha" aria-pressed="false">Mostrar</button></span></label>
     <button id="lgEntrar" class="ent-btn" type="submit">Entrar no painel <i aria-hidden="true">→</i></button>
   </form>
   <div class="estrada" aria-hidden="true"><svg class="caminhao" viewBox="0 0 120 56" xmlns="http://www.w3.org/2000/svg"><rect x="2" y="6" width="74" height="34" rx="5" fill="#F5F2EC"/><path d="M80 14h20l14 14v12H80z" fill="#E8A33D"/><path d="M88 19h9l8 9H88z" fill="#0F2A43"/><rect x="10" y="14" width="58" height="4" rx="2" fill="#0F2A43" opacity=".18"/><rect x="10" y="22" width="40" height="4" rx="2" fill="#0F2A43" opacity=".18"/><circle cx="24" cy="42" r="8" fill="#0F2A43" stroke="#F5F2EC" stroke-width="3"/><circle cx="58" cy="42" r="8" fill="#0F2A43" stroke="#F5F2EC" stroke-width="3"/><circle cx="98" cy="42" r="8" fill="#0F2A43" stroke="#F5F2EC" stroke-width="3"/></svg></div>
 </section>
 
 <div id="telaApp" class="shell" hidden>
-  <aside class="lateral">
+  <aside class="lateral" id="menuLateral" aria-label="Navegação principal">
     <div class="marca"><img src="data:image/png;base64,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" alt="" width="40" height="40" /><div><b>CORDEIRO</b><small>TRANSPORTES</small></div></div>
+    <button type="button" id="btnMenuFechar" class="btn-lat menu-fechar">Fechar menu ×</button><label class="nav-search"><span class="sr-only">Filtrar seções do menu</span><input id="navBusca" type="search" placeholder="Buscar seção…" autocomplete="off" /></label>
     <nav id="abas" aria-label="Seções"></nav>
+    <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.17</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.18</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
   <div class="coluna">
-    <header class="topo-m"><b>CORDEIRO <small style="font-weight:600;font-size:10px;letter-spacing:2.5px;opacity:.8">TRANSPORTES</small></b><button id="btnSairM" class="btn-lat" type="button">Sair</button></header>
-    <main id="conteudo"></main>
+    <header class="topo-m"><button type="button" id="btnMenu" class="menu-mobile" aria-label="Abrir menu de seções" aria-controls="menuLateral" aria-expanded="false">☰</button><b>CORDEIRO <small style="font-weight:600;font-size:10px;letter-spacing:2.5px;opacity:.8">TRANSPORTES</small></b><button id="btnSairM" class="btn-lat" type="button">Sair</button></header>
+    <div class="workspace-bar"><div><strong id="uxSecao">Painel do dia</strong><small>Sistema de gestão e acompanhamento</small></div><div id="uxConexao" class="workspace-status" role="status"><span class="status-dot" aria-hidden="true"></span><span id="uxConexaoTexto">Conferindo conexão…</span></div><button class="btn mini" id="uxAtalhos" type="button" aria-keyshortcuts="Control+k Meta+k">Buscar seção <span class="sub">Ctrl K</span></button></div>
+    <main id="conteudo" tabindex="-1"></main>
   </div>
 </div>
+<button id="navBackdrop" class="nav-backdrop" aria-label="Fechar menu" tabindex="-1" type="button"></button>
 <div id="toasts" role="status" aria-live="polite"></div>
 
 <script>
@@ -661,7 +703,8 @@ function situacaoRotas(itens, agora) {
 }
 function textoFechamento(dia, t, lista, rotas, meta, cobAbertas) {
   const L = [`*Fechamento ${dataBR(dia)}*`, ''];
-  L.push(`Pacotes bipados: ${t.pacotes}` + (meta ? ` (meta ${meta})` : ''));
+  L.push(`Registros de chegada + atribuição: ${t.pacotes}`);
+  if (meta) L.push(`Meta individual de referência: ${meta} pacotes por colaborador`);
   L.push(`Chegadas: ${t.chegada} · Atribuições: ${t.atribuicao}`);
   L.push(`Erros: ${t.erro} · Divergências: ${t.divergencia} · Repetidos: ${t.repetido}`);
   if (lista.length) { L.push('', '*Por colaborador*'); for (const o of lista) L.push(`• ${o.nome}: ${o.pacotes}` + (o.erro ? ` (${o.erro} erro${o.erro > 1 ? 's' : ''})` : '')); }
@@ -862,9 +905,10 @@ async function api(metodo, caminho, corpo, extra) {
   if (!E.sessao) { mostrarLogin(); throw new Error('Sessão encerrada. Entre novamente.'); }
   let r;
   try { r = await cru(metodo, caminho, corpo, E.sessao.access, extra); }
-  catch (_) { throw new Error('Sem conexão com a internet.'); }
+  catch (_) { uxFalhaRede = true; uxStatus(); throw new Error('Sem conexão com a internet.'); }
   if (r.status === 401 && await renovar()) r = await cru(metodo, caminho, corpo, E.sessao.access, extra);
   if (r.status === 401) { mostrarLogin(); throw new Error('Sessão encerrada. Entre novamente.'); }
+  uxRegistrarResposta(r.status);
   if (r.status >= 400) throw new Error((r.corpo && (r.corpo.message || r.corpo.hint)) || 'Erro ' + r.status);
   return r.corpo;
 }
@@ -883,7 +927,7 @@ async function lerTudo(caminho, maxPaginas) {
 const $ = (id) => document.getElementById(id);
 function mostrarLogin() {
   pararTempoReal();
-  $('telaApp').hidden = true; $('telaLogin').hidden = false; E.perfil = null;
+  uxFecharMenu(); uxLimparEdicao(); $('telaApp').hidden = true; $('telaLogin').hidden = false; E.perfil = null;
 }
 async function entrar() {
   const msg = $('lgMsg'); msg.hidden = true;
@@ -903,6 +947,7 @@ async function entrar() {
   finally { $('lgEntrar').disabled = false; }
 }
 async function sair() {
+  if (uxTemEdicao() && !confirm('Há alterações não salvas. Sair do painel e descartá-las?')) return;
   try { if (E.sessao) await cru('POST', '/auth/v1/logout', undefined, E.sessao.access); } catch (_) {}
   guardarSessao(null); mostrarLogin();
 }
@@ -930,20 +975,20 @@ ICONES.chegada = '<svg viewBox="0 0 24 24"><path d="M3 7l9-4 9 4-9 4-9-4z"/><pat
 ICONES.meta = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.5"/><circle cx="12" cy="12" r="1"/></svg>';
 ICONES.fechamento = '<svg viewBox="0 0 24 24"><rect x="5" y="3.5" width="14" height="17" rx="2"/><path d="M8.5 9l2 2 4-4.5M8.5 15.5h7"/></svg>';
 const ABAS = [
-  { id: 'painel', nome: 'Painel do dia', curto: 'Painel', papeis: TODOS },
-  { id: 'acareacoes', nome: 'Acareações', curto: 'Acareações', papeis: GESTAO },
-  { id: 'motoristas', nome: 'Motoristas e rotas', curto: 'Rotas', papeis: TODOS },
-  { id: 'produtividade', nome: 'Produtividade', curto: 'Produtiv.', papeis: TODOS },
-  { id: 'bipagem', nome: 'Bipagem e histórico', curto: 'Bipagem', papeis: TODOS },
-  { id: 'sacas', nome: 'Sacas', curto: 'Sacas', papeis: TODOS },
-  { id: 'meta', nome: 'Meta do dia', curto: 'Meta', papeis: TODOS },
-  { id: 'chegada', nome: 'Chegada e conciliação', curto: 'Chegada', papeis: TODOS },
-  { id: 'naorecebidos', nome: 'Não recebidos', curto: 'Não receb.', papeis: GESTAO },
-  { id: 'backlog', nome: 'Backlog', curto: 'Backlog', papeis: GESTAO },
-  { id: 'fechamento', nome: 'Fechamento', curto: 'Fechar', papeis: GESTAO },
-  { id: 'cobrancas', nome: 'Cobranças', curto: 'Cobranças', papeis: GESTAO, grupo: 'Administração' },
-  { id: 'locais', nome: 'Locais por rota', curto: 'Locais', papeis: GESTAO, grupo: 'Administração' },
-  { id: 'equipe', nome: 'Equipe', curto: 'Equipe', papeis: ['dono'], grupo: 'Administração' },
+  { id:'painel', nome:'Painel do dia', curto:'Painel', papeis:TODOS, grupo:'Operação' },
+  { id:'meta', nome:'Meta do dia', curto:'Meta', papeis:TODOS, grupo:'Operação' },
+  { id:'chegada', nome:'Chegada e conciliação', curto:'Chegada', papeis:TODOS, grupo:'Operação' },
+  { id:'sacas', nome:'Sacas', curto:'Sacas', papeis:TODOS, grupo:'Operação' },
+  { id:'motoristas', nome:'Motoristas e rotas', curto:'Rotas', papeis:TODOS, grupo:'Operação' },
+  { id:'produtividade', nome:'Produtividade', curto:'Produtiv.', papeis:TODOS, grupo:'Acompanhamento' },
+  { id:'bipagem', nome:'Bipagem e histórico', curto:'Bipagem', papeis:TODOS, grupo:'Acompanhamento' },
+  { id:'acareacoes', nome:'Acareações', curto:'Acareações', papeis:GESTAO, grupo:'Acompanhamento' },
+  { id:'naorecebidos', nome:'Não recebidos', curto:'Não receb.', papeis:GESTAO, grupo:'Acompanhamento' },
+  { id:'backlog', nome:'Backlog', curto:'Backlog', papeis:GESTAO, grupo:'Acompanhamento' },
+  { id:'fechamento', nome:'Fechamento', curto:'Fechar', papeis:GESTAO, grupo:'Acompanhamento' },
+  { id:'cobrancas', nome:'Cobranças', curto:'Cobranças', papeis:GESTAO, grupo:'Administração' },
+  { id:'locais', nome:'Locais por rota', curto:'Locais', papeis:GESTAO, grupo:'Administração' },
+  { id:'equipe', nome:'Equipe', curto:'Equipe', papeis:['dono'], grupo:'Administração' },
 ];
 const SUBTELAS = { produtividade: 'Produtividade', problemas: 'Erros e divergências', pacote: 'Ficha do pacote' };
 const PAPEL_NOME = { dono: 'Administrador do banco de dados', monitor: 'Monitor', bipador: 'Bipador' };
@@ -1003,9 +1048,14 @@ async function iniciarApp() {
   iniciarTempoReal();
 }
 function irPara(id, arg) {
+  if (uxTemEdicao() && !confirm('Há alterações ainda não salvas nesta tela. Sair sem salvar?')) return;
+  uxLimparEdicao();
+  uxFecharMenu();
   if (id === 'bipagem') id = E.sub === 'pacote' ? 'pacote' : 'problemas';
   if (id === 'rotas') id = 'motoristas';
+  if (id === 'pacote' && E.aba !== 'pacote') uxPacoteAnterior = E.aba;
   E.aba = id;
+  uxAtualizarCabecalho(id);
   const nav = id === 'produtividade' ? id : (SUBTELAS[id] ? 'bipagem' : id);
   document.querySelectorAll('#abas button').forEach((b) => b.setAttribute('aria-current', b.dataset.aba === nav ? 'page' : 'false'));
   const mapa = { painel: telaPainel, motoristas: telaMotoristas, produtividade: telaProdutividade, problemas: telaProblemas, pacote: telaPacote, fechamento: telaFechamento,
@@ -1018,7 +1068,10 @@ function irPara(id, arg) {
     $('conteudo').innerHTML = `<div class="seg sub-seg" id="subSeg">${Object.entries(SUBTELAS).map(([k, n]) => `<button type="button" data-sub="${k}" aria-pressed="${k === id}">${n}</button>`).join('')}</div><div id="corpoTela"></div>`;
     $('subSeg').addEventListener('click', (e) => { const x = e.target.closest('button[data-sub]'); if (x && x.dataset.sub !== E.aba) irPara(x.dataset.sub); });
   }
+  if (!mapa[id]) { irPara('painel'); return; }
   mapa[id](arg);
+  if (id === 'pacote') { const voltar=document.createElement('button'); voltar.type='button'; voltar.className='btn back-link'; voltar.textContent='← Voltar à consulta anterior'; voltar.addEventListener('click',()=>irPara(uxPacoteAnterior)); $('conteudo').prepend(voltar); }
+  uxPrepararConteudo();
 }
 function raizTela() { return $('corpoTela') || $('conteudo'); }
 // Nome para mostrar: se o cadastro tem e-mail no lugar do nome, usa o "Nome no iMile" (Equipe).
@@ -1116,7 +1169,7 @@ async function carregarProdutividade(silencioso) {
         ${tile('erro', 'erro', t.erro, 'Erros', 'erro')}${tile('div', 'diverg', t.divergencia, 'Divergências', 'divergencia')}
         <button type="button" class="prob rep" data-saca="1"><b>${nSacF + nSacA}</b><span>Sacas</span><small>Ver quem está em cada uma</small></button>
       </div>
-      <section class="cartao"><div class="cartao-topo"><h2>${so ? 'Meu desempenho' : 'Ranking da equipe'}</h2>${lista.length ? '<button class="btn mini" id="prodCsv" type="button">Baixar CSV</button>' : ''}</div>
+      <section class="cartao"><div class="cartao-topo"><h2>${so ? 'Meu desempenho' : 'Produtividade da equipe'}</h2>${lista.length ? '<button class="btn mini" id="prodCsv" type="button">Baixar CSV</button>' : ''}</div>
         ${lista.length ? `<ol class="pistas">${pistas}</ol>
           <p class="sub nota-pistas">${usaMeta ? '<span>A linha vertical marca a meta de ' + meta + ' pacotes.</span>' : ''}<span>Cada pacote conta uma vez por colaborador e dia.</span></p>`
           : `<div class="vazio"><b>Nenhum bipe neste período</b>Aqui contam só as atribuições (as chegadas ficam de fora). Os bipes aparecem assim que alguém bipar com a Nuvem Cordeiro ligada.</div>`}
@@ -1125,7 +1178,8 @@ async function carregarProdutividade(silencioso) {
       <section class="cartao"><div class="cartao-topo"><h2>Ritmo do dia</h2><span class="sub">${pk.valor ? 'Pico às ' + pk.hora + 'h, com ' + pk.valor + ' pacotes' : ''}</span></div>
         ${ev.itens.length ? `<div class="ritmo">${barras}</div>` : '<div class="vazio">Sem bipes para mostrar por hora.</div>'}
         ${ev.completo ? '' : '<p class="sub">Gráfico com parte dos dados (período grande).</p>'}</section>`;
-    corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => irPara('sacas')));
+    corpo.querySelectorAll('tr[data-saca]').forEach((tr) => tr.addEventListener('keydown', (ev) => { if (ev.key === 'Enter' || ev.key === ' ') { ev.preventDefault(); tr.click(); } }));
+  corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => irPara('sacas')));
     corpo.querySelectorAll('[data-ir]').forEach((b) => b.addEventListener('click', () => {
       estPro.estado = 'todas'; estPro.tipo2 = b.dataset.ir; estPro.tipo = estProd.tipo; estPro.de = estProd.de; estPro.ate = estProd.ate; irPara('problemas');
     }));
@@ -1143,12 +1197,13 @@ const ICO_FEITA = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path
 let timerPainel = null, tokenPainel = 0;
 function telaPainel() {
   $('conteudo').innerHTML = cabecalho('Painel do dia', '<span id="pdSub"></span>',
-    '<button class="btn" id="pdHoje" type="button">Hoje</button><button class="btn" id="pdRotas" type="button">Todas as rotas</button><button class="btn main" id="pdCsv" type="button">Exportar relatório</button>') + '<div id="pdCorpo">' + esqueleto() + '</div>';
-  $('pdHoje').addEventListener('click', () => carregarPainel(false));
+    '<button class="btn" id="pdHoje" type="button">Hoje</button><button class="btn" id="pdRotas" type="button">Todas as rotas</button><button class="btn main" id="pdCsv" type="button">Exportar relatório</button>') + '<div id="pdMeta">' + esqueleto() + '</div><div id="pdCorpo">' + esqueleto() + '</div>';
+  $('pdHoje').addEventListener('click', () => { carregarPainel(false); uxCarregarMetaPainel(); });
   $('pdRotas').addEventListener('click', () => irPara('motoristas'));
   clearInterval(timerPainel);
-  timerPainel = setInterval(() => { if (E.aba === 'painel' && !document.hidden) carregarPainel(true); }, 60000);
+  timerPainel = setInterval(() => { if (E.aba === 'painel' && !document.hidden) carregarPainel(true); uxCarregarMetaPainel(); }, 60000);
   carregarPainel(false);
+  uxCarregarMetaPainel();
 }
 async function carregarPainel(silencioso) {
   const meu = ++tokenPainel, hoje = hojeSP();
@@ -1172,7 +1227,7 @@ async function carregarPainel(silencioso) {
     $('pdSub').textContent = dataExtenso(hoje) + ' · atualizado às ' + horaAgora();
     const tile = (nome, n, sub, cls, alvo) => `<${alvo ? 'button type="button" data-ir="' + alvo + '"' : 'div'} class="tile ${cls || ''}"><span>${esc(nome)}</span><b>${esc(n)}</b><small>${esc(sub)}</small></${alvo ? 'button' : 'div'}>`;
     const tiles = [
-      tile('Pacotes bipados', t.pacotes, meta ? 'meta do dia: ' + meta : 'sem meta definida'),
+      tile('Registros por etapa', t.pacotes, 'chegadas + atribuições; não são pacotes únicos'),
       tile('Atribuídos', t.atribuicao, t.chegada + ' chegada' + (t.chegada === 1 ? '' : 's')),
       tile('Ocorrências', ocorr, ocorr ? t.erro + ' erro(s) · ' + t.divergencia + ' divergência(s)' : 'nenhuma hoje', ocorr ? 'erro' : 'ok', 'problemas'),
       tile('Rotas em andamento', and.length, feitas + ' concluída' + (feitas === 1 ? '' : 's'), paradas.length ? 'alerta' : '', 'motoristas'),
@@ -1191,22 +1246,22 @@ async function carregarPainel(silencioso) {
     if (t.divergencia) atencao.push(['alerta', `${t.divergencia} divergência${t.divergencia > 1 ? 's' : ''} de rota`, 'Pacotes bipados fora da rota esperada.', 'divergencia']);
     if (paradas.length) atencao.push(['alerta', `${paradas.length} rota${paradas.length > 1 ? 's' : ''} sem bipe há mais de 3 horas`, paradas.map((r) => r.rota).join(', ') + '.', null]);
     if (vencidas) atencao.push(['erro', `${vencidas} cobrança${vencidas > 1 ? 's' : ''} com prazo vencido`, 'Cobre o motorista ou atualize a situação.', null]);
-    if (meta && t.pacotes >= meta) atencao.push(['ok', 'Meta do dia batida', t.pacotes + ' de ' + meta + ' pacotes.', null]);
+    // A meta individual não mede a operação: a meta da chegada está no resumo de conciliação.
     if (!atencao.length) atencao.push(['ok', 'Nada pendente agora', lista.length ? 'Sem erros, divergências ou rotas paradas.' : 'Ainda não há bipes hoje.', null]);
     const rotaDe = new Map(); for (const r of sr) for (const p of r.pessoas) if (!rotaDe.has(p.id) || !p.concluida) rotaDe.set(p.id, r.rota);
-    const escala = Math.max(1, meta, ...lista.map((o) => o.pacotes)) * 1.02;
+    const escala = Math.max(1, meta, ...lista.map((o) => o.atribuicao)) * 1.02;
     const linhas = lista.slice(0, 8).map((o) => `<tr><td><b>${esc(o.nome)}</b></td><td data-r="Rota">${esc(rotaDe.get(o.id) || '—')}</td><td class="n" data-r="Atribuídos">${o.atribuicao}</td><td class="n" data-r="Ocorrências">${o.erro + o.divergencia}</td>
-      <td class="avanco"><span class="barra-av"><i style="width:${(o.pacotes / escala * 100).toFixed(1)}%"></i></span></td></tr>`).join('');
+      <td class="avanco"><span class="barra-av"><i style="width:${(o.atribuicao / escala * 100).toFixed(1)}%"></i></span></td></tr>`).join('');
     $('pdCorpo').innerHTML = `
       <div class="tiles">${tiles}</div>
       <div class="grade2">
-        <section class="cartao"><div class="cartao-topo"><h2>Bipagens por hora</h2><span class="sub">Chegada e atribuição${pk.valor ? ' · pico às ' + pk.hora + 'h' : ''}</span></div>
+        <section class="cartao"><div class="cartao-topo"><h2>Bipagens por hora</h2><span class="sub">Eventos de chegada e atribuição${pk.valor ? ' · pico às ' + pk.hora + 'h' : ''}</span></div>
           ${ev.itens.length ? `<div class="ritmo alto">${barras}</div>` : '<div class="vazio">Sem bipes por enquanto. Os bipes aparecem aqui assim que alguém bipar.</div>'}</section>
         <section class="cartao"><div class="cartao-topo"><h2>Precisa de atenção</h2></div>
           <ul class="atencao">${atencao.map(([c, a, b, alvo]) => `<li class="${c}"><${alvo ? 'button type="button" data-ir="' + alvo + '"' : 'div'}><b>${esc(a)}</b><span>${esc(b)}</span></${alvo ? 'button' : 'div'}></li>`).join('')}</ul></section>
       </div>
       <section class="cartao"><div class="cartao-topo"><h2>Produtividade por motorista</h2><button class="btn mini" id="pdVer" type="button">Ver todos</button></div>
-        ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Colaborador</th><th>Rota</th><th class="n">Atribuídos</th><th class="n">Ocorrências</th><th>Avanço${meta ? ' (meta ' + meta + ')' : ''}</th></tr></thead><tbody>${linhas}</tbody></table></div>`
+        ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Colaborador</th><th>Rota</th><th class="n">Atribuídos</th><th class="n">Ocorrências</th><th>Atribuições${meta ? ' (meta individual ' + meta + ')' : ''}</th></tr></thead><tbody>${linhas}</tbody></table></div>`
           : '<div class="vazio"><b>Nenhum bipe hoje</b>O ranking aparece assim que alguém bipar com a Nuvem Cordeiro ligada.</div>'}</section>`;
     document.querySelectorAll('#pdCorpo [data-ir]').forEach((b) => b.addEventListener('click', () => {
       const a = b.dataset.ir;
@@ -1296,7 +1351,7 @@ async function carregarFechamento() {
     const rs = (rotas || []).map((r) => ({ rota: r.rota, nome: nomeOperador(r.operador_id), concluida: !!r.concluida_em, em: r.concluida_em }));
     const texto = textoFechamento(dia, t, lista, rs, E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0, (cob || []).length);
     $('fcCorpo').innerHTML = `
-      <div class="tiles"><div class="tile"><span>Pacotes bipados</span><b>${t.pacotes}</b><small>${t.chegada} chegadas · ${t.atribuicao} atribuições</small></div>
+      <div class="tiles"><div class="tile"><span>Registros por etapa</span><b>${t.pacotes}</b><small>${t.chegada} chegadas · ${t.atribuicao} atribuições</small></div>
         <div class="tile ${t.erro ? 'erro' : ''}"><span>Erros</span><b>${t.erro}</b><small>no dia</small></div>
         <div class="tile ${t.divergencia ? 'alerta' : ''}"><span>Divergências</span><b>${t.divergencia}</b><small>no dia</small></div>
         <div class="tile"><span>Rotas concluídas</span><b>${rs.filter((r) => r.concluida).length}</b><small>de ${rs.length} usadas</small></div>
@@ -1425,7 +1480,7 @@ async function carregarNR(silencioso) {
     if (meu !== tokenNR || !$('nrCorpo')) return;
     dadosNR = { lista: l, ...juntarNaoRecebidos(l.itens, ach.itens) };
     $('nrSub').textContent = 'Lista de ' + dataBR(l.dia) + ' · gerada por ' + nomeOperador(l.gerada_por) + ' às ' + horaCurta(l.gerada_em) + ' · atualizado às ' + horaAgora();
-    desenharNR();
+    if (!document.activeElement?.closest('#nrCorpo')) desenharNR();
   } catch (e) { if (meu === tokenNR && $('nrCorpo') && !silencioso) $('nrCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
 function desenharNR() {
@@ -1458,23 +1513,26 @@ function desenharNR() {
     <section class="cartao">
       <div class="filtros" style="margin-bottom:12px">
         <div class="seg" id="nrSeg">${[['faltam', 'Não encontrados · ' + falta, 'vermelho'], ['achados', 'Encontrados · ' + ach, 'verde'], ['todos', 'Todos · ' + todos.length, '']].map(([k, n, cl]) => `<button type="button" class="${cl}" data-f="${k}" aria-pressed="${estNR.filtro === k}">${n}</button>`).join('')}</div>
-        <label class="busca-in"><span class="sr-only"></span><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="nrBusca" type="search" placeholder="AWB, bairro, cidade ou rota" value="${esc(estNR.busca)}" /></label>
-        <button class="btn" id="nrCopiar" type="button">Copiar os que faltam</button><button class="btn" id="nrCsv" type="button">Baixar CSV</button></div>
+        <label class="busca-in"><span class="sr-only">Buscar pacote, bairro, cidade ou rota</span><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg><input id="nrBusca" aria-label="Buscar nos não recebidos" type="search" placeholder="AWB, bairro, cidade ou rota" value="${esc(estNR.busca)}" /></label>
+        <button class="btn" id="nrCopiar" type="button">Copiar os que faltam</button><button class="btn" id="nrCsv" type="button">Exportar filtro</button><button class="btn" id="nrLimpar" type="button">Limpar filtros</button></div>
       <div class="chips-cidade" id="nrCidades" role="group" aria-label="Cidade"><button type="button" data-c="" aria-pressed="${!estNR.cidade}">Todas as cidades · ${grupos.reduce((n, g) => n + nAba(g), 0)}</button>${grupos.filter((g) => nAba(g) > 0).map((g) => `<button type="button" data-c="${esc(g.cidade)}" aria-pressed="${estNR.cidade === g.cidade}">${esc(g.cidade)} · ${nAba(g)}</button>`).join('')}</div>
       ${vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Pacote</th><th>Local</th><th>Rota · veículo</th><th>Situação</th></tr></thead><tbody>${corpo}</tbody></table></div>`
         : `<div class="vazio"><b>${estNR.filtro === 'faltam' && !q && !estNR.cidade ? 'Tudo encontrado!' : 'Nada por aqui'}</b>${estNR.filtro === 'faltam' && !q && !estNR.cidade ? 'Nenhum pacote faltando.' : 'Nenhum pacote com esse filtro.'}</div>`}
     </section>`;
+  $('nrLimpar').addEventListener('click', () => { estNR.filtro='faltam'; estNR.cidade=''; estNR.busca=''; desenharNR(); });
   $('nrSeg').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estNR.filtro = b.dataset.f; desenharNR(); } });
   $('nrCidades').addEventListener('click', (e) => { const b = e.target.closest('button[data-c]'); if (b) { estNR.cidade = b.dataset.c; desenharNR(); } });
   $('nrBusca').addEventListener('input', (e) => { estNR.busca = e.target.value; const pos = e.target.selectionStart; desenharNR(); const n = $('nrBusca'); n.focus(); n.setSelectionRange(pos, pos); });
   document.querySelectorAll('#nrCorpo a.awb').forEach((a) => { a.addEventListener('click', () => irPara('pacote', a.dataset.awb)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') irPara('pacote', a.dataset.awb); }); });
   $('nrCopiar').addEventListener('click', async () => {
-    const t = grupos.filter((g) => g.faltam.length && (!estNR.cidade || g.cidade === estNR.cidade)).map((g) => `*${g.cidade}* (${g.faltam.length})\n` + g.faltam.map((i, n) => `${n + 1}. ${i.waybillNo}${i.bairro ? ' — ' + i.bairro : ''}`).join('\n')).join('\n\n');
-    const faltamTotal = grupos.filter((g) => !estNR.cidade || g.cidade === estNR.cidade).reduce((n, g) => n + g.faltam.length, 0);
+    const gruposCopiar = agruparCidadesNR(todos.filter((i) => !i.achado && (!estNR.cidade || nomeCid(i) === estNR.cidade) && (!q || [i.waybillNo,i.bairro,i.cidade,i.rota,i.veiculo].join(' ').toLowerCase().includes(q))));
+    const t = gruposCopiar.filter((g) => g.faltam.length).map((g) => `*${g.cidade}* (${g.faltam.length})\n` + g.faltam.map((i, n) => `${n + 1}. ${i.waybillNo}${i.bairro ? ' — ' + i.bairro : ''}`).join('\n')).join('\n\n');
+    const faltamTotal = gruposCopiar.reduce((n, g) => n + g.faltam.length, 0);
+    if (!faltamTotal) return aviso('Nenhum pacote faltando neste recorte.');
     try { await navigator.clipboard.writeText(`*Não recebidos ${dataBR(dadosNR.lista.dia)} — faltam ${faltamTotal}*\n\n${t}`); aviso('Lista copiada'); } catch (_) { aviso('Não consegui copiar', true); }
   });
   $('nrCsv').addEventListener('click', () => baixar('nao-recebidos-' + dadosNR.lista.dia + '.csv', paraCsv(['AWB', 'Bairro', 'Cidade', 'Rota', 'Veículo', 'Situação', 'Encontrado por', 'Encontrado em'],
-    todos.map((i) => [i.waybillNo, i.bairro || '', i.cidade || '', i.rota || '', i.veiculo || '', i.achado ? 'Encontrado' : 'Não encontrado', i.achado ? nomeOperador(i.achado.achado_por) : '', i.achado ? dataHoraBR(i.achado.achado_em) : '']))));
+    vis.map((i) => [i.waybillNo, i.bairro || '', i.cidade || '', i.rota || '', i.veiculo || '', i.achado ? 'Encontrado' : 'Não encontrado', i.achado ? nomeOperador(i.achado.achado_por) : '', i.achado ? dataHoraBR(i.achado.achado_em) : '']))));
 }
 
 /* ===================== TEMPO REAL ===================== */
@@ -1725,7 +1783,7 @@ function desenharProblemas() {
   const cc = comCorrecao(), agora = Date.now(), gestao = E.perfil.papel !== 'bipador';
   const base = filtrarProblemas(false), l = filtrarProblemas(true), mostrados = l.slice(0, 500);
   const rc = resumoCorrecao(base, agora);
-  if ($('prNota')) $('prNota').innerHTML = cc ? '<div class="aviso azul" style="margin-bottom:14px"><b>Como o “Corrigido” funciona:</b> quando o colaborador reatribui o pacote para a rota certa no app, a linha vira <b>Corrigido</b> sozinha e mostra a prova (<u>ver prova</u>). Você pode ligar ou desligar à mão a qualquer momento: a sua decisão sempre vale e o sistema não mexe mais naquela linha.</div>' : '';
+  if ($('prNota')) $('prNota').innerHTML = cc ? '<details class="aviso azul" style="margin-bottom:14px"><summary><b>Como o “Corrigido” funciona</b></summary><p> quando o colaborador reatribui o pacote para a rota certa no app, a linha vira <b>Corrigido</b> sozinha e mostra a prova (<u>ver prova</u>). Você pode ligar ou desligar à mão a qualquer momento: a sua decisão sempre vale e o sistema não mexe mais naquela linha.</p></details>' : '';
   if ($('prKpis')) $('prKpis').innerHTML = cc ? `<div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px">
     <div class="prob zero" style="cursor:default"><b>${rc.total}</b><span>Ocorrências</span><small>no período</small></div>
     <div class="prob ${rc.pendentes ? 'erro' : 'zero'}" style="cursor:default"><b>${rc.pendentes}</b><span>Pendentes</span><small>${rc.velhas ? rc.velhas + ' há mais de 24 h' : 'nenhuma atrasada'}</small></div>
@@ -1784,7 +1842,7 @@ async function carregarSacas(silencioso) {
     if (meu !== tokenSac || !$('sacCorpo')) return;
     dadosSac = r.itens;
     if (!estSac.sel || !dadosSac.some((x) => x.id === estSac.sel)) { const a = dadosSac.find((x) => x.status !== 'fechada'); estSac.sel = a ? a.id : (dadosSac[0] ? dadosSac[0].id : null); estSac.pac = null; }
-    desenharSacas();
+    if (!document.activeElement?.closest('#sacCorpo input, #sacCorpo select')) desenharSacas();
     if (estSac.sel) carregarPacotesSaca(estSac.sel, silencioso);
   } catch (e) { if (meu === tokenSac && $('sacCorpo') && !silencioso) $('sacCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
@@ -1838,12 +1896,12 @@ function desenharSacas() {
       <label class="c">Colaborador<select id="sacOp"><option value="">Todos</option>${ops.map((o) => `<option value="${esc(o)}" ${estSac.op === o ? 'selected' : ''}>${esc(nomeOperador(o))}</option>`).join('')}</select></label>
       <label class="c">Buscar<span class="busca-in">${ICO_BUSCA}<input id="sacBusca" placeholder="Motorista, rota ou colaborador" value="${esc(estSac.busca)}" /></span></label></div>
       ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Saca</th><th>Colaborador</th><th>Status</th><th class="num">Pacotes</th><th>Início</th><th>Último bipe</th><th class="num">Duração</th></tr></thead><tbody>
-      ${lista.map((x) => `<tr class="clic ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><td><b>${nomeSaca(x)}</b><div class="sub">${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div></td>
+      ${lista.map((x) => `<tr class="clic ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}" tabindex="0" role="button" aria-label="Abrir saca ${esc(x.numero)} de ${esc(x.motorista)}"><td><b>${nomeSaca(x)}</b><div class="sub">${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}</div></td>
         <td data-r="Colaborador" title="${esc(nomeOperador(x.operador_id))}">${esc(nomeCurto(nomeOperador(x.operador_id)))} ${x.est !== 'fechada' ? `<span class="lock">${ICO_CADEADO}</span>` : ''}</td><td data-r="Status">${pilulaSaca(x.est)}</td><td class="num" data-r="Pacotes"><b>${x.pacotes}</b></td><td data-r="Início">${esc(horaCurta(x.primeiro_bipe_em || x.aberta_em))}</td>
         <td data-r="Último bipe">${x.ultimo_bipe_em ? esc(horaCurta(x.ultimo_bipe_em)) : '—'}<div class="sub" style="${x.est === 'parada' ? 'color:var(--erro)' : ''}">${x.ultimo_bipe_em ? 'há ' + esc(haTempo(agora - new Date(x.ultimo_bipe_em).getTime())) : ''}</div></td><td class="num" data-r="Duração"><b>${esc(resumoTempo(x.primeiro_bipe_em || x.aberta_em, x.ultimo_bipe_em || x.aberta_em, agora).total)}</b></td></tr>`).join('')}</tbody></table></div>`
         : '<div class="vazio"><b>Nenhuma saca aqui</b>Mude o filtro ou o período.</div>'}
       ${lista.length ? '<div style="margin-top:10px"><button class="btn mini" id="sacCsv" type="button">Baixar CSV</button></div>' : ''}</div>
-      <div class="cartao gaveta" id="sacGaveta"></div></div>`;
+      <div class="cartao gaveta" id="sacGaveta" tabindex="-1" aria-label="Detalhes da saca"></div></div>`;
   corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); if (window.innerWidth <= 1280) { const g = $('sacGaveta'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
   $('sacEst').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-e]'); if (b) { estSac.estado = b.dataset.e; desenharSacas(); } });
   $('sacCid').addEventListener('change', () => { estSac.cidade = $('sacCid').value; desenharSacas(); });
@@ -1894,7 +1952,9 @@ function desenharGavetaSaca() {
 function telaPacote(awbInicial) {
   raizTela().innerHTML = cabecalho('Ficha do pacote', 'Digite o código para ver, em ordem, quem bipou, o que aconteceu e se houve cobrança.') +
     `<div class="cartao"><div class="pacote-busca"><input id="pkAwb" placeholder="Código do pacote (AWB)" aria-label="Código do pacote" autocomplete="off" value="${esc(awbInicial || '')}" /><button class="btn main" id="pkBuscar" type="button">Buscar pacote</button></div></div><div id="pkCorpo"></div>`;
+  let buscaAtual=0;
   const buscar = async () => {
+    const consulta=++buscaAtual;
     const awb = eFiltroSeguro($('pkAwb').value.trim());
     const corpo = $('pkCorpo');
     if (!awb) { corpo.innerHTML = ''; return; }
@@ -1903,6 +1963,7 @@ function telaPacote(awbInicial) {
       const ev = await api('GET', '/rest/v1/eventos?select=id,ocorreu_em,tipo,operador_id,origem,cidade,rota,motorista,motivo&awb=eq.' + awb + '&order=ocorreu_em.asc&limit=500');
       let cob = [];
       if (E.perfil.papel !== 'bipador') cob = await api('GET', '/rest/v1/cobrancas?select=*&awb=eq.' + awb + '&order=enviada_em.asc') || [];
+      if (consulta!==buscaAtual || !corpo.isConnected) return;
       if (!ev.length && !cob.length) { corpo.innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhum registro deste pacote</b>Só aparecem pacotes bipados com a Nuvem Cordeiro ligada. Confira o código e tente de novo.</div></div>'; return; }
       const classe = (t) => (t === 'erro' ? 't-erro' : t === 'divergencia' ? 't-divergencia' : t === 'chegada' || t === 'atribuicao' ? 't-ok' : '');
       const itens = [
@@ -1910,7 +1971,7 @@ function telaPacote(awbInicial) {
         ...cob.map((c) => ({ t: c.enviada_em, c: '', html: `<span class="etq ${esc(c.status)}">Cobrança ${esc((STATUS_COB.find((x) => x[0] === c.status) || [0, c.status])[1].toLowerCase())}</span>${c.motorista ? ' ' + esc(c.motorista) : ''}${c.dias_atraso != null ? ' · ' + esc(c.dias_atraso) + ' dia(s) de atraso' : ''}${c.prazo_ate ? ' · prazo ' + esc(dataBR(c.prazo_ate)) : ''}${c.resposta ? '<br><span class="sub">' + esc(c.resposta) + '</span>' : ''}` })),
       ].sort((a, b) => new Date(a.t) - new Date(b.t));
       corpo.innerHTML = `<div class="cartao"><div class="cartao-topo"><h2>${esc(awb)}</h2><span class="sub">${itens.length} registro${itens.length === 1 ? '' : 's'}</span></div><ul class="linha-tempo">${itens.map((i) => `<li class="${i.c}"><i></i><div><time>${esc(dataHoraBR(i.t))}</time>${i.html}</div></li>`).join('')}</ul></div>`;
-    } catch (e) { corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
+    } catch (e) { if (consulta===buscaAtual && corpo.isConnected) corpo.innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
   };
   $('pkBuscar').addEventListener('click', buscar);
   $('pkAwb').addEventListener('keydown', (e) => { if (e.key === 'Enter') buscar(); });
@@ -1921,6 +1982,8 @@ function telaPacote(awbInicial) {
 const STATUS_COB = [['aberta', 'Aberta'], ['prometida', 'Prometida'], ['sem_resposta', 'Sem resposta'], ['resolvida', 'Resolvida']];
 let filtroCob = 'abertas';
 async function telaCobrancas() {
+  if (uxTemEdicao() && !confirm('Há alterações não salvas nas cobranças. Trocar de filtro e descartá-las?')) return;
+  uxLimparEdicao();
   $('conteudo').innerHTML = cabecalho('Cobranças', 'Pacotes cobrados do motorista, com prazo e resposta.',
       `<div class="seg" id="cbSeg">${[['abertas', 'Em andamento'], ['resolvida', 'Resolvidas'], ['todas', 'Todas']].map(([k, n]) => `<button type="button" data-f="${k}" aria-pressed="${filtroCob === k}">${n}</button>`).join('')}</div>`) +
     `<div class="cartao"><h2 style="margin-bottom:12px">Registrar cobrança</h2><div class="filtros">
@@ -1932,11 +1995,14 @@ async function telaCobrancas() {
   document.querySelectorAll('#cbSeg button').forEach((b) => b.addEventListener('click', () => { filtroCob = b.dataset.f; telaCobrancas(); }));
   $('cbCriar').addEventListener('click', async () => {
     const awb = eFiltroSeguro($('cbAwb').value.trim()), m = $('cbMsg'); m.hidden = true;
-    if (!awb) { m.textContent = 'Informe o código do pacote (AWB).'; m.hidden = false; return; }
+    if (!awb) { m.textContent = 'Informe o código do pacote (AWB).'; m.hidden = false; $('cbAwb').focus(); return; }
+    if (!$('cbDias').reportValidity() || !$('cbPrazo').reportValidity()) return;
+    const botao = $('cbCriar'); if (botao.disabled) return; botao.disabled = true; botao.textContent = 'Registrando…';
     try {
       await api('POST', '/rest/v1/cobrancas', [{ awb, motorista: $('cbMot').value.trim() || null, dias_atraso: $('cbDias').value === '' ? null : Number($('cbDias').value), prazo_ate: $('cbPrazo').value || null }], { Prefer: 'return=minimal' });
-      aviso('Cobrança registrada'); telaCobrancas();
+      aviso('Cobrança registrada'); uxLimparEdicao(); telaCobrancas();
     } catch (e) { m.textContent = e.message; m.hidden = false; }
+    finally { if (botao.isConnected) { botao.disabled = false; botao.textContent = 'Registrar'; } }
   });
   const filtro = filtroCob === 'abertas' ? '&status=in.(aberta,prometida,sem_resposta)' : filtroCob === 'resolvida' ? '&status=eq.resolvida' : '';
   try {
@@ -1956,7 +2022,7 @@ async function telaCobrancas() {
       const tr = b.closest('tr'), status = tr.querySelector('.cbStatus').value;
       b.disabled = true;
       try {
-        await api('PATCH', '/rest/v1/cobrancas?id=eq.' + eFiltroSeguro(tr.dataset.id), { status, resposta: tr.querySelector('.cbResp').value.trim() || null, resolvida_em: status === 'resolvida' ? new Date().toISOString() : null }, { Prefer: 'return=minimal' });
+        await api('PATCH', '/rest/v1/cobrancas?id=eq.' + eFiltroSeguro(tr.dataset.id), { status, resposta: tr.querySelector('.cbResp').value.trim() || null, resolvida_em: status === 'resolvida' ? new Date().toISOString() : null }, { Prefer: 'return=minimal' }); uxLimparEdicao(tr);
         b.textContent = 'Salvo ✓'; aviso('Cobrança salva'); setTimeout(() => { b.textContent = 'Salvar'; b.disabled = false; }, 1200);
       } catch (e) { b.disabled = false; aviso(e.message, true); }
     }));
@@ -1981,16 +2047,20 @@ function limparLocais(lista) {
 // Pede confirmação antes de uma alteração que vale para todos. "texto" já vem escapado.
 function confirmarAcao(o) {
   return new Promise((resolve) => {
+    const origem = document.activeElement;
     const f = document.createElement('div');
-    f.className = 'modal-fundo'; f.setAttribute('role', 'dialog'); f.setAttribute('aria-modal', 'true');
-    f.innerHTML = `<div class="modal"><h2>${esc(o.titulo || 'Tem certeza?')}</h2><p>${o.texto || ''}</p><p class="sub">Alteração de <b id="mdQuem">${esc(o.quem || '')}</b></p>
-      <div class="modal-acoes"><button class="btn" data-r="0" type="button">Cancelar</button><button class="btn ambar" data-r="1" type="button">${esc(o.ok || 'Sim, alterar')}</button></div></div>`;
-    const tecla = (e) => { if (e.key === 'Escape') fim(false); };
-    const fim = (v) => { document.removeEventListener('keydown', tecla); f.remove(); resolve(v); };
+    f.className = 'modal-fundo'; f.setAttribute('role','dialog'); f.setAttribute('aria-modal','true'); f.setAttribute('aria-labelledby','uxModalTitulo');
+    f.innerHTML = `<div class="modal"><h2 id="uxModalTitulo">${esc(o.titulo || 'Tem certeza?')}</h2><p>${o.texto || ''}</p><p class="sub">Alteração de <b>${esc(o.quem || '')}</b></p><div class="modal-acoes"><button class="btn" data-r="0" type="button">Cancelar</button><button class="btn ambar" data-r="1" type="button">${esc(o.ok || 'Sim, alterar')}</button></div></div>`;
+    const fundos = [$('telaApp'), $('telaLogin')].filter(Boolean).map((el) => ({el, inert:el.inert}));
+    fundos.forEach(({el}) => { el.inert = true; });
+    let terminado = false;
+    const fim = (v) => { if (terminado) return; terminado = true; document.removeEventListener('keydown', tecla); f.remove(); fundos.forEach(({el,inert}) => { el.inert = inert; }); if (origem && origem.isConnected) origem.focus(); resolve(v); };
+    const tecla = (e) => {
+      if (e.key === 'Escape') { e.preventDefault(); fim(false); }
+      if (e.key === 'Tab') uxPrenderFoco(e, f);
+    };
     f.addEventListener('click', (e) => { const b = e.target.closest('button[data-r]'); if (b) fim(b.dataset.r === '1'); else if (e.target === f) fim(false); });
-    document.addEventListener('keydown', tecla);
-    document.body.appendChild(f);
-    f.querySelector('[data-r="0"]').focus();
+    document.addEventListener('keydown', tecla); document.body.appendChild(f); f.querySelector('[data-r="0"]').focus();
   });
 }
 
@@ -2094,6 +2164,7 @@ function locaisSujos() {
   });
 }
 async function carregarLocais(silencioso) {
+  if (!silencioso && uxTemEdicao()) return aviso('Salve ou desfaça as outras alterações antes de atualizar os locais.', true);
   const meu = ++tokenLoc;
   if (silencioso && $('lcCorpo') && locaisSujos()) return; // não apaga o que está sendo digitado
   let lista = [];
@@ -2129,7 +2200,7 @@ async function salvarLocal(tr) {
   if (orig && chaveLocal(orig.termo, orig.cidade) !== chaveLocal(novo.termo, novo.cidade)) corpo.push({ termo: orig.termo, rota: orig.rota, cidade: orig.cidade, removido: true });
   corpo.push({ termo: novo.termo, rota: novo.rota, cidade: novo.cidade, removido: false });
   const b = tr.querySelector('.lcSalvar'); b.disabled = true;
-  try { await gravarLocais(corpo); aviso('Local salvo para todos ✓'); await carregarLocais(false); }
+  try { await gravarLocais(corpo); aviso('Local salvo para todos ✓'); uxLimparEdicao(tr); tr.dataset.o=JSON.stringify(novo); if (!uxTemEdicao()) await carregarLocais(false); }
   catch (e) { aviso(e.message, true); }
   finally { b.disabled = false; }
 }
@@ -2138,7 +2209,7 @@ async function excluirLocal(tr) {
   if (!orig) { tr.remove(); return; }
   const texto = `Remover <b>${esc(orig.termo)}</b> (${esc(orig.rota)}).<br>Tem certeza que deseja fazer essa alteração? A regra deixa de valer na hora para todos os aparelhos.`;
   if (!(await confirmarAcao({ titulo: 'Excluir local', texto, quem: E.perfil.nome, ok: 'Sim, excluir' }))) return;
-  try { await gravarLocais([{ termo: orig.termo, rota: orig.rota, cidade: orig.cidade, removido: true }]); aviso('Local removido para todos'); await carregarLocais(false); }
+  try { await gravarLocais([{ termo: orig.termo, rota: orig.rota, cidade: orig.cidade, removido: true }]); aviso('Local removido para todos'); uxLimparEdicao(tr); tr.remove(); if (!uxTemEdicao()) await carregarLocais(false); }
   catch (e) { aviso(e.message, true); }
 }
 
@@ -2177,8 +2248,8 @@ function telaMeta() {
   $('conteudo').innerHTML = cabecalho('Meta do dia', 'Atribuir pelo menos ' + PCT_PADRAO + '% do que chegou no dia <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
     '<div class="seg" id="metAtalhos"><button type="button" data-d="hoje">Hoje</button><button type="button" data-d="ontem">Ontem</button></div><input type="date" id="metDia" value="' + esc(estMeta.dia) + '" aria-label="Dia" /><button class="btn" id="metAtualizar" type="button">Atualizar</button>') + '<div id="metCorpo">' + esqueleto() + '</div>';
   mostrarVivo();
-  $('metDia').addEventListener('change', () => { if ($('metDia').value) { estMeta.dia = $('metDia').value; carregarMeta(false); } });
-  $('metAtalhos').addEventListener('click', (e) => { const b = e.target.closest('button[data-d]'); if (!b) return; estMeta.dia = b.dataset.d === 'hoje' ? hojeSP() : somarDias(hojeSP(), -1); $('metDia').value = estMeta.dia; carregarMeta(false); });
+  $('metDia').addEventListener('change', () => { if (uxTemEdicao()) { $('metDia').value=estMeta.dia; aviso('Salve os ajustes antes de trocar o dia.', true); return; } if ($('metDia').value) { estMeta.dia = $('metDia').value; carregarMeta(false); } });
+  $('metAtalhos').addEventListener('click', (e) => { const b = e.target.closest('button[data-d]'); if (!b) return; if (uxTemEdicao()) { aviso('Salve os ajustes antes de trocar o dia.', true); return; } estMeta.dia = b.dataset.d === 'hoje' ? hojeSP() : somarDias(hojeSP(), -1); $('metDia').value = estMeta.dia; carregarMeta(false); });
   $('metAtualizar').addEventListener('click', () => carregarMeta(false));
   clearInterval(timerMeta);
   timerMeta = setInterval(() => { if (E.aba === 'meta' && !document.hidden && !document.activeElement.closest('#metForm')) carregarMeta(true); }, 30000);
@@ -2194,7 +2265,7 @@ async function carregarMeta(silencioso) {
     ]);
     if (meu !== tokenMeta || !$('metCorpo')) return;
     dadosMeta = { cc: cc.itens, pk: pk.itens, cm: Array.isArray(cm) && cm[0] ? cm[0] : null, semTabela: cm === null };
-    desenharMeta();
+    if (!uxTemEdicao()) desenharMeta();
   } catch (e) { if (meu === tokenMeta && $('metCorpo') && !silencioso) $('metCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09 e depois o 10-meta-dia.sql no Supabase.</div>`; }
 }
 function desenharMeta() {
@@ -2250,10 +2321,13 @@ function desenharMeta() {
   if (gestao) {
     const num = (id) => { const v = $(id).value.trim(); return v === '' ? null : Number(v); };
     const gravar = async (corpoReq, msg) => {
+      if ([...$('metForm').querySelectorAll('input')].some((el) => !el.reportValidity())) return;
+      const botao=$('mfSalvar'); if (botao.disabled) return; botao.disabled=true;
       try {
         await api('POST', '/rest/v1/meta_dia?on_conflict=dia', [corpoReq], { Prefer: 'resolution=merge-duplicates,return=minimal' });
-        aviso(msg); carregarMeta(false);
+        aviso(msg); uxLimparEdicao($('metForm')); carregarMeta(false);
       } catch (e) { aviso(e.message + ' (rodou o script 10-meta-dia.sql?)', true); }
+      finally { if (botao.isConnected) botao.disabled=false; }
     };
     $('mfSalvar').addEventListener('click', () => gravar({
       dia: estMeta.dia, percentual: num('mfPct'), ajuste_universo: Math.trunc(num('mfUni') || 0), ajuste_atribuidos: Math.trunc(num('mfAtr') || 0),
@@ -2289,23 +2363,180 @@ async function telaEquipe() {
       if (!Array.isArray(volta) || !volta.length) throw new Error('O banco não aplicou a alteração. Confirme que o script 03-permissoes.sql foi executado e que o seu acesso é de Administrador do banco de dados.');
       E.perfis.set(id, { ...E.perfis.get(id), ...volta[0] });
       aviso(dados.ativo === false ? 'Acesso desativado' : (E.perfis.get(id).ativo && tr.classList.contains('inativa') ? 'Acesso ativado ✓' : 'Alterações salvas'));
-      telaEquipe();
+      uxLimparEdicao(tr); tr.classList.toggle('inativa', !E.perfis.get(id).ativo); if (E.perfis.get(id).ativo) tr.querySelector('.etq.aberta')?.remove(); b.disabled=false; b.textContent='Salvo ✓';
     } catch (e) { b.disabled = false; aviso(e.message, true); }
   }));
   $('metaSalvar').addEventListener('click', async () => {
     const n = Math.max(0, Math.floor(Number($('metaDia').value) || 0));
     try {
       await api('POST', '/rest/v1/cadastros', [{ chave: 'metas', valor: { pacotes_dia: n }, atualizado_em: new Date().toISOString() }], { Prefer: 'resolution=merge-duplicates,return=minimal' });
-      E.meta = { pacotes_dia: n }; $('metaSalvar').textContent = 'Salvo ✓'; aviso(n ? 'Meta salva: ' + n + ' pacotes por dia' : 'Meta desligada'); setTimeout(() => { $('metaSalvar').textContent = 'Salvar meta'; }, 1200);
+      uxLimparEdicao($('metaDia')); E.meta = { pacotes_dia: n }; $('metaSalvar').textContent = 'Salvo ✓'; aviso(n ? 'Meta salva: ' + n + ' pacotes por dia' : 'Meta desligada'); setTimeout(() => { $('metaSalvar').textContent = 'Salvar meta'; }, 1200);
     } catch (e) { aviso(e.message, true); }
   });
 }
+
+/* ===================== UX 1.18 (apresentação e interação) ===================== */
+const uxEdicoes = new Set();
+let uxUltimaResposta = null, uxFalhaRede = false, uxMenuOrigem = null, uxPacoteAnterior='painel';
+function uxValor(el) { return el.type === 'checkbox' ? String(el.checked) : el.value; }
+function uxTemEdicao() { return [...uxEdicoes].some((el) => el.isConnected); }
+function uxLimparEdicao(raiz) {
+  for (const el of [...uxEdicoes]) if (!raiz || el === raiz || raiz.contains(el) || !el.isConnected) {
+    uxEdicoes.delete(el); if (el.isConnected) { el.dataset.uxInicial = uxValor(el); el.closest('tr,#metForm')?.classList.remove('form-dirty'); }
+  }
+}
+function uxPrenderFoco(e, raiz) {
+  const els = [...raiz.querySelectorAll('button:not(:disabled),input:not(:disabled),select:not(:disabled),textarea:not(:disabled),a[href],[tabindex="0"]')].filter((el) => el.getClientRects().length && !el.closest('[hidden]'));
+  if (!els.length) return;
+  const first = els[0], last = els[els.length - 1];
+  if (e.shiftKey && (document.activeElement === first || !raiz.contains(document.activeElement))) { e.preventDefault(); last.focus(); }
+  else if (!e.shiftKey && document.activeElement === last) { e.preventDefault(); first.focus(); }
+}
+function uxAbrirMenu() {
+  if (window.innerWidth > 860) return;
+  uxMenuOrigem = document.activeElement;
+  $('menuLateral').classList.add('nav-open'); $('menuLateral').inert = false;
+  $('menuLateral').setAttribute('role','dialog'); $('menuLateral').setAttribute('aria-modal','true');
+  $('navBackdrop').classList.add('show'); $('btnMenu').setAttribute('aria-expanded','true');
+  $('telaApp').querySelector('.coluna').inert = true;
+  document.body.style.overflow = 'hidden'; $('navBusca').focus();
+}
+function uxFecharMenu() {
+  const aberto = $('menuLateral')?.classList.contains('nav-open');
+  $('menuLateral')?.classList.remove('nav-open'); $('menuLateral')?.removeAttribute('role'); $('menuLateral')?.removeAttribute('aria-modal');
+  $('navBackdrop')?.classList.remove('show'); $('btnMenu')?.setAttribute('aria-expanded','false');
+  if ($('menuLateral')) $('menuLateral').inert = window.innerWidth <= 860;
+  const coluna = document.querySelector('#telaApp .coluna'); if (coluna) coluna.inert = false;
+  document.body.style.overflow = '';
+  if (aberto && uxMenuOrigem?.isConnected) uxMenuOrigem.focus();
+}
+function uxAtualizarCabecalho(id) {
+  const a = ABAS.find((a) => a.id === id), titulo = a?.nome || SUBTELAS[id] || 'Painel Cordeiro';
+  if ($('uxSecao')) $('uxSecao').textContent = titulo;
+  document.title = titulo + ' · Cordeiro';
+  document.body.dataset.secao = id;
+}
+function uxRegistrarResposta(status) {
+  if (status < 400) { uxUltimaResposta = Date.now(); uxFalhaRede = false; }
+  else if (status >= 400) uxFalhaRede = true;
+  uxStatus();
+}
+function uxStatus() {
+  const el=$('uxConexao'), t=$('uxConexaoTexto'); if (!el || !t) return;
+  const off = !navigator.onLine || uxFalhaRede;
+  el.classList.toggle('offline',off);
+  t.textContent = !navigator.onLine ? 'Sem internet · dados podem estar desatualizados' : uxFalhaRede ? 'Falha na atualização · tente novamente' : uxUltimaResposta ? 'Última consulta às ' + horaCurta(new Date(uxUltimaResposta).toISOString()) : 'Aguardando consulta';
+}
+function uxPrepararConteudo() {
+  const root=$('conteudo'); if (!root) return;
+  root.querySelectorAll('table').forEach((table) => {
+    if (!table.getAttribute('aria-label')) table.setAttribute('aria-label', table.closest('.cartao')?.querySelector('h2')?.textContent || document.querySelector('.pagina-topo h1')?.textContent || 'Dados da operação');
+    table.querySelectorAll('thead th').forEach((th) => { if (!th.hasAttribute('scope')) th.setAttribute('scope','col'); });
+    const heads=[...table.querySelectorAll(':scope > thead > tr > th')].map((x)=>x.textContent.trim());
+    if (table.classList.contains('empilha')) table.querySelectorAll(':scope > tbody > tr').forEach((tr)=> {
+      if ([...tr.cells].some((td)=>td.colSpan>1)) return;
+      [...tr.cells].forEach((td,i)=> { if (!td.hasAttribute('data-r') && heads[i]) td.setAttribute('data-r',heads[i]); });
+    });
+  });
+  root.querySelectorAll('.rolagem').forEach((el) => { el.tabIndex=0; el.setAttribute('role','region'); el.setAttribute('aria-label','Tabela de dados; role horizontalmente se necessário'); });
+  root.querySelectorAll('.esq').forEach((el) => { el.setAttribute('role','status'); el.setAttribute('aria-label','Carregando dados'); });
+  root.querySelectorAll('input:not([aria-label]),select:not([aria-label]),textarea:not([aria-label])').forEach((el) => {
+    if (!el.closest('label') && !el.labels?.length) el.setAttribute('aria-label',el.placeholder || (el.id==='fcTexto'?'Mensagem de fechamento':'Campo de edição'));
+  });
+  root.querySelectorAll('.aviso.erro').forEach((el) => {
+    if (el.hidden || !el.textContent.trim()) return;
+    el.setAttribute('role','alert');
+    if (!el.querySelector('button') && !el.dataset.uxRetry && !el.querySelector('input')) {
+      el.dataset.uxRetry='1'; el.classList.add('erro-retry');
+      const text=document.createElement('span'); while(el.firstChild) text.appendChild(el.firstChild); el.appendChild(text);
+      const b=document.createElement('button'); b.className='btn mini'; b.type='button'; b.textContent='Tentar novamente';
+      b.addEventListener('click',()=>irPara(E.aba)); el.appendChild(b);
+    }
+  });
+  root.querySelectorAll('tr.clic[data-saca]').forEach((tr)=>{tr.setAttribute('aria-expanded',String(tr.dataset.saca===estSac.sel));});
+  root.querySelectorAll('#lcCorpo .lcDel').forEach((b)=>b.classList.add('btn-danger'));
+  uxAdicionarBuscaLocal(); uxAdicionarBuscaEquipe();
+}
+function uxAdicionarBuscaLocal() {
+  if (!$('lcCorpo') || $('uxLocaisBusca')) return;
+  const box=document.createElement('div'); box.className='section-search';
+  box.innerHTML='<label class="sr-only" for="uxLocaisBusca">Buscar local, rota ou cidade</label><input type="search" id="uxLocaisBusca" placeholder="Buscar local, rota ou cidade"/><span class="sub" id="uxLocaisCont"></span>';
+  $('lcCorpo').closest('.cartao').prepend(box);
+  const filtrar=()=>{const q=$('uxLocaisBusca').value.trim().toLocaleLowerCase('pt-BR');let n=0;document.querySelectorAll('#lcCorpo .lcRow').forEach((tr)=>{const texto=[...tr.querySelectorAll('input')].map((i)=>i.value).join(' ').toLocaleLowerCase('pt-BR');tr.hidden=!!q&&!texto.includes(q);if(!tr.hidden)n++;});$('uxLocaisCont').textContent=n+' locais visíveis';};
+  $('uxLocaisBusca').addEventListener('input',filtrar); filtrar();
+}
+function uxAdicionarBuscaEquipe() {
+  const tr=document.querySelector('tr .eqNome')?.closest('table'); if(!tr||$('uxEquipeBusca'))return;
+  const box=document.createElement('div');box.className='section-search';box.innerHTML='<label class="sr-only" for="uxEquipeBusca">Buscar pessoa na equipe</label><input id="uxEquipeBusca" type="search" placeholder="Buscar por nome ou nome no iMile"/><span class="sub" id="uxEquipeCont"></span>';
+  tr.closest('.cartao').prepend(box);
+  const filtrar=()=>{const q=$('uxEquipeBusca').value.trim().toLocaleLowerCase('pt-BR');let n=0;tr.querySelectorAll('tbody tr').forEach((row)=>{const text=[...row.querySelectorAll('input[type!=checkbox]')].map((i)=>i.value).join(' ').toLocaleLowerCase('pt-BR');row.hidden=!!q&&!text.includes(q);if(!row.hidden)n++;});$('uxEquipeCont').textContent=n+' pessoas visíveis';};
+  $('uxEquipeBusca').addEventListener('input',filtrar);filtrar();
+}
+function uxFiltrarMenu(){
+ const q=$('navBusca').value.trim().toLocaleLowerCase('pt-BR');let n=0;
+ document.querySelectorAll('#abas button').forEach((b)=>{b.hidden=!!q&&!b.textContent.toLocaleLowerCase('pt-BR').includes(q);if(!b.hidden)n++;});
+ document.querySelectorAll('#abas .grupo-nav').forEach((g)=>{let el=g.nextElementSibling,vis=false;while(el&&!el.classList.contains('grupo-nav')){if(!el.hidden)vis=true;el=el.nextElementSibling;}g.hidden=!vis;});
+ $('navVazio').hidden=n>0;
+}
+function uxAbrirBusca(){
+ if ($('uxBuscaDialog') || $('telaApp').hidden) return;
+ const origem=document.activeElement, app=$('telaApp'), anterior=app.inert;
+ const dialog=document.createElement('div');dialog.id='uxBuscaDialog';dialog.className='modal-fundo';dialog.setAttribute('role','dialog');dialog.setAttribute('aria-modal','true');dialog.setAttribute('aria-labelledby','uxBuscaTitulo');
+ dialog.innerHTML='<div class="modal"><div class="cartao-topo"><h2 id="uxBuscaTitulo">Ir para uma seção</h2><button class="btn mini" id="uxBuscaFechar" type="button" aria-label="Fechar busca de seções">Fechar</button></div><label class="c">Buscar<input id="uxBuscaCampo" type="search" placeholder="Ex.: pacote, sacas, backlog…" autocomplete="off"/></label><div class="quick-results" id="uxBuscaResultados"></div></div>';
+ app.inert=true;document.body.appendChild(dialog);
+ const fechar=()=>{document.removeEventListener('keydown',tecla);dialog.remove();app.inert=anterior;if(origem?.isConnected)origem.focus();};
+ const resultados=()=>{const q=$('uxBuscaCampo').value.trim().toLocaleLowerCase('pt-BR');const lista=ABAS.filter((a)=>a.papeis.includes(E.perfil.papel)&&a.nome.toLocaleLowerCase('pt-BR').includes(q));$('uxBuscaResultados').innerHTML=lista.map((a)=>`<button type="button" class="quick-search" data-ir="${a.id}"><span>${esc(a.nome)}<br><small>${esc(a.grupo)}</small></span></button>`).join('')||'<p class="sub">Nenhuma seção encontrada.</p>';$('uxBuscaResultados').querySelectorAll('button').forEach((b)=>b.addEventListener('click',()=>{const id=b.dataset.ir;fechar();irPara(id);}));};
+ const tecla=(e)=>{if(e.key==='Escape'){e.preventDefault();fechar();}else if(e.key==='Tab')uxPrenderFoco(e,dialog);};
+ $('uxBuscaFechar').addEventListener('click',fechar);dialog.addEventListener('click',(e)=>{if(e.target===dialog)fechar();});$('uxBuscaCampo').addEventListener('input',resultados);document.addEventListener('keydown',tecla);resultados();$('uxBuscaCampo').focus();
+}
+let uxMetaToken=0;
+async function uxCarregarMetaPainel(){
+ const target=$('pdMeta'); if(!target||E.aba!=='painel')return;
+ const token=++uxMetaToken, dia=hojeSP();
+ try{
+  const [cc,cm]=await Promise.all([lerTudo('/rest/v1/conciliacao_cidade?select=cidade,chegaram,atribuidos,faltam&dia=eq.'+eFiltroSeguro(dia),5),api('GET','/rest/v1/meta_dia?select=*&dia=eq.'+eFiltroSeguro(dia)).catch(()=>null)]);
+  if(token!==uxMetaToken||!target.isConnected||E.aba!=='painel')return;
+  const config=Array.isArray(cm)?cm[0]:null;
+  // Sem todos os dados, não apresentar um total como se fosse completo.
+  if(!cc.completo)throw new Error('Conciliação parcial. Abra a meta para conferir o período.');
+  const r=calcularMeta(cc.itens,config);
+  if(!r.universo){target.innerHTML='<div class="meta-inline-empty"><p><b>Meta da chegada do dia</b><br><span class="sub">Ainda não há chegadas registradas hoje.</span></p><button class="btn" type="button" data-ux-meta>Ver meta do dia</button></div>';}
+  else{
+   const batida=r.atribuidos>=r.meta;
+   const hora=new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date());
+   const [hh,mm]=hora.split(':').map(Number),[ch,cn]=r.corte.split(':').map(Number),resto=ch*60+cn-(hh*60+mm);
+   const ritmo=batida?'Meta alcançada':resto>0?Math.ceil(r.faltam/(resto/60))+' pacotes/h':'Corte encerrado';
+   target.innerHTML=`<section class="meta-hero" aria-label="Meta da chegada de hoje"><div class="meta-hero-main"><div class="meta-hero-top"><h2>Meta da chegada do dia</h2><span>${esc(String(r.pct))}% exigidos</span></div><div class="meta-hero-value">${esc(fmtPct(r.taxa))}</div><p>${r.atribuidos} de ${r.universo} pacotes atribuídos${config?' · confira ajustes na meta':''}</p><div class="meta-progress" role="progressbar" aria-label="Percentual atribuído" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Math.round(r.taxa))}" aria-valuetext="${esc(fmtPct(r.taxa))} atribuídos; meta ${r.pct}%"><span style="width:${Math.min(100,r.taxa)}%"></span><i style="left:${Math.min(99,r.pct)}%"></i></div><div class="meta-hero-labels"><span>Meta: ${r.meta} pacotes</span><span>${batida?'Meta alcançada':'Faltam '+r.faltam+' para a meta'}</span></div></div><div class="meta-hero-side"><span class="sub">Até o corte das ${esc(r.corte)}</span><b>${esc(ritmo)}</b><p>${r.a_expedir} pacotes a expedir</p>${cm===null?'<p>Regra padrão; ajustes indisponíveis nesta consulta.</p>':''}<button class="btn" type="button" data-ux-meta>Detalhar meta do dia</button></div></section>`;
+  }
+  target.querySelector('[data-ux-meta]')?.addEventListener('click',()=>irPara('meta'));
+ }catch(e){if(token===uxMetaToken&&target.isConnected){target.innerHTML='<div class="meta-inline-empty"><p><b>Resumo da meta indisponível</b><br><span class="sub">'+esc(e.message)+'</span></p><button class="btn" type="button" data-ux-meta>Conferir meta</button></div>';target.querySelector('button').addEventListener('click',()=>irPara('meta'));}}
+}
+function uxInicializar(){
+ uxFecharMenu();uxStatus();
+ $('btnMenuFechar').addEventListener('click',uxFecharMenu); $('btnMenu').addEventListener('click',uxAbrirMenu);$('navBackdrop').addEventListener('click',uxFecharMenu);$('navBusca').addEventListener('input',uxFiltrarMenu);$('uxAtalhos').addEventListener('click',uxAbrirBusca);
+ const resize=()=>{uxFecharMenu();};window.addEventListener('resize',resize);
+ window.addEventListener('online',uxStatus);window.addEventListener('offline',uxStatus);
+ window.addEventListener('beforeunload',(e)=>{if(uxTemEdicao()){e.preventDefault();e.returnValue='';}});
+ document.addEventListener('keydown',(e)=>{
+  if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='k'&&!$('telaApp').hidden){e.preventDefault();uxAbrirBusca();}
+  if($('menuLateral').classList.contains('nav-open')){if(e.key==='Escape'){e.preventDefault();uxFecharMenu();}else if(e.key==='Tab')uxPrenderFoco(e,$('menuLateral'));}
+ });
+ const edita=(el)=>el.matches('#lcCorpo input, .eqNome, .eqImile, .eqPapel, .eqAtivo, .cbStatus, .cbResp, #cbAwb, #cbMot, #cbDias, #cbPrazo, #metaDia, #metForm input');
+ document.addEventListener('focusin',(e)=>{if(e.target instanceof HTMLElement&&edita(e.target)&&!('uxInicial' in e.target.dataset))e.target.dataset.uxInicial=uxValor(e.target);});
+ const mudou=(e)=>{const el=e.target;if(!(el instanceof HTMLElement)||!edita(el))return;if(uxValor(el)!==el.dataset.uxInicial){uxEdicoes.add(el);el.closest('tr,#metForm')?.classList.add('form-dirty');}else{uxEdicoes.delete(el);if(![...uxEdicoes].some((f)=>f.closest('tr,#metForm')===el.closest('tr,#metForm')))el.closest('tr,#metForm')?.classList.remove('form-dirty');}};
+ document.addEventListener('input',mudou);document.addEventListener('change',mudou);
+ // Only child changes; accessibility attributes do not create observer loops.
+ let scheduled=false;
+ const observer=new MutationObserver(()=>{if(scheduled)return;scheduled=true;requestAnimationFrame(()=>{scheduled=false;uxPrepararConteudo();});});
+ observer.observe($('conteudo'),{childList:true,subtree:true});
+}
+uxInicializar();
 
 /* ===================== PARTIDA ===================== */
 aplicarTema(temaGuardado());
 $('btnTema').addEventListener('click', ciclarTema);
 $('formLogin').addEventListener('submit', (e) => { e.preventDefault(); entrar(); });
-$('lgVer').addEventListener('click', () => { const i = $('lgSenha'), ver = i.type === 'password'; i.type = ver ? 'text' : 'password'; $('lgVer').textContent = ver ? 'Ocultar' : 'Mostrar'; });
+$('lgVer').addEventListener('click', () => { const i = $('lgSenha'), ver = i.type === 'password'; i.type = ver ? 'text' : 'password'; $('lgVer').textContent = ver ? 'Ocultar' : 'Mostrar'; $('lgVer').setAttribute('aria-pressed', String(ver)); $('lgVer').setAttribute('aria-label', ver ? 'Ocultar senha' : 'Mostrar senha'); });
 $('btnSair').addEventListener('click', sair);
 $('btnSairM').addEventListener('click', sair);
 $('abas').addEventListener('click', (e) => { const b = e.target.closest('button[data-aba]'); if (b) irPara(b.dataset.aba); });
