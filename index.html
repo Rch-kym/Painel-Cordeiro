@@ -585,7 +585,7 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.18</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.18.2</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -1133,7 +1133,7 @@ async function carregarProdutividade(silencioso) {
       lerTudo('/rest/v1/sacas_resumo?select=id,motorista,numero,operador_id,status,rota&' + faixa(estProd)).catch(() => ({ itens: [] })),
     ]);
     const sc = new Map();
-    for (const x of (sacasP && sacasP.itens) || []) { const o = sc.get(x.operador_id) || { feitas: 0, agora: null }; if (x.status === 'fechada') o.feitas += 1; else o.agora = x; sc.set(x.operador_id, o); }
+    for (const x of ((sacasP && sacasP.itens) || []).filter((y) => !ehSacaFantasma(y))) { const o = sc.get(x.operador_id) || { feitas: 0, agora: null }; if (x.status === 'fechada') o.feitas += 1; else o.agora = x; sc.set(x.operador_id, o); }
     if (meu !== tokenProd || !$('prodCorpo')) return;
     const lista = agregar(vis.itens).map((o) => ({ ...o, pacotes: o.atribuicao, taxaErro: (o.tot.atribuicao + o.tot.erro) ? o.tot.erro / (o.tot.atribuicao + o.tot.erro) : 0 })).sort((a, b) => b.atribuicao - a.atribuicao || a.nome.localeCompare(b.nome, 'pt-BR')), t = totais(lista);
     const meta = E.meta && Number(E.meta.pacotes_dia) > 0 ? Number(E.meta.pacotes_dia) : 0;
@@ -1825,7 +1825,7 @@ function desenharProblemas() {
 
 /* ===================== SACAS ===================== */
 const estSac = { ...novoEstadoPeriodo('hoje'), estado: 'and', cidade: '', op: '', busca: '', sel: null, pac: null };
-let tokenSac = 0, dadosSac = [], pacotesSac = { id: null, lista: [], produtos: new Map() }, timerSac = null;
+let tokenSac = 0, dadosSac = [], fantasmasSac = [], pacotesSac = { id: null, lista: [], produtos: new Map() }, timerSac = null;
 function telaSacas() {
   raizTela().innerHTML = cabecalho('Sacas', 'Cada saca é de um motorista. Veja quem está nela agora e o histórico de quem bipou.', seletorPeriodo(estSac) + '<button class="btn" id="sacAtualizar" type="button">Atualizar</button>') + datasLivres(estSac) + '<div id="sacCorpo">' + esqueleto() + '</div>';
   ligarFiltroPeriodo(estSac, () => carregarSacas(false));
@@ -1840,7 +1840,8 @@ async function carregarSacas(silencioso) {
     const urlSacas = (extra) => '/rest/v1/sacas_resumo?select=id,motorista,rota,cidade,numero,dia,status,aberta_em,fechada_em,operador_id,pacotes,erros,pessoas,ultimo_bipe_em' + extra + '&or=(and(dia.gte.' + eFiltroSeguro(estSac.de) + ',dia.lte.' + eFiltroSeguro(estSac.ate) + '),status.eq.em_andamento)&order=aberta_em.desc';
     let r; try { r = await lerTudo(urlSacas(',primeiro_bipe_em'), 10); } catch (_) { r = await lerTudo(urlSacas(''), 10); } // sem o SQL 09 ainda
     if (meu !== tokenSac || !$('sacCorpo')) return;
-    dadosSac = r.itens;
+    fantasmasSac = r.itens.filter(ehSacaFantasma);
+    dadosSac = r.itens.filter((x) => !ehSacaFantasma(x));
     if (!estSac.sel || !dadosSac.some((x) => x.id === estSac.sel)) { const a = dadosSac.find((x) => x.status !== 'fechada'); estSac.sel = a ? a.id : (dadosSac[0] ? dadosSac[0].id : null); estSac.pac = null; }
     if (!document.activeElement?.closest('#sacCorpo input, #sacCorpo select')) desenharSacas();
     if (estSac.sel) carregarPacotesSaca(estSac.sel, silencioso);
@@ -1884,6 +1885,7 @@ function desenharSacas() {
       <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${fechadas.length}</b><span>Fechadas</span><small>${fechadas.length ? 'média ' + mediaF + ' pacotes' : 'no período'}</small></div>
       <div class="prob zero" style="cursor:default"><b>${ativas.reduce((a, x) => a + Number(x.pacotes), 0)}</b><span>Pacotes em sacas abertas</span><small>${maior ? 'maior: ' + nomeSaca(maior) + ' · ' + maior.pacotes : '—'}</small></div>
       <div class="prob ${paradas.length ? 'erro' : 'zero'}" style="cursor:default"><b>${paradas.length}</b><span>Paradas há +10 min</span><small>${paradas.length ? nomeSaca(paradas[0]) + ' · ' + esc(nomeOperador(paradas[0].operador_id)) : 'nenhuma'}</small></div>${kpiTempoSacas(fechadas)}</div>
+    ${avisoFecharSacas(ativas, paradas)}
     <h2 class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800;margin:4px 0 10px">Quem está fazendo o quê agora</h2>
     ${ativas.length ? `<div class="ativos">${ativas.map((x) => `<button type="button" class="ativo ${x.id === estSac.sel ? 'sel' : ''}" data-saca="${esc(x.id)}"><div class="t"><span class="av" aria-hidden="true">${esc(iniciais(nomeOperador(x.operador_id)))}</span><b title="${esc(nomeOperador(x.operador_id))}">${esc(nomeCurto(nomeOperador(x.operador_id)))}</b><span class="lock" title="Saca travada para este colaborador">${ICO_CADEADO}</span><span class="n" title="Pacotes na saca">${x.pacotes}</span></div>
       <div class="quem"><b title="Saca do ${esc(x.motorista)}">Saca do ${esc(x.motorista)}</b><span title="${esc([x.cidade, x.rota].filter(Boolean).join(' · '))}">${esc([x.cidade, x.rota].filter(Boolean).join(' · ')) || '&nbsp;'}</span></div>
@@ -1902,6 +1904,7 @@ function desenharSacas() {
         : '<div class="vazio"><b>Nenhuma saca aqui</b>Mude o filtro ou o período.</div>'}
       ${lista.length ? '<div style="margin-top:10px"><button class="btn mini" id="sacCsv" type="button">Baixar CSV</button></div>' : ''}</div>
       <div class="cartao gaveta" id="sacGaveta" tabindex="-1" aria-label="Detalhes da saca"></div></div>`;
+  ligarFecharSacas(corpo, ativas, paradas);
   corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); if (window.innerWidth <= 1280) { const g = $('sacGaveta'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
   $('sacEst').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-e]'); if (b) { estSac.estado = b.dataset.e; desenharSacas(); } });
   $('sacCid').addEventListener('change', () => { estSac.cidade = $('sacCid').value; desenharSacas(); });
@@ -1939,6 +1942,7 @@ function desenharGavetaSaca() {
   }
   const lista = pacotesSac.id === s.id ? pacotesSac.lista : null;
   g.innerHTML = `<div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><b style="font-size:19px">Saca do ${esc(s.motorista)} · nº ${esc(s.numero)}</b>${pilulaSaca(est)}${est !== 'fechada' ? `<span class="lock">${ICO_CADEADO} ${esc(nomeOperador(s.operador_id))} está nesta saca</span>` : ''}</div>
+    ${est !== 'fechada' && podeFecharSaca() ? '<div style="margin:0 0 10px"><button class="btn ambar mini" id="sacFechar" type="button">Fechar esta saca</button></div>' : ''}
     <div class="sub" style="margin:4px 0 12px">${esc([s.cidade, s.rota].filter(Boolean).join(' · '))} · iniciada ${esc(horaCurta(s.aberta_em))} por ${esc(nomeOperador(s.operador_id))}${s.fechada_em ? ' · fechada ' + esc(horaCurta(s.fechada_em)) : ''}</div>
     <div class="cards" style="grid-template-columns:repeat(3,1fr);gap:8px;margin-bottom:12px"><div class="prob zero" style="cursor:default;padding:10px"><b style="font-size:24px">${s.pacotes}</b><span>Pacotes</span></div>
       <div class="prob zero" style="cursor:default;padding:10px"><b style="font-size:24px">${s.ultimo_bipe_em ? esc(horaCurta(s.ultimo_bipe_em)) : '—'}</b><span>Último bipe</span></div>
@@ -1946,6 +1950,47 @@ function desenharGavetaSaca() {
     <div class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800">Pacotes da saca <span style="font-weight:500;text-transform:none;letter-spacing:0">· clique para ver detalhes</span></div>
     ${lista === null ? '<div class="esq" style="height:120px;margin-top:8px"></div>' : lista.length ? `<div class="pk-lista">${lista.slice(0, 300).map((p) => `<button type="button" class="pk" data-awb="${esc(p.awb)}"><time>${esc(horaCurta(p.hora))}</time><span><span class="awb">${esc(p.awb)}</span>${prod.get(p.awb) ? ` <span class="sub">· ${esc(String(prod.get(p.awb)).slice(0, 38))}</span>` : (p.det && p.det.bairro ? ` <span class="sub">· ${esc(p.det.bairro)}</span>` : '')}</span>${p.estado === 'ok' ? '<span class="sub">›</span>' : `<span class="etq ${esc(p.estado)}">${p.estado === 'erro' ? 'erro' : 'diverg.'}</span>`}</button>`).join('')}</div>` : '<div class="vazio" style="margin-top:8px">Nenhum pacote visível nesta saca para o seu acesso.</div>'}`;
   g.querySelectorAll('.pk').forEach((b) => b.addEventListener('click', () => { estSac.pac = b.dataset.awb; desenharGavetaSaca(); }));
+  const bf = $('sacFechar'); if (bf) bf.addEventListener('click', () => fecharSacas([s], 'Fechar esta saca'));
+}
+
+/* ===== Fechar sacas pelo painel (sacas que ficaram abertas) ===== */
+// Registro antigo do app: bipe de chegada repetido abria uma saca para "Chegada (sem motorista)".
+function ehSacaFantasma(x) { return /^chegada \(sem motorista\)/i.test(String(x.motorista || '').trim()); }
+function podeFecharSaca() { return E.perfil && E.perfil.papel !== 'bipador'; }
+function avisoFecharSacas(ativas, paradas) {
+  if (!podeFecharSaca()) return '';
+  const hoje = diaSPdeIso(new Date().toISOString()), antigas = ativas.filter((x) => x.dia && x.dia < hoje);
+  if (!ativas.length && !fantasmasSac.length) return '';
+  const bt = [];
+  if (antigas.length) bt.push(`<button class="btn ambar mini" type="button" data-fs="antigas">Fechar sacas de dias anteriores (${antigas.length})</button>`);
+  if (paradas.length) bt.push(`<button class="btn mini" type="button" data-fs="paradas">Fechar sacas paradas (${paradas.length})</button>`);
+  if (ativas.length) bt.push(`<button class="btn mini" type="button" data-fs="todas">Fechar todas as abertas (${ativas.length})</button>`);
+  if (fantasmasSac.length) bt.push(`<button class="btn mini" type="button" data-fs="fantasmas">Limpar sacas de chegada (${fantasmasSac.length})</button>`);
+  return `<div class="cartao" style="margin-bottom:14px;padding:12px 14px"><b>Alguém esqueceu de fechar uma saca?</b><div class="sub" style="margin:2px 0 10px">Você fecha por aqui. A hora de fechamento fica no último bipe, então o tempo da saca não é inflado.${fantasmasSac.length ? ' As sacas de "Chegada (sem motorista)" não são sacas de verdade: foram criadas por engano por versões antigas do app e saem dos números ao serem limpas.' : ''}</div><div style="display:flex;gap:8px;flex-wrap:wrap">${bt.join('')}</div></div>`;
+}
+function ligarFecharSacas(corpo, ativas, paradas) {
+  const hoje = diaSPdeIso(new Date().toISOString());
+  const grupos = { antigas: [ativas.filter((x) => x.dia && x.dia < hoje), 'Fechar sacas de dias anteriores'], paradas: [paradas, 'Fechar sacas paradas'], todas: [ativas, 'Fechar todas as abertas'], fantasmas: [fantasmasSac.filter((x) => x.status !== 'fechada'), 'Limpar sacas de chegada'] };
+  corpo.querySelectorAll('[data-fs]').forEach((b) => b.addEventListener('click', () => { const g = grupos[b.dataset.fs]; fecharSacas(g[0], g[1]); }));
+}
+async function fecharSacas(lista, titulo) {
+  if (!podeFecharSaca() || !lista.length) return;
+  const agora = Date.now();
+  const nomes = lista.slice(0, 6).map((x) => '<b>' + esc(x.motorista) + '</b> nº ' + esc(x.numero) + ' (' + Number(x.pacotes || 0) + ' pacotes)').join('<br>') + (lista.length > 6 ? '<br>e mais ' + (lista.length - 6) + '…' : '');
+  const ok = await confirmarAcao({ titulo: titulo + '?', texto: (lista.length === 1 ? 'Esta saca será fechada' : lista.length + ' sacas serão fechadas') + ':<br>' + nomes + '<br><br>Tem certeza que deseja fazer essa alteração? O colaborador que for bipar para esse motorista abrirá uma saca nova.', quem: nomeOperador(E.perfil.id) || 'você', ok: 'Sim, fechar' });
+  if (!ok) return;
+  let feitas = 0, falhas = 0;
+  for (const x of lista) {
+    // Parada ou de outro dia: fecha na hora do último bipe. Em andamento: fecha agora.
+    const ult = new Date(x.ultimo_bipe_em || x.aberta_em).getTime(), ab = new Date(x.aberta_em).getTime();
+    const quando = estadoSaca(x, agora) === 'andamento' ? agora : Math.max(ab, ult);
+    try {
+      const volta = await api('PATCH', '/rest/v1/sacas?id=eq.' + eFiltroSeguro(x.id) + '&status=eq.em_andamento', { status: 'fechada', fechada_em: new Date(quando).toISOString() }, { Prefer: 'return=representation' });
+      if (Array.isArray(volta) && volta.length) feitas += 1; else if (Array.isArray(volta)) feitas += 0, falhas += 1;
+    } catch (_) { falhas += 1; }
+  }
+  aviso(feitas + (feitas === 1 ? ' saca fechada.' : ' sacas fechadas.') + (falhas ? ' ' + falhas + ' não puderam ser fechadas (já estavam fechadas ou sem permissão).' : ''), falhas > 0 && !feitas);
+  carregarSacas(false);
 }
 
 /* ===================== PACOTE ===================== */
