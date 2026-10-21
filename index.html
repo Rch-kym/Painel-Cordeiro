@@ -560,6 +560,17 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
 
 .ent-campo input{color:#F2F6FA}.ent-campo input::placeholder{color:#CCD7E4;opacity:.8}
 @media(max-width:860px) and (max-height:640px){.entrar{overflow-y:auto}.ent-barra{position:relative;left:auto;right:auto;bottom:auto;width:auto;transform:none;margin:280px 16px 60px}.ent-gigante{opacity:.25}.mapa{opacity:.45}}
+.re-status{margin:8px 0;padding:10px 12px;border:1px solid var(--linha,#e3e6ea);border-radius:12px;background:var(--fundo2,#f6f8fa);font-size:14px}
+.re-status.rodando,.re-status.pendente{border-color:#E8A33D;background:#FFF6E3;color:#4a3300}
+.re-status.atrasado{border-color:#B3261E;background:#FDECEA;color:#7a1510}
+.re-linha{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.re-bolinha{width:10px;height:10px;border-radius:50%;background:#E8A33D;animation:reP 1s infinite}
+@keyframes reP{50%{opacity:.25}}
+.re-barra{height:8px;border-radius:99px;background:rgba(0,0,0,.12);margin:8px 0 4px;overflow:hidden}
+.re-barra i{display:block;height:100%;background:#E8A33D;transition:width .4s}
+:root[data-tema="escuro"] .re-status.rodando,:root[data-tema="escuro"] .re-status.pendente{background:#3a2d10;color:#ffe2a8}
+:root[data-tema="escuro"] .re-status.atrasado{background:#3d1714;color:#ffb4ab}
+@media (prefers-reduced-motion:reduce){.re-bolinha{animation:none}}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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" />
 <link rel="apple-touch-icon" href="data:image/png;base64,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" />
@@ -602,7 +613,7 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.2</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.4</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2179,6 +2190,55 @@ function desenharExtravio() {
 /* ---- Reatribuição automática (feita pela extensão, com o iMile aberto) ---- */
 const estReat = { filtro: 'todos', busca: '', limite: 50, rodada: null };
 const REAT_PADRAO = { modo: 'desligada', hora: '09:00', limite: 50, pausado: false, incluir_criticos: false };
+
+// Andamento da reatribuição: pedido enviado -> extensão pegou -> processando X de N -> concluída.
+function estadoReat(r) {
+  const c = { ...REAT_PADRAO, ...((r && r.cfg) || {}) }, logs = (r && r.logs) || [];
+  const agora = Date.now(), ult = logs[0] || null;
+  const ped = c.rodar_agora_em ? new Date(c.rodar_agora_em).getTime() : 0;
+  const rod = ult ? logs.filter((x) => x.rodada === ult.rodada) : [];
+  const ini = rod.find((x) => /^Iniciada: \d+/.test(x.detalhe || ''));
+  const fim = rod.some((x) => /^Conclu[ií]da/.test(x.detalhe || ''));
+  const feitos = rod.filter((x) => ['ok', 'falha', 'simulado'].includes(x.resultado) && x.awb);
+  const total = ini ? Number((ini.detalhe.match(/\d+/) || [0])[0]) : 0;
+  const idade = ult ? agora - new Date(ult.criado_em).getTime() : Infinity;
+  if (ini && !fim && idade < 15 * 60000) return { tipo: 'rodando', total, feitos: feitos.length, ok: feitos.filter((x) => x.resultado === 'ok' || x.resultado === 'simulado').length, falhas: feitos.filter((x) => x.resultado === 'falha').length, ultimo: feitos[0] || null, modo: ini.modo, c };
+  const respondeu = ult && new Date(ult.criado_em).getTime() >= ped;
+  if (ped && !respondeu && agora - ped < 10 * 60000) return { tipo: agora - ped > 150000 ? 'atrasado' : 'pendente', desde: ped, c };
+  return { tipo: 'ocioso', rod, fim, total, feitos: feitos.length, ok: feitos.filter((x) => x.resultado === 'ok' || x.resultado === 'simulado').length, falhas: feitos.filter((x) => x.resultado === 'falha').length, quando: ult ? ult.criado_em : null, modo: ult ? ult.modo : null, c };
+}
+function faixaReat(r) {
+  const e = estadoReat(r);
+  if (e.tipo === 'rodando') {
+    const pct = e.total ? Math.min(100, Math.round(e.feitos / e.total * 100)) : 0;
+    return `<div class="re-status rodando" role="status" aria-live="polite"><div class="re-linha"><span class="re-bolinha"></span><b>${e.modo === 'teste' ? 'Simulando' : 'Reatribuindo'}… ${e.feitos} de ${e.total || '?'}</b><span class="sub">${e.ok} ${e.modo === 'teste' ? 'simulados' : 'reatribuídos'} · ${e.falhas} falha${e.falhas === 1 ? '' : 's'}</span></div><div class="re-barra" aria-hidden="true"><i style="width:${pct}%"></i></div>${e.ultimo ? `<div class="sub">Último: ${esc(e.ultimo.awb)} · ${esc(e.ultimo.motorista || '')} · ${esc(e.ultimo.resultado)}</div>` : '<div class="sub">Começou. Aguarde o primeiro pacote…</div>'}</div>`;
+  }
+  if (e.tipo === 'pendente') return `<div class="re-status pendente" role="status" aria-live="polite"><div class="re-linha"><span class="re-bolinha"></span><b>Pedido enviado às ${esc(horaCurta(new Date(e.desde).toISOString()))}</b><span class="sub">aguardando a extensão pegar (até 1 minuto)…</span></div></div>`;
+  if (e.tipo === 'atrasado') return `<div class="re-status atrasado" role="alert"><b>A extensão ainda não respondeu</b> ao pedido das ${esc(horaCurta(new Date(e.desde).toISOString()))}. Confira: computador ligado, Chrome aberto com a extensão (versão 3.17.3 ou mais nova) e o iMile aberto e logado. Este aviso some quando ela responder.</div>`;
+  if (!e.quando) return '<div class="re-status"><span class="sub">Nenhuma rodada ainda.</span></div>';
+  return `<div class="re-status"><span class="sub">Última rodada: <b>${esc(dataHoraBR(e.quando))}</b> · ${e.fim ? 'concluída' : 'sem registro de término'} · ${e.ok} ${e.modo === 'teste' ? 'simulados' : 'reatribuídos'} · ${e.falhas} falha${e.falhas === 1 ? '' : 's'}</span></div>`;
+}
+// Enquanto há pedido ou rodada em andamento, confere o log a cada 4 s (leve) e redesenha.
+let timerReat = null;
+async function acompanharReat() {
+  clearTimeout(timerReat);
+  if (E.aba !== 'extravio' || !dadosExt || !dadosExt.reat || dadosExt.reat.semSql) return;
+  const t = estadoReat(dadosExt.reat).tipo;
+  if (t === 'ocioso') return;
+  timerReat = setTimeout(async () => {
+    try {
+      if (E.aba !== 'extravio' || document.hidden) return acompanharReat();
+      const [lg, cf] = await Promise.all([
+        api('GET', '/rest/v1/reatribuicao_log?select=rodada,modo,resultado,awb,motorista,dias,detalhe,criado_em&order=criado_em.desc&limit=1000'),
+        api('GET', '/rest/v1/cadastros?select=valor&chave=eq.reatribuicao_auto'),
+      ]);
+      dadosExt.reat.logs = lg || []; if (cf && cf[0]) dadosExt.reat.cfg = cf[0].valor;
+      const foco = document.activeElement && document.activeElement.closest && document.activeElement.closest('.ext-reat') && /INPUT|SELECT|TEXTAREA/.test(document.activeElement.tagName);
+      if (!foco) desenharExtravio();
+    } catch (_) { /* tenta de novo */ }
+    acompanharReat();
+  }, 4000);
+}
 function blocoReatribuicao(r) {
   if (!r) return '';
   if (r.semSql) return '<section class="cartao" style="margin-top:12px"><b>Reatribuição automática</b><div class="sub">Rode o script <b>13-reatribuicao-auto.sql</b> no Supabase para ligar este recurso.</div></section>';
@@ -2202,13 +2262,14 @@ function blocoReatribuicao(r) {
     ${estReat.filtro === 'pulado' ? `<ul class="sub" style="margin:4px 0 8px;padding-left:18px">${vis.map((x) => `<li>${esc(x.detalhe)}</li>`).join('') || '<li>Nenhum aviso.</li>'}</ul>` : vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>AWB</th><th>Motorista</th><th class="n">Dias</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody>${linhas}</tbody></table></div>${vis.length > estReat.limite ? `<p style="text-align:center"><button class="btn" type="button" id="reMais">Mostrar mais (${vis.length - estReat.limite})</button></p>` : ''}` : '<div class="vazio"><b>Nada neste filtro</b></div>'}` : '';
   return `<section class="cartao ext-reat" style="margin-top:12px"><div class="ext-bloco-topo"><div><h2 style="font-size:16px;margin:0">Reatribuição automática · <span class="ext-modo ${c.modo}${c.pausado ? ' pausa' : ''}">${esc(modoTxt)}</span></h2>
     <div class="sub">Segunda, quarta e sexta, a partir das ${esc(c.hora)}: pacotes com 4+ dias e motorista voltam para o <b>mesmo motorista</b>, até ${c.limite} por rodada. Exige o iMile aberto e logado no computador com a extensão. Nível crítico (5+ dias) fica com a pessoa${c.incluir_criticos ? ' — <b>exceto: incluídos nesta configuração</b>' : ''}.</div></div></div>
-    <div style="margin:8px 0">${resumo}</div>${painelLista}
+    <div id="reFaixa">${faixaReat(r)}</div><div style="margin:8px 0">${resumo}</div>${painelLista}
     ${dono ? `<div class="filtros" style="margin-top:12px"><label class="c">Modo<select id="reModo"><option value="desligada" ${c.modo === 'desligada' ? 'selected' : ''}>Desligada</option><option value="teste" ${c.modo === 'teste' ? 'selected' : ''}>Teste (só simula)</option><option value="real" ${c.modo === 'real' ? 'selected' : ''}>Real</option></select></label>
       <label class="c">Horário<input id="reHora" type="time" value="${esc(c.hora)}"></label><label class="c">Limite por rodada<input id="reLimite" type="number" min="1" max="200" value="${c.limite}" style="width:90px"></label>
-      <button class="btn ambar" id="reSalvar" type="button">Salvar</button><button class="btn" id="rePausa" type="button">${c.pausado ? 'Retomar' : 'Pausar'}</button><button class="btn" id="reAgora" type="button" ${c.modo === 'desligada' || c.pausado ? 'disabled' : ''}>Rodar agora</button></div>`
+      <button class="btn ambar" id="reSalvar" type="button">Salvar</button><button class="btn" id="rePausa" type="button">${c.pausado ? 'Retomar' : 'Pausar'}</button><button class="btn" id="reAgora" type="button" ${c.modo === 'desligada' || c.pausado || estadoReat(r).tipo !== 'ocioso' ? 'disabled' : ''}>${estadoReat(r).tipo === 'ocioso' ? 'Rodar agora' : 'Em andamento…'}</button></div>`
       : '<div class="sub" style="margin-top:8px">Só o administrador altera estas configurações.</div>'}</section>`;
 }
 function ligarReatribuicao() {
+  acompanharReat();
   const seg = $('reSeg');
   if (seg) {
     seg.addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estReat.filtro = b.dataset.f; estReat.limite = 50; desenharExtravio(); } });
@@ -2232,7 +2293,7 @@ function ligarReatribuicao() {
     gravar(novo, 'Configuração salva.');
   });
   $('rePausa').addEventListener('click', () => { const c = cfgAtual(); gravar({ ...c, pausado: !c.pausado }, c.pausado ? 'Reatribuição retomada.' : 'Reatribuição pausada.'); });
-  $('reAgora').addEventListener('click', async () => { const ok = await confirmarAcao({ titulo: 'Rodar a reatribuição agora?', texto: 'A extensão (com o iMile aberto) roda na próxima verificação, em até 1 minuto, no modo atual.', quem: nomeOperador(E.perfil.id) || 'você', ok: 'Sim, rodar' }); if (ok) gravar({ ...cfgAtual(), rodar_agora_em: new Date().toISOString() }, 'Pedido enviado à extensão.'); });
+  $('reAgora').addEventListener('click', async () => { const ok = await confirmarAcao({ titulo: 'Rodar a reatribuição agora?', texto: 'A extensão (com o iMile aberto) roda na próxima verificação, em até 1 minuto, no modo atual.', quem: nomeOperador(E.perfil.id) || 'você', ok: 'Sim, rodar' }); if (ok) { await gravar({ ...cfgAtual(), rodar_agora_em: new Date().toISOString() }, 'Pedido enviado. Acompanhe o andamento logo acima.'); acompanharReat(); } });
 }
 async function registrarTratativasExt(ps, nota, dias) {
   const ok = await confirmarAcao({ titulo: 'Registrar tratativa?', texto: `<b>${ps.length}</b> pacote${ps.length === 1 ? '' : 's'} sai${ps.length === 1 ? '' : 'm'} do alerta por <b>${dias} dia${dias === 1 ? '' : 's'}</b>. Se continuar parado depois disso, volta.<br><i>${esc(nota)}</i><br><br>Tem certeza que deseja fazer essa alteração?`, quem: nomeOperador(E.perfil.id) || 'você', ok: 'Sim, registrar' });
@@ -2456,7 +2517,7 @@ function confirmarAcao(o) {
 
 /* ===================== CHEGADA E CONCILIAÇÃO ===================== */
 // Cruza os pacotes que deram chegada com os que foram atribuídos, por cidade.
-const estChe = { dia: null, filtro: 'todas', abertas: new Set(), todos: new Set() };
+const estChe = { dia: null, filtro: 'todas', abertas: new Set(), todos: new Set(), verTodos: new Set(), soFaltam: new Set() };
 let tokenChe = 0, dadosChe = null, timerChe = null;
 function telaChegada() {
   if (!estChe.dia) estChe.dia = hojeSP();
@@ -2473,19 +2534,20 @@ function telaChegada() {
 async function carregarChegada(silencioso) {
   const meu = ++tokenChe, d = eFiltroSeguro(estChe.dia);
   try {
+    const colPac = (extra) => '/rest/v1/conciliacao_pacotes?select=awb,cidade,bairro,endereco,cep,chegou_em,operador_id,operador,atribuido,atribuido_em,motorista' + extra + '&dia=eq.' + d + '&order=chegou_em.asc';
     const [cd, cc, pf] = await Promise.all([
       api('GET', '/rest/v1/chegada_dia?select=dia,pacotes,primeiro_bipe_em,ultimo_bipe_em,pessoas&dia=eq.' + d),
       lerTudo('/rest/v1/conciliacao_cidade?select=dia,cidade,chegaram,atribuidos,faltam,primeira_chegada_em,ultima_chegada_em,concluida_em&dia=eq.' + d + '&order=cidade.asc', 5),
-      lerTudo('/rest/v1/conciliacao_pacotes?select=awb,cidade,bairro,endereco,cep,chegou_em,operador_id,operador&atribuido=eq.false&dia=eq.' + d + '&order=chegou_em.asc', 12),
+      lerTudo(colPac(',atribuido_por'), 12).catch(() => lerTudo(colPac(''), 12)), // sem o SQL 14 ainda: some só o nome de quem atribuiu
     ]);
     if (meu !== tokenChe || !$('cheCorpo')) return;
-    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, pend: pf.itens, completo: pf.completo };
+    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, todos: pf.itens, pend: pf.itens.filter((x) => !x.atribuido), completo: pf.completo, semQuem: pf.itens.length > 0 && !('atribuido_por' in pf.itens[0]) };
     desenharChegada();
   } catch (e) { if (meu === tokenChe && $('cheCorpo') && !silencioso) $('cheCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09-chegada-conciliacao-locais.sql no Supabase.</div>`; }
 }
 function desenharChegada() {
   const corpo = $('cheCorpo'); if (!corpo || !dadosChe) return;
-  const { cd, cc, pend } = dadosChe, agora = Date.now();
+  const { cd, cc, pend, todos } = dadosChe, agora = Date.now();
   if (!cc.length) { corpo.innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Os pacotes bipados no modo Chegada aparecem aqui, agrupados por cidade.</div></div>'; return; }
   const t = resumoTempo(cd && cd.primeiro_bipe_em, cd && cd.ultimo_bipe_em, agora);
   const tot = cc.reduce((a, c) => ({ che: a.che + Number(c.chegaram), atr: a.atr + Number(c.atribuidos), fal: a.fal + Number(c.faltam) }), { che: 0, atr: 0, fal: 0 });
@@ -2494,23 +2556,30 @@ function desenharChegada() {
   const lista = ordenarCidadesConc(cc).filter((c) => estChe.filtro === 'todas' || (estChe.filtro === 'faltando') === (estadoCidadeConc(c) === 'faltando'));
   const porCidade = new Map();
   for (const p of pend) { const k = p.cidade || 'Sem cidade'; if (!porCidade.has(k)) porCidade.set(k, []); porCidade.get(k).push(p); }
+  const todosPorCidade = new Map();
+  for (const p of todos || []) { const k = p.cidade || 'Sem cidade'; if (!todosPorCidade.has(k)) todosPorCidade.set(k, []); todosPorCidade.get(k).push(p); }
   const cartao = (c) => {
     const ok = estadoCidadeConc(c) === 'concluida', aberta = estChe.abertas.has(c.cidade), falta = Number(c.faltam);
     const badge = ok ? '<span class="badge v">✓ Concluída</span>' : `<span class="badge a">Faltando ${falta} pacote${falta > 1 ? 's' : ''}</span>`;
     const sub = ok ? (c.concluida_em ? 'Concluída às ' + esc(horaCurta(c.concluida_em)) : 'Todos atribuídos') : (c.ultima_chegada_em ? 'Última chegada ' + esc(horaCurta(c.ultima_chegada_em)) : '');
     const nota = c.cidade === 'Sem cidade' ? '<div class="sub" style="margin-top:2px">Pacotes sem cidade identificada (ex.: Kwai sem rota). Confira o endereço.</div>' : '';
     let det = '';
-    if (aberta && !ok) {
-      const itens = porCidade.get(c.cidade) || [], mostra = estChe.todos.has(c.cidade) ? itens : itens.slice(0, 50);
-      det = `<div class="corpo2"><div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem deu chegada</th><th>Situação</th><th></th></tr></thead><tbody>
-        ${mostra.map((p) => `<tr><td class="mono"><b>${esc(p.awb)}</b></td><td>${esc(horaCurta(p.chegou_em))}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${esc(p.operador || nomeOperador(p.operador_id))}</td><td><span class="etq divergencia">Não atribuído</span></td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('') || '<tr><td colspan="7" class="sub">Atualizando…</td></tr>'}
-        </tbody></table></div>
+    if (aberta) {
+      // Cidade com falta: começa só pelos que faltam. Cidade concluída: mostra todos. O botão alterna.
+      const verTodos = ok ? !estChe.soFaltam.has(c.cidade) : estChe.verTodos.has(c.cidade);
+      const itens = (verTodos ? todosPorCidade.get(c.cidade) : porCidade.get(c.cidade)) || [], mostra = estChe.todos.has(c.cidade) ? itens : itens.slice(0, 50);
+      const quem = (p) => p.atribuido ? `<b>${esc(nomeCurto(p.atribuido_por || '') || '—')}</b>${p.atribuido_em ? '<div class="sub">' + esc(horaCurta(p.atribuido_em)) + '</div>' : ''}` : '<span class="sub">ainda ninguém</span>';
+      det = `<div class="corpo2"><div class="filtros" style="margin-bottom:8px"><div class="seg" role="group" aria-label="Pacotes da cidade"><button type="button" data-vt="${esc(c.cidade)}" data-v="0" aria-pressed="${!verTodos}">Só os que faltam · ${(porCidade.get(c.cidade) || []).length}</button><button type="button" data-vt="${esc(c.cidade)}" data-v="1" aria-pressed="${verTodos}">Todos · ${(todosPorCidade.get(c.cidade) || []).length}</button></div></div>
+        ${itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem atribuiu</th><th>Motorista</th><th>Chegada por</th><th>Situação</th><th></th></tr></thead><tbody>
+        ${mostra.map((p) => `<tr><td class="mono"><b>${esc(p.awb)}</b></td><td>${esc(horaCurta(p.chegou_em))}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${quem(p)}</td><td>${esc(p.motorista || '—')}</td><td>${esc(nomeCurto(p.operador || nomeOperador(p.operador_id)))}</td><td>${p.atribuido ? '<span class="etq neutro">Atribuído</span>' : '<span class="etq divergencia">Não atribuído</span>'}</td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('')}
+        </tbody></table></div>` : '<div class="vazio"><b>Nada aqui</b></div>'}
+        ${dadosChe.semQuem ? '<div class="sub" style="margin-top:6px">Para mostrar <b>quem atribuiu</b>, rode o script 14-quem-atribuiu.sql no Supabase.</div>' : ''}
         <div class="sub" style="margin-top:8px">${itens.length > mostra.length ? `<button class="btn mini" type="button" data-todos="${esc(c.cidade)}">Mostrar todos (${itens.length})</button> ` : ''}<button class="btn mini" type="button" data-csvcid="${esc(c.cidade)}">Baixar CSV da cidade</button></div></div>`;
     }
-    return `<div class="cid ${ok ? 'ok2' : 'falta'}"><button type="button" class="cab" data-cid="${esc(c.cidade)}" aria-expanded="${aberta && !ok}" ${ok ? 'disabled' : ''}>
+    return `<div class="cid ${ok ? 'ok2' : 'falta'}"><button type="button" class="cab" data-cid="${esc(c.cidade)}" aria-expanded="${aberta}">
       <div><b class="nome">${esc(c.cidade)}</b><div class="sub">${sub}</div>${nota}</div>
       <div><div class="num"><span><b>${c.chegaram}</b>chegaram</span><span><b>${c.atribuidos}</b>atribuídos</span><span><b style="color:${ok ? 'var(--ok)' : 'var(--alerta)'}">${falta}</b>faltam</span></div><div class="barra-c ${ok ? 'ok' : ''}"><i style="width:${pctConc(c)}%"></i></div></div>
-      ${badge}<span class="chev" aria-hidden="true">${ok ? '' : aberta ? '▾' : '▸'}</span></button>${det}</div>`;
+      ${badge}<span class="chev" aria-hidden="true">${aberta ? '▾' : '▸'}</span></button>${det}</div>`;
   };
   corpo.innerHTML = `
     <div class="cartao" style="margin-bottom:16px"><h2>Chegada do dia ${t.total === '—' ? '' : `<span class="pill ${t.ativo && estChe.dia === hojeSP() ? 'andamento' : 'fechada'}">${t.ativo && estChe.dia === hojeSP() ? 'Em andamento · último bipe há ' + esc(haTempo(agora - new Date(cd.ultimo_bipe_em).getTime())) : 'Encerrada'}</span>`}</h2>
@@ -2527,12 +2596,13 @@ function desenharChegada() {
     ${lista.map(cartao).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>'}`;
   $('cheFiltro').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estChe.filtro = b.dataset.f; desenharChegada(); } });
   corpo.querySelectorAll('button.cab[data-cid]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.cid; if (estChe.abertas.has(k)) estChe.abertas.delete(k); else estChe.abertas.add(k); desenharChegada(); }));
+  corpo.querySelectorAll('[data-vt]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); const k = b.dataset.vt, tudo = b.dataset.v === '1'; if (tudo) { estChe.verTodos.add(k); estChe.soFaltam.delete(k); } else { estChe.verTodos.delete(k); estChe.soFaltam.add(k); } estChe.todos.delete(k); desenharChegada(); }));
   corpo.querySelectorAll('[data-todos]').forEach((b) => b.addEventListener('click', () => { estChe.todos.add(b.dataset.todos); desenharChegada(); }));
   corpo.querySelectorAll('[data-ficha]').forEach((b) => b.addEventListener('click', () => irPara('pacote', b.dataset.ficha)));
-  const linhasCsv = (itens) => itens.map((p) => [p.cidade || 'Sem cidade', p.awb, dataHoraBR(p.chegou_em), p.endereco || '', p.bairro || '', p.cep || '', p.operador || nomeOperador(p.operador_id)]);
-  const cab = ['Cidade', 'AWB', 'Chegou em', 'Endereço', 'Bairro', 'CEP', 'Quem deu chegada'];
+  const linhasCsv = (itens) => itens.map((p) => [p.cidade || 'Sem cidade', p.awb, dataHoraBR(p.chegou_em), p.endereco || '', p.bairro || '', p.cep || '', p.operador || nomeOperador(p.operador_id), p.atribuido ? 'Atribuído' : 'Não atribuído', p.atribuido_por || '', p.motorista || '', p.atribuido_em ? dataHoraBR(p.atribuido_em) : '']);
+  const cab = ['Cidade', 'AWB', 'Chegou em', 'Endereço', 'Bairro', 'CEP', 'Quem deu chegada', 'Situação', 'Quem atribuiu', 'Motorista', 'Atribuído em'];
   $('cheCsv').addEventListener('click', () => baixar('chegada-pendentes-' + estChe.dia + '.csv', paraCsv(cab, linhasCsv(pend))));
-  corpo.querySelectorAll('[data-csvcid]').forEach((b) => b.addEventListener('click', () => baixar('chegada-' + estChe.dia + '-' + b.dataset.csvcid.toLowerCase().replace(/\s+/g, '-') + '.csv', paraCsv(cab, linhasCsv(porCidade.get(b.dataset.csvcid) || [])))));
+  corpo.querySelectorAll('[data-csvcid]').forEach((b) => b.addEventListener('click', () => baixar('chegada-' + estChe.dia + '-' + b.dataset.csvcid.toLowerCase().replace(/\s+/g, '-') + '.csv', paraCsv(cab, linhasCsv(todosPorCidade.get(b.dataset.csvcid) || [])))));
 }
 
 /* ===================== LOCAIS POR REGRA (tempo real, todos editam) ===================== */
