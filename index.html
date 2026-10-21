@@ -602,7 +602,7 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.0</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.1</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2040,7 +2040,7 @@ async function verificarExtravios(forcar) {
       api('GET', '/rest/v1/extravio_acoes?select=id,awb,motorista,nota,valida_ate,criado_em,criado_por&tipo=eq.tratativa&valida_ate=gte.' + encodeURIComponent(agoraIso) + '&order=criado_em.desc&limit=2000').catch((e) => { throw Object.assign(new Error(e.message), { semSql: true }); }),
       api('GET', '/rest/v1/cobrancas?select=awb,enviada_em,status&enviada_em=gte.' + encodeURIComponent(new Date(Date.now() - EXTRAVIO.validadeAcaoDias * 86400000).toISOString()) + '&limit=2000').catch(() => []),
       api('GET', '/rest/v1/extravio_acoes?select=criado_em,criado_por,restantes&tipo=eq.auditoria&order=criado_em.desc&limit=1').catch(() => []),
-      api('GET', '/rest/v1/reatribuicao_log?select=rodada,modo,resultado,awb,motorista,dias,detalhe,criado_em&order=criado_em.desc&limit=400').catch(() => null),
+      api('GET', '/rest/v1/reatribuicao_log?select=rodada,modo,resultado,awb,motorista,dias,detalhe,criado_em&order=criado_em.desc&limit=1000').catch(() => null),
       api('GET', '/rest/v1/cadastros?select=valor,atualizado_em&chave=eq.reatribuicao_auto').catch(() => []),
     ]);
     if (meu !== tokenExt) return dadosExt;
@@ -2049,7 +2049,7 @@ async function verificarExtravios(forcar) {
     const seguros = new Set([...(trat || []).map((x) => x.awb), ...(cob || []).map((x) => x.awb), ...reOk]);
     const ultRod = rlog && rlog[0] ? rlog.filter((x) => x.rodada === rlog[0].rodada) : [];
     const { n1, n2 } = classificarExtravio(foto.itens, movimentou, seguros);
-    dadosExt = { foto, n1, n2, tratativas: trat || [], cobrancas: cob || [], reat: { cfg: rcfg && rcfg[0] ? rcfg[0].valor : null, semSql: rlog === null, ultima: ultRod }, ciclo: cicloExtravio(hojeSP(), aud && aud[0] ? aud[0].criado_em : null), ultimaAud: aud && aud[0] ? aud[0] : null, velho: (Date.now() - new Date(foto.gerado_em).getTime()) / 3600000 > EXTRAVIO.velhoHoras };
+    dadosExt = { foto, n1, n2, tratativas: trat || [], cobrancas: cob || [], reat: { cfg: rcfg && rcfg[0] ? rcfg[0].valor : null, semSql: rlog === null, ultima: ultRod, logs: rlog || [] }, ciclo: cicloExtravio(hojeSP(), aud && aud[0] ? aud[0].criado_em : null), ultimaAud: aud && aud[0] ? aud[0] : null, velho: (Date.now() - new Date(foto.gerado_em).getTime()) / 3600000 > EXTRAVIO.velhoHoras };
     desenharExtravioGlobal();
     return dadosExt;
   } catch (e) {
@@ -2177,27 +2177,50 @@ function desenharExtravio() {
   ligarReatribuicao();
 }
 /* ---- Reatribuição automática (feita pela extensão, com o iMile aberto) ---- */
+const estReat = { filtro: 'todos', busca: '', limite: 50, rodada: null };
 const REAT_PADRAO = { modo: 'desligada', hora: '09:00', limite: 50, pausado: false, incluir_criticos: false };
 function blocoReatribuicao(r) {
   if (!r) return '';
   if (r.semSql) return '<section class="cartao" style="margin-top:12px"><b>Reatribuição automática</b><div class="sub">Rode o script <b>13-reatribuicao-auto.sql</b> no Supabase para ligar este recurso.</div></section>';
   const c = { ...REAT_PADRAO, ...(r.cfg || {}) }, dono = E.perfil.papel === 'dono';
-  const u = r.ultima || [], cont = (k) => u.filter((x) => x.resultado === k).length;
+  // Rodadas (da mais recente para a mais antiga) e a escolhida na tela.
+  const rodMap = new Map(); (r.logs || []).forEach((x) => { if (!rodMap.has(x.rodada)) rodMap.set(x.rodada, []); rodMap.get(x.rodada).push(x); });
+  const rodadas = [...rodMap.entries()].map(([id, rows]) => ({ id, rows, em: rows.reduce((m, x) => (x.criado_em > m ? x.criado_em : m), ''), modo: rows[0].modo })).sort((a, b) => b.em.localeCompare(a.em)).slice(0, 15);
+  const atual = rodadas.find((x) => x.id === estReat.rodada) || rodadas[0] || null;
+  const u = atual ? atual.rows : [], cont = (k) => u.filter((x) => x.resultado === k).length;
   const modoTxt = c.pausado ? 'Pausada' : { desligada: 'Desligada', teste: 'Em teste (só simula)', real: 'Ligada (reatribui de verdade)' }[c.modo] || 'Desligada';
-  const quando = u.length ? dataHoraBR(u[0].criado_em) : null;
-  const resumo = u.length ? `Última rodada: ${esc(quando)} · ${u[0].modo === 'teste' ? 'simulados' : 'reatribuídos'} <b>${cont(u[0].modo === 'teste' ? 'simulado' : 'ok')}</b> · falhas <b>${cont('falha')}</b> · avisos ${cont('pulado')}` : 'Ainda não rodou.';
-  const linhas = u.filter((x) => x.resultado !== 'pulado').slice(0, 8).map((x) => `<tr><td><a class="awb" data-awb="${esc(x.awb)}" tabindex="0" role="link">${esc(x.awb)}</a></td><td>${esc(x.motorista || '')}</td><td>${esc(x.resultado)}</td><td>${esc(x.detalhe || '')}</td></tr>`).join('');
-  const avisos = u.filter((x) => x.resultado === 'pulado').map((x) => `<li>${esc(x.detalhe)}</li>`).join('');
+  const okK = atual && atual.modo === 'teste' ? 'simulado' : 'ok';
+  const abas = [['todos', 'Todos', u.filter((x) => x.resultado !== 'pulado').length], [okK, okK === 'ok' ? '✓ Reatribuídos' : 'Simulados', cont(okK)], ['falha', 'Falhas', cont('falha')], ['pulado', 'Avisos', cont('pulado')]];
+  const q = estReat.busca.trim().toLowerCase();
+  const vis = u.filter((x) => (estReat.filtro === 'todos' ? x.resultado !== 'pulado' : x.resultado === estReat.filtro) && (!q || [x.awb, x.motorista, x.detalhe].some((v) => String(v || '').toLowerCase().includes(q))))
+    .sort((a, b) => (a.resultado === 'ok' ? 0 : 1) - (b.resultado === 'ok' ? 0 : 1) || String(a.motorista || '').localeCompare(String(b.motorista || ''), 'pt-BR') || String(a.awb || '').localeCompare(String(b.awb || '')));
+  const etq = (x) => `<span class="etq ${x.resultado === 'ok' ? 'neutro' : x.resultado === 'falha' ? 'erro' : x.resultado === 'simulado' ? 'divergencia' : ''}">${x.resultado === 'ok' ? '✓ reatribuído' : esc(x.resultado)}</span>`;
+  const linhas = vis.slice(0, estReat.limite).map((x) => `<tr><td data-r="AWB"><a class="awb" data-awb="${esc(x.awb || '')}" tabindex="0" role="link">${esc(x.awb || '—')}</a></td><td data-r="Motorista">${esc(x.motorista || '')}</td><td data-r="Dias" class="n">${x.dias != null ? esc(x.dias) : ''}</td><td data-r="Resultado">${etq(x)}</td><td data-r="Detalhe">${esc(x.detalhe || '')}</td></tr>`).join('');
+  const resumo = atual ? `<b>${atual.modo === 'teste' ? 'Teste' : 'Real'}</b> · ${esc(dataHoraBR(atual.em))} · ${okK === 'ok' ? 'reatribuídos' : 'simulados'} <b>${cont(okK)}</b> · falhas <b>${cont('falha')}</b> · avisos ${cont('pulado')}` : 'Ainda não rodou.';
+  const seletorRodada = rodadas.length > 1 ? `<label class="c">Rodada<select id="reRodada">${rodadas.map((x) => `<option value="${esc(x.id)}" ${atual && atual.id === x.id ? 'selected' : ''}>${esc(dataHoraBR(x.em))} · ${x.modo === 'teste' ? 'teste' : 'real'}</option>`).join('')}</select></label>` : '';
+  const painelLista = atual ? `<div class="filtros" style="margin:10px 0"><div class="seg" id="reSeg" role="group" aria-label="Resultado">${abas.map(([k, n, c2]) => `<button type="button" data-f="${esc(k)}" aria-pressed="${estReat.filtro === k}">${esc(n)} · ${c2}</button>`).join('')}</div>${seletorRodada}<label class="c">Buscar<input id="reBusca" placeholder="AWB, motorista ou motivo" value="${esc(estReat.busca)}"></label><button class="btn mini" id="reCsv" type="button">Baixar CSV</button></div>
+    ${estReat.filtro === 'pulado' ? `<ul class="sub" style="margin:4px 0 8px;padding-left:18px">${vis.map((x) => `<li>${esc(x.detalhe)}</li>`).join('') || '<li>Nenhum aviso.</li>'}</ul>` : vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>AWB</th><th>Motorista</th><th class="n">Dias</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody>${linhas}</tbody></table></div>${vis.length > estReat.limite ? `<p style="text-align:center"><button class="btn" type="button" id="reMais">Mostrar mais (${vis.length - estReat.limite})</button></p>` : ''}` : '<div class="vazio"><b>Nada neste filtro</b></div>'}` : '';
   return `<section class="cartao ext-reat" style="margin-top:12px"><div class="ext-bloco-topo"><div><h2 style="font-size:16px;margin:0">Reatribuição automática · <span class="ext-modo ${c.modo}${c.pausado ? ' pausa' : ''}">${esc(modoTxt)}</span></h2>
     <div class="sub">Segunda, quarta e sexta, a partir das ${esc(c.hora)}: pacotes com 4+ dias e motorista voltam para o <b>mesmo motorista</b>, até ${c.limite} por rodada. Exige o iMile aberto e logado no computador com a extensão. Nível crítico (5+ dias) fica com a pessoa${c.incluir_criticos ? ' — <b>exceto: incluídos nesta configuração</b>' : ''}.</div></div></div>
-    <div style="margin:8px 0">${resumo}</div>${avisos ? `<ul class="sub" style="margin:4px 0 8px;padding-left:18px">${avisos}</ul>` : ''}
-    ${linhas ? `<div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Motorista</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody>${linhas}</tbody></table></div>` : ''}
+    <div style="margin:8px 0">${resumo}</div>${painelLista}
     ${dono ? `<div class="filtros" style="margin-top:12px"><label class="c">Modo<select id="reModo"><option value="desligada" ${c.modo === 'desligada' ? 'selected' : ''}>Desligada</option><option value="teste" ${c.modo === 'teste' ? 'selected' : ''}>Teste (só simula)</option><option value="real" ${c.modo === 'real' ? 'selected' : ''}>Real</option></select></label>
       <label class="c">Horário<input id="reHora" type="time" value="${esc(c.hora)}"></label><label class="c">Limite por rodada<input id="reLimite" type="number" min="1" max="200" value="${c.limite}" style="width:90px"></label>
       <button class="btn ambar" id="reSalvar" type="button">Salvar</button><button class="btn" id="rePausa" type="button">${c.pausado ? 'Retomar' : 'Pausar'}</button><button class="btn" id="reAgora" type="button" ${c.modo === 'desligada' || c.pausado ? 'disabled' : ''}>Rodar agora</button></div>`
       : '<div class="sub" style="margin-top:8px">Só o administrador altera estas configurações.</div>'}</section>`;
 }
 function ligarReatribuicao() {
+  const seg = $('reSeg');
+  if (seg) {
+    seg.addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estReat.filtro = b.dataset.f; estReat.limite = 50; desenharExtravio(); } });
+    $('reBusca').addEventListener('input', (e) => { estReat.busca = e.target.value; estReat.limite = 50; const pos = e.target.selectionStart; desenharExtravio(); const n = $('reBusca'); if (n) { n.focus(); n.setSelectionRange(pos, pos); } });
+    const rd = $('reRodada'); if (rd) rd.addEventListener('change', () => { estReat.rodada = rd.value; estReat.filtro = 'todos'; estReat.limite = 50; desenharExtravio(); });
+    const mais = $('reMais'); if (mais) mais.addEventListener('click', () => { estReat.limite += 100; desenharExtravio(); });
+    document.querySelectorAll('.ext-reat a.awb').forEach((a) => a.addEventListener('click', () => irPara('pacote', a.dataset.awb)));
+    $('reCsv').addEventListener('click', () => {
+      const rows = ((dadosExt && dadosExt.reat && dadosExt.reat.logs) || []).filter((x) => x.rodada === (estReat.rodada || (dadosExt.reat.logs[0] && dadosExt.reat.logs[0].rodada)));
+      baixar('reatribuicao-' + hojeSP() + '.csv', paraCsv(['AWB', 'Motorista', 'Dias', 'Resultado', 'Detalhe', 'Quando'], rows.map((x) => [x.awb || '', x.motorista || '', x.dias != null ? x.dias : '', x.resultado, x.detalhe || '', dataHoraBR(x.criado_em)])));
+    });
+  }
   const sv = $('reSalvar'); if (!sv) return;
   const cfgAtual = () => ({ ...REAT_PADRAO, ...((dadosExt && dadosExt.reat && dadosExt.reat.cfg) || {}) });
   const gravar = async (novo, msg) => {
