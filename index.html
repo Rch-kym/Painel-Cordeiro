@@ -613,7 +613,7 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.4</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.5</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2021,17 +2021,18 @@ function cicloExtravio(hoje, ultimaAuditoriaIso) {
 
 // Calcula os dois níveis a partir do Backlog + movimentos + tratativas.
 function classificarExtravio(itens, movimentou, seguros) {
-  const n1 = [], n2 = [];
+  const n1 = [], n2 = []; let piso = 0;
   for (const x of itens || []) {
     const [awb, mot, cod, dias, cidade, bairro, erro] = x;
     const d = Number(dias) || 0;
     if (d < EXTRAVIO.dias1 || movimentou.has(awb) || seguros.has(awb)) continue;
     const motorista = String(mot || '').trim();
+    if (!motorista) { piso += 1; continue; } // sem motorista (no piso): não há o que reatribuir, fica fora do alerta
     const p = { awb, dias: d, motorista: motorista || 'Sem motorista (no piso)', codigo: cod || '', cidade: cidade || '', bairro: bairro || '', erro: !!erro };
-    if (d >= EXTRAVIO.dias2 && motorista) n2.push(p); else n1.push(p);
+    if (d >= EXTRAVIO.dias2) n2.push(p); else n1.push(p);
   }
   const ord = (a, b) => b.dias - a.dias || String(a.awb).localeCompare(String(b.awb));
-  return { n1: n1.sort(ord), n2: n2.sort(ord) };
+  return { n1: n1.sort(ord), n2: n2.sort(ord), piso };
 }
 
 async function verificarExtravios(forcar) {
@@ -2059,8 +2060,8 @@ async function verificarExtravios(forcar) {
     const reOk = (rlog || []).filter((x) => x.resultado === 'ok' && Date.now() - new Date(x.criado_em).getTime() < EXTRAVIO.validadeAcaoDias * 86400000).map((x) => x.awb);
     const seguros = new Set([...(trat || []).map((x) => x.awb), ...(cob || []).map((x) => x.awb), ...reOk]);
     const ultRod = rlog && rlog[0] ? rlog.filter((x) => x.rodada === rlog[0].rodada) : [];
-    const { n1, n2 } = classificarExtravio(foto.itens, movimentou, seguros);
-    dadosExt = { foto, n1, n2, tratativas: trat || [], cobrancas: cob || [], reat: { cfg: rcfg && rcfg[0] ? rcfg[0].valor : null, semSql: rlog === null, ultima: ultRod, logs: rlog || [] }, ciclo: cicloExtravio(hojeSP(), aud && aud[0] ? aud[0].criado_em : null), ultimaAud: aud && aud[0] ? aud[0] : null, velho: (Date.now() - new Date(foto.gerado_em).getTime()) / 3600000 > EXTRAVIO.velhoHoras };
+    const { n1, n2, piso } = classificarExtravio(foto.itens, movimentou, seguros);
+    dadosExt = { foto, n1, n2, piso, tratativas: trat || [], cobrancas: cob || [], reat: { cfg: rcfg && rcfg[0] ? rcfg[0].valor : null, semSql: rlog === null, ultima: ultRod, logs: rlog || [] }, ciclo: cicloExtravio(hojeSP(), aud && aud[0] ? aud[0].criado_em : null), ultimaAud: aud && aud[0] ? aud[0] : null, velho: (Date.now() - new Date(foto.gerado_em).getTime()) / 3600000 > EXTRAVIO.velhoHoras };
     desenharExtravioGlobal();
     return dadosExt;
   } catch (e) {
@@ -2141,7 +2142,7 @@ function blocoExtravio(nivel, lista, limite) {
   const crit = nivel === 2;
   const vis = estExt.filtroMot ? lista.filter((p) => p.motorista === estExt.filtroMot) : lista;
   const titulo = crit ? '🔴 Nível 2 · Crítico · 5+ dias em rota sem baixa e sem tratativa' : '🟡 Nível 1 · Atenção · 4+ dias parados · Reatribuição obrigatória';
-  const foco = crit ? 'Foco: cobrança imediata ao motorista ou tratativa urgente.' : 'Foco: reatribuir (rotina de segunda, quarta e sexta).';
+  const foco = crit ? 'Foco: cobrança imediata ao motorista ou tratativa urgente.' : 'Foco: reatribuir (rotina de segunda, quarta e sexta).' + (dadosExt && dadosExt.piso ? ` Não aparecem aqui ${dadosExt.piso} pacote(s) sem motorista (no piso).` : '');
   const nSel = vis.filter((p) => estExt.sel.has(p.awb)).length;
   return `<section class="cartao ext-bloco ${crit ? 'crit' : 'aten'}" data-n="${nivel}"><div class="ext-bloco-topo"><div><h2>${titulo} <span class="ext-cont">${vis.length}</span></h2><div class="sub">${foco}</div></div></div>
     ${vis.length ? `<div class="ext-barra"><label class="ext-todos"><input type="checkbox" class="extTodos" data-n="${nivel}" ${nSel && nSel === vis.length ? 'checked' : ''}> Selecionar todos</label><span class="sub">${nSel ? nSel + ' selecionado(s)' : 'sem seleção: as ações valem para todos da lista'}</span>
