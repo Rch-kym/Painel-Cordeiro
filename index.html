@@ -602,7 +602,7 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.1</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.2</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2263,17 +2263,18 @@ async function concluirAuditoriaExt() {
 }
 
 /* ===== Alerta: saca da cidade fechada, mas ainda faltam pacotes ===== */
-// Teixeira de Freitas tem várias rotas e fica de fora por enquanto (regra a definir).
-const CIDADES_SEM_ALERTA_SACA = ['teixeira de freitas', 'sem cidade'];
+// Teixeira de Freitas tem várias rotas: o alerta só dispara quando TODAS as sacas dela do dia estão fechadas (mesma regra das outras cidades).
+const CIDADES_SEM_ALERTA_SACA = ['sem cidade'];
 const semAcento = (t) => String(t || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').trim().toLowerCase();
 const alertaSacaVisto = new Set(), alertaSacaDispensado = new Map();
 async function verificarAlertasSaca() {
   const caixa = $('alertaSacas'); if (!caixa || !E.perfil) return;
   try {
     const d = hojeSP();
-    const [sc, cc] = await Promise.all([
+    const [sc, cc, pf] = await Promise.all([
       lerTudo('/rest/v1/sacas_resumo?select=id,motorista,cidade,status,fechada_em&dia=eq.' + d, 5),
       lerTudo('/rest/v1/conciliacao_cidade?select=cidade,chegaram,atribuidos,faltam&dia=eq.' + d, 5),
+      lerTudo('/rest/v1/conciliacao_pacotes?select=awb,cidade,bairro&atribuido=eq.false&dia=eq.' + d + '&order=chegou_em.asc', 5).catch(() => ({ itens: [] })),
     ]);
     const sacas = sc.itens.filter((x) => !ehSacaFantasma(x));
     const alertas = [];
@@ -2284,14 +2285,15 @@ async function verificarAlertasSaca() {
       const fechadas = dela.filter((x) => x.status === 'fechada'), abertas = dela.filter((x) => x.status !== 'fechada');
       if (!fechadas.length || abertas.length) continue; // só quando a(s) saca(s) da cidade já fecharam
       const ult = fechadas.map((x) => x.fechada_em).filter(Boolean).sort().pop();
-      alertas.push({ cidade: c.cidade, faltam, chegaram: Number(c.chegaram), fechada: ult, chave: k + '|' + faltam });
+      alertas.push({ cidade: c.cidade, faltam, chegaram: Number(c.chegaram), fechada: ult, chave: k + '|' + faltam, pacotes: pf.itens.filter((x) => semAcento(x.cidade) === k) });
     }
     const vis = alertas.filter((a) => alertaSacaDispensado.get(semAcento(a.cidade)) !== a.chave);
     for (const a of vis) if (!alertaSacaVisto.has(a.chave)) { alertaSacaVisto.add(a.chave); aviso('Saca de ' + a.cidade + ' fechada, mas faltam ' + a.faltam + ' pacote(s).', true); }
     if (!vis.length) { caixa.hidden = true; caixa.innerHTML = ''; return; }
-    caixa.innerHTML = `<b>Saca fechada com pacote faltando</b><ul>${vis.map((a) => `<li><b>${esc(a.cidade)}</b>: faltam <b>${a.faltam}</b> de ${a.chegaram} que chegaram${a.fechada ? ' · saca fechada às ' + esc(horaCurta(a.fechada)) : ''}</li>`).join('')}</ul><div class="acoes"><button class="btn mini ambar" type="button" id="alSacaVer">Ver pacotes que faltam</button><button class="btn mini" type="button" id="alSacaOk">Dispensar</button></div>`;
+    caixa.innerHTML = `<b>Saca fechada com pacote faltando</b><ul>${vis.map((a) => `<li><b>${esc(a.cidade)}</b>: faltam <b>${a.faltam}</b> de ${a.chegaram} que chegaram${a.fechada ? ' · saca fechada às ' + esc(horaCurta(a.fechada)) : ''}${a.pacotes.length ? `<br><span class="sub">${a.pacotes.slice(0, 5).map((x) => `<a class="awb" data-awb="${esc(x.awb)}" tabindex="0" role="link">${esc(x.awb)}</a>${x.bairro ? ' (' + esc(x.bairro) + ')' : ''}`).join(' · ')}${a.pacotes.length > 5 ? ' · +' + (a.pacotes.length - 5) + ' (veja todos)' : ''}</span>` : ''}</li>`).join('')}</ul><div class="acoes"><button class="btn mini ambar" type="button" id="alSacaVer">Ver pacotes que faltam</button><button class="btn mini" type="button" id="alSacaOk">Dispensar</button></div>`;
     caixa.hidden = false;
     $('alSacaVer').addEventListener('click', () => irPara('chegada'));
+    caixa.querySelectorAll('a.awb').forEach((x) => x.addEventListener('click', () => irPara('pacote', x.dataset.awb)));
     $('alSacaOk').addEventListener('click', () => { vis.forEach((a) => alertaSacaDispensado.set(semAcento(a.cidade), a.chave)); caixa.hidden = true; });
   } catch (_) { /* sem permissão ou sem rede: não atrapalha */ }
 }
