@@ -178,5 +178,9 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 ## Versão 1.20.10
 - Na gaveta do pacote, o botão **Ver na saca** (no lugar de "Abrir ficha completa") leva à aba Sacas, abre a saca onde o pacote ficou (no dia dela) e destaca o pacote na lista, já rolado para ele. Sem saca registrada, o botão fica desligado.
 
+## Versão 1.21.0
+- **Meta do dia agora é o SLA**: baixas ÷ vencimentos do dia, meta 95% (mostra %, quantas baixas faltam, pendentes, atrasados e a evolução no dia). A meta de atribuição continua logo abaixo.
+- Precisa do script `16-sla-dia.sql` e da extensão 3.18.0 (lê o iMile a cada ~10 min com uma aba do DS aberta).
+
 ## Versão 1.20.11
 - Repetidos bipados na etapa de **chegada** deixam de aparecer: a lista de Repetidos (Erros e divergências), a prévia e a gaveta do pacote mostram só os de **atribuição**. (A ficha completa continua com o histórico inteiro.) Repetidos antigos sem a marca da etapa continuam aparecendo.

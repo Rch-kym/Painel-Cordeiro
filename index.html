@@ -643,7 +643,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.11</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.21.0</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2822,7 +2822,7 @@ function calcularMeta(cc, cm) {
 function fmtPct(n) { return n.toLocaleString('pt-BR', { minimumFractionDigits: 1, maximumFractionDigits: 1 }) + '%'; }
 function telaMeta() {
   if (!estMeta.dia) estMeta.dia = hojeSP();
-  $('conteudo').innerHTML = cabecalho('Meta do dia', 'Atribuir pelo menos ' + PCT_PADRAO + '% do que chegou no dia <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
+  $('conteudo').innerHTML = cabecalho('Meta do dia', 'SLA de entrega: baixas ÷ vencimentos do dia, meta ' + PCT_PADRAO + '% <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
     '<div class="seg" id="metAtalhos"><button type="button" data-d="hoje">Hoje</button><button type="button" data-d="ontem">Ontem</button></div><input type="date" id="metDia" value="' + esc(estMeta.dia) + '" aria-label="Dia" /><button class="btn" id="metAtualizar" type="button">Atualizar</button>') + '<div id="metCorpo">' + esqueleto() + '</div>';
   mostrarVivo();
   $('metDia').addEventListener('change', () => { if (uxTemEdicao()) { $('metDia').value=estMeta.dia; aviso('Salve os ajustes antes de trocar o dia.', true); return; } if ($('metDia').value) { estMeta.dia = $('metDia').value; carregarMeta(false); } });
@@ -2835,15 +2835,45 @@ function telaMeta() {
 async function carregarMeta(silencioso) {
   const meu = ++tokenMeta, d = eFiltroSeguro(estMeta.dia);
   try {
-    const [cc, pk, cm] = await Promise.all([
+    const [cc, pk, cm, sla, slaCol] = await Promise.all([
       lerTudo('/rest/v1/conciliacao_cidade?select=cidade,chegaram,atribuidos,faltam&dia=eq.' + d, 5),
       lerTudo('/rest/v1/conciliacao_pacotes?select=motorista,atribuido&atribuido=eq.true&dia=eq.' + d, 12),
       api('GET', '/rest/v1/meta_dia?select=*&dia=eq.' + d).catch(() => null),
+      api('GET', '/rest/v1/sla_dia?select=*&dia=eq.' + d).catch(() => null),
+      api('GET', '/rest/v1/sla_coletas?select=coletado_em,universo,baixas_universo,pendentes&order=coletado_em.asc&limit=300&dia=eq.' + d).catch(() => []),
     ]);
     if (meu !== tokenMeta || !$('metCorpo')) return;
-    dadosMeta = { cc: cc.itens, pk: pk.itens, cm: Array.isArray(cm) && cm[0] ? cm[0] : null, semTabela: cm === null };
+    dadosMeta = { cc: cc.itens, pk: pk.itens, cm: Array.isArray(cm) && cm[0] ? cm[0] : null, semTabela: cm === null, sla: Array.isArray(sla) && sla[0] ? sla[0] : null, slaSemTabela: sla === null, slaCol: Array.isArray(slaCol) ? slaCol : [] };
     if (!uxTemEdicao()) desenharMeta();
   } catch (e) { if (meu === tokenMeta && $('metCorpo') && !silencioso) $('metCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09 e depois o 10-meta-dia.sql no Supabase.</div>`; }
+}
+// SLA = baixas dos pacotes que venciam no dia ÷ universo de vencimentos (coletado pela extensão a cada ~10 min).
+function blocoSla(sla, col, semTabela, hoje, pct) {
+  if (semTabela) return '<div class="aviso">O SLA precisa do script 16-sla-dia.sql no Supabase (e da extensão 3.18.0 com uma aba do iMile aberta).</div>';
+  if (!sla || !Number(sla.universo)) return '<div class="cartao"><div class="vazio"><b>Sem coleta de SLA neste dia</b>A extensão lê o iMile a cada 10 minutos enquanto houver uma aba do DS aberta e logada.</div></div>';
+  const U = Number(sla.universo), B = Number(sla.baixas_universo), taxa = B / U * 100, meta = Math.ceil(U * pct / 100), faltam = Math.max(0, meta - B);
+  const bateu = B >= meta, cor = bateu ? 'ok' : (taxa >= pct - 15 ? 'alerta' : 'erro');
+  const idade = Math.round((Date.now() - new Date(sla.atualizado_em).getTime()) / 60000);
+  const parada = hoje && idade > 30 ? `<div class="aviso">Última coleta há ${idade} min (${esc(horaCurta(sla.atualizado_em))}). Deixe uma aba do iMile aberta e logada com a extensão ativa.</div>` : '';
+  let curva = '';
+  const pts = col.filter((c) => Number(c.universo) > 0);
+  if (pts.length > 1) {
+    const W = 600, H = 90, t0 = new Date(pts[0].coletado_em).getTime(), t1 = new Date(pts[pts.length - 1].coletado_em).getTime() || t0 + 1;
+    const X = (c) => ((new Date(c.coletado_em).getTime() - t0) / Math.max(1, t1 - t0) * (W - 10) + 5).toFixed(1), Y = (c) => (H - 5 - Math.min(100, Number(c.baixas_universo) / Number(c.universo) * 100) / 100 * (H - 10)).toFixed(1);
+    const yMeta = (H - 5 - pct / 100 * (H - 10)).toFixed(1);
+    curva = `<div class="cartao"><div class="cartao-topo"><h2>Evolução no dia</h2><span class="sub">${esc(horaCurta(pts[0].coletado_em))} → ${esc(horaCurta(pts[pts.length - 1].coletado_em))} · tracejado = meta ${esc(String(pct))}%</span></div>
+      <svg viewBox="0 0 ${W} ${H}" preserveAspectRatio="none" style="width:100%;height:110px;display:block" role="img" aria-label="Evolução do SLA ao longo do dia"><line x1="0" x2="${W}" y1="${yMeta}" y2="${yMeta}" stroke="var(--tinta-2)" stroke-dasharray="4 4" vector-effect="non-scaling-stroke"/><polyline fill="none" stroke="var(--${bateu ? 'ok' : 'ambar'})" stroke-width="2.5" stroke-linejoin="round" vector-effect="non-scaling-stroke" points="${pts.map((c) => X(c) + ',' + Y(c)).join(' ')}"/></svg></div>`;
+  }
+  return parada + `<div class="tiles tiles4">
+      <div class="tile ${cor}"><span>SLA do dia</span><b>${esc(fmtPct(taxa))}</b><small>${esc(B + ' baixas de ' + U + ' vencimentos')}</small></div>
+      <div class="tile ${bateu ? 'ok' : ''}"><span>Meta ${esc(String(pct))}%</span><b>${meta}</b><small>${bateu ? 'meta batida ✓' : 'faltam ' + faltam + ' baixas'}</small></div>
+      <div class="tile"><span>Ainda vencem hoje</span><b>${Number(sla.pendentes)}</b><small>sem baixa</small></div>
+      <div class="tile ${Number(sla.atrasados) ? 'alerta' : ''}"><span>Atrasados</span><b>${Number(sla.atrasados)}</b><small>venceram antes de hoje</small></div>
+    </div>
+    <div class="cartao"><div class="cartao-topo"><h2>SLA — progresso</h2><span class="sub">${esc(fmtPct(taxa))} de ${esc(String(pct))}% exigidos · atualizado ${esc(horaCurta(sla.atualizado_em))}</span></div>
+      <div style="position:relative;height:16px;background:var(--linha);border-radius:9px;overflow:hidden"><div style="height:100%;width:${Math.min(100, taxa).toFixed(1)}%;background:var(${bateu ? '--ok' : cor === 'erro' ? '--erro' : '--ambar'})"></div>
+      <div style="position:absolute;top:0;bottom:0;left:${Math.min(100, pct)}%;width:2px;background:var(--tinta)"></div></div>
+      <p class="sub" style="margin:10px 0 0">O universo é fixado ao longo do dia: todo pacote que aparece como “vence hoje” entra e continua contando depois de baixado. Baixas de ${esc(String(sla.baixas_total))} no total (inclui adiantadas, que não entram na conta). Pacotes que venciam hoje e foram baixados antes da primeira coleta (${esc(horaCurta(sla.primeira_coleta))}) não aparecem.</p></div>` + curva;
 }
 function desenharMeta() {
   const corpo = $('metCorpo'); if (!corpo || !dadosMeta) return;
@@ -2867,6 +2897,8 @@ function desenharMeta() {
   const aj = cm && (Number(cm.ajuste_universo) || Number(cm.ajuste_atribuidos) || cm.percentual != null);
   const tile = (nome, n, sub, c) => `<div class="tile ${c || ''}"><span>${esc(nome)}</span><b>${esc(n)}</b><small>${sub}</small></div>`;
   corpo.innerHTML =
+    blocoSla(dadosMeta.sla, dadosMeta.slaCol, dadosMeta.slaSemTabela, hoje, r.pct) +
+    '<h2 class="sub" style="margin:22px 0 8px;font-size:15px;color:var(--tinta)">Atribuição do que chegou</h2>' +
     (semTabela ? '<div class="aviso">A tabela de ajustes ainda não existe: rode o script 10-meta-dia.sql no Supabase. A meta abaixo usa a regra padrão.</div>' : '') +
     (dsAviso.length ? `<div class="aviso">Divergência com o DS — ${dsAviso.map(esc).join(' · ')}</div>` : '') +
     (r.universo ? '' : '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Quando os pacotes forem bipados no modo Chegada, a meta aparece aqui.</div></div>') +
