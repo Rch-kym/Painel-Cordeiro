@@ -154,3 +154,29 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 
 ## Versão 1.20.5
 - Pacotes **sem motorista (no piso)** saem do Risco de extravio (Nível 1, contadores, banner e alertas). A tela só avisa quantos ficaram de fora.
+
+## Versão 1.20.6 — Chegada por saca
+- Chegada e conciliação abre em **Por saca**: cada saca é um cartão (distrito e município separados), com chegaram / atribuídos / faltam, aberta ou fechada e lista de pacotes.
+- Os pacotes que faltam são ligados à saca pelo bairro (a saca que já levou pacotes daquele bairro). Sem bairro conhecido, ficam em "Sem saca definida · Cidade".
+- O botão **Por cidade** mantém a visão antiga.
+- Rode `15-saca-na-conciliacao.sql` antes (sem ele, cada motorista vira uma saca só).
+
+## Versão 1.20.7
+- Chegada e conciliação: coluna **Produto** nos pacotes (por saca e por cidade) e no CSV. O nome vem de quem tocou em "Mostrar produto" no app; sem consulta aparece "ainda não consultado".
+
+## Versão 1.20.8 — voltar da ficha sem se perder
+- Ao abrir um pacote (link do AWB ou "ver ficha") e voltar, a lista volta **na mesma posição**, com o pacote aberto no meio da tela.
+- O último pacote aberto fica destacado (barra âmbar e "último aberto"); os já abertos ficam riscados e mais apagados. A marca vale até fechar a aba do navegador.
+
+## Versão 1.20.9 — prévia do pacote (opção A)
+- Pairar ~0,7 s sobre um AWB mostra a **prévia**: chegada (hora e quem), motorista, produto e as repetições com hora e colaborador.
+- Clicar no AWB abre a **gaveta lateral** com a ficha: produto, endereço, bairro/CEP, cidade, motorista, saca, rota, cobrança e linha do tempo. Botões: Abrir ficha completa e Copiar AWB. Esc ou clicar fora fecha, e o foco volta ao link.
+- Vale em todas as listas com AWB (Erros e divergências, Risco de extravio, Backlog, Chegada...). No celular/toque não há prévia: o toque abre a gaveta.
+- A marcação de "último aberto" e riscado também vale para quem abriu pela gaveta.
+- Sem SQL novo.
+
+## Versão 1.20.10
+- Na gaveta do pacote, o botão **Ver na saca** (no lugar de "Abrir ficha completa") leva à aba Sacas, abre a saca onde o pacote ficou (no dia dela) e destaca o pacote na lista, já rolado para ele. Sem saca registrada, o botão fica desligado.
+
+## Versão 1.20.11
+- Repetidos bipados na etapa de **chegada** deixam de aparecer: a lista de Repetidos (Erros e divergências), a prévia e a gaveta do pacote mostram só os de **atribuição**. (A ficha completa continua com o histórico inteiro.) Repetidos antigos sem a marca da etapa continuam aparecendo.

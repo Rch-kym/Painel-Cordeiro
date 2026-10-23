@@ -488,7 +488,8 @@ tr.prova td { background:var(--superficie-2); }
 tr.clic { cursor:pointer; } tr.clic:hover td { background:var(--superficie-2); } tr.clic.sel td { background:var(--superficie-2); }
 .pk-lista { display:flex; flex-direction:column; gap:6px; max-height:360px; overflow:auto; margin-top:8px; }
 .pk { display:grid; grid-template-columns:48px 1fr auto; gap:10px; align-items:center; padding:9px 10px; border:1px solid var(--linha); border-radius:9px; background:var(--superficie-2); cursor:pointer; width:100%; text-align:left; color:var(--tinta); }
-.pk:hover { border-color:var(--tinta-2); } .pk time { font-size:12px; color:var(--tinta-2); }
+.pk:hover { border-color:var(--tinta-2); }
+.pk.alvo { border-color:var(--ambar); background:var(--alerta-fundo); box-shadow:inset 4px 0 0 var(--ambar); } .pk time { font-size:12px; color:var(--tinta-2); }
 .volta { border:0; background:none; color:var(--azul); font-weight:700; font-size:13px; padding:0; margin-bottom:8px; cursor:pointer; }
 .dl { display:grid; grid-template-columns:100px 1fr; gap:6px 10px; font-size:13px; margin:10px 0; } .dl dt { color:var(--tinta-2); } .dl dd { margin:0; font-weight:600; }
 /* Meta do dia: 4 cartões, sem sobra no celular */
@@ -571,6 +572,35 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
 :root[data-tema="escuro"] .re-status.rodando,:root[data-tema="escuro"] .re-status.pendente{background:#3a2d10;color:#ffe2a8}
 :root[data-tema="escuro"] .re-status.atrasado{background:#3d1714;color:#ffb4ab}
 @media (prefers-reduced-motion:reduce){.re-bolinha{animation:none}}
+.ultimo-aberto{background:rgba(232,163,61,.16)!important;box-shadow:inset 4px 0 0 #E8A33D}
+.ultimo-aberto a.awb::after,.ultimo-aberto [data-ficha]::after{content:" · último aberto";font-size:11px;font-weight:700;color:#8A5A0B;white-space:nowrap}
+:root[data-tema="escuro"] .ultimo-aberto a.awb::after{color:#ffd58a}
+a.awb.visto{text-decoration:underline line-through;opacity:.62}
+.ultimo-aberto a.awb.visto{text-decoration:underline;opacity:1}
+.ja-aberto{opacity:.9}
+.pk-pop{position:fixed;z-index:80;width:330px;background:var(--superficie);color:var(--tinta);border:1px solid var(--linha);border-radius:12px;box-shadow:0 14px 40px rgba(0,0,0,.35);padding:12px 14px;opacity:0;transform:translateY(4px);pointer-events:none;transition:opacity .15s,transform .15s;font-size:13px}
+.pk-pop.on{opacity:1;transform:none}
+.pk-pop h4{margin:0 0 6px;font-size:13.5px;display:flex;justify-content:space-between;gap:8px;align-items:center}
+.pk-pop .l{display:flex;justify-content:space-between;gap:10px;padding:3px 0}
+.pk-pop .l span:first-child{color:var(--tinta-2)} .pk-pop .l b{text-align:right}
+.pk-pop ul{margin:6px 0 0;padding:6px 0 0;list-style:none;border-top:1px solid var(--linha)}
+.pk-pop li{display:flex;justify-content:space-between;gap:8px;padding:3px 0}
+.pk-pop .dica{margin-top:6px;font-size:12px;color:var(--tinta-2)}
+.pk-veu{position:fixed;inset:0;background:rgba(0,0,0,.45);opacity:0;pointer-events:none;transition:opacity .2s;z-index:90}
+.pk-veu.on{opacity:1;pointer-events:auto}
+.pk-gaveta{position:fixed;top:0;right:0;bottom:0;width:min(470px,100%);background:var(--superficie);color:var(--tinta);border-left:1px solid var(--linha);transform:translateX(102%);transition:transform .22s;z-index:91;overflow:auto;padding:20px 18px}
+.pk-gaveta.on{transform:none}
+.pk-gaveta h2{font-size:19px;padding-right:90px;font-variant-numeric:tabular-nums}
+.pk-x{position:absolute;top:12px;right:12px}
+.pk-bloco{margin-top:16px} .pk-bloco h3{margin:0 0 6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--tinta-2)}
+.pk-grade{display:grid;grid-template-columns:110px minmax(0,1fr);gap:6px 10px;margin:0;font-size:13.5px}
+.pk-grade dt{color:var(--tinta-2)} .pk-grade dd{margin:0;font-weight:650;overflow-wrap:anywhere}
+.pk-tempo{list-style:none;margin:0;padding:0 0 0 14px;border-left:2px solid var(--linha)}
+.pk-tempo li{position:relative;padding:0 0 12px 12px;font-size:13.5px}
+.pk-tempo li::before{content:"";position:absolute;left:-21px;top:5px;width:10px;height:10px;border-radius:50%;background:var(--ok);border:2px solid var(--superficie)}
+.pk-tempo li.rep::before{background:var(--ambar)} .pk-tempo li.er::before{background:var(--erro)} .pk-tempo li.dv::before{background:var(--alerta)}
+.pk-acoes{display:flex;gap:8px;margin-top:16px;flex-wrap:wrap}
+@media (prefers-reduced-motion:reduce){.pk-pop,.pk-veu,.pk-gaveta{transition:none}}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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" />
 <link rel="apple-touch-icon" href="data:image/png;base64,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" />
@@ -613,7 +643,7 @@ input,select,textarea{min-height:42px;border-radius:10px;max-width:100%}input[ty
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.5</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.20.11</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -1087,7 +1117,12 @@ function irPara(id, arg) {
   uxFecharMenu();
   if (id === 'bipagem') id = E.sub === 'pacote' ? 'pacote' : 'problemas';
   if (id === 'rotas') id = 'motoristas';
-  if (id === 'pacote' && E.aba !== 'pacote') uxPacoteAnterior = E.aba;
+  if (id === 'pacote' && E.aba !== 'pacote') {
+    uxPacoteAnterior = E.aba;
+    const c = uxClique && Date.now() - uxClique.t < 3000 && uxClique.awb === arg ? uxClique : null;
+    uxRetorno = { aba: E.aba, y: c ? c.y : window.scrollY, awb: arg || null };
+    if (arg) uxMarcarVisto(arg);
+  }
   E.aba = id;
   uxAtualizarCabecalho(id);
   const nav = id === 'produtividade' ? id : (SUBTELAS[id] ? 'bipagem' : id);
@@ -1104,7 +1139,7 @@ function irPara(id, arg) {
   }
   if (!mapa[id]) { irPara('painel'); return; }
   mapa[id](arg);
-  if (id === 'pacote') { const voltar=document.createElement('button'); voltar.type='button'; voltar.className='btn back-link'; voltar.textContent='← Voltar à consulta anterior'; voltar.addEventListener('click',()=>irPara(uxPacoteAnterior)); $('conteudo').prepend(voltar); }
+  if (id === 'pacote') { const voltar=document.createElement('button'); voltar.type='button'; voltar.className='btn back-link'; voltar.textContent='← Voltar à consulta anterior'; voltar.addEventListener('click',()=>{ const r = uxRetorno; irPara(uxPacoteAnterior); if (r && r.aba === uxPacoteAnterior) uxPendente = { ...r, ate: Date.now() + 12000 }; }); $('conteudo').prepend(voltar); }
   uxPrepararConteudo();
 }
 function raizTela() { return $('corpoTela') || $('conteudo'); }
@@ -1763,6 +1798,8 @@ function telaProblemas() {
   $('prBusca').addEventListener('input', () => { estPro.busca = $('prBusca').value; desenharProblemas(); });
   carregarProblemas();
 }
+// Repetido bipado na etapa de CHEGADA (o app grava detalhe.etapa). Só o repetido de atribuição interessa nas conferências.
+const repetidoDeChegada = (e) => e.tipo === 'repetido' && !!e.detalhe && e.detalhe.etapa === 'chegada';
 function comCorrecao() { return estPro.tipo2 !== 'repetido'; }
 async function carregarProblemas(silencioso) {
   const meu = ++tokenPro, corpo = $('prCorpo');
@@ -1772,9 +1809,9 @@ async function carregarProblemas(silencioso) {
     const op = estPro.operador ? '&operador_id=eq.' + eFiltroSeguro(estPro.operador) : '';
     const r = comCorrecao()
       ? await lerTudo('/rest/v1/erros_resolucao?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo,corrigido,automatico,corrigido_em,corrigido_por_id,prova&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10)
-      : await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10);
+      : await lerTudo('/rest/v1/eventos?select=id,ocorreu_em,tipo,awb,operador_id,origem,cidade,rota,motorista,motivo,detalhe&tipo=in.(' + estPro.tipo2 + ')&' + faixa(estPro) + op + '&order=ocorreu_em.desc', 10);
     if (meu !== tokenPro) return;
-    linhasPro = r.itens; linhasPro._completo = r.completo;
+    linhasPro = r.itens.filter((e) => !repetidoDeChegada(e)); linhasPro._completo = r.completo; // repetido na etapa de chegada não interessa aqui
     desenharProblemas();
   } catch (e) { if (meu === tokenPro && $('prCorpo') && !silencioso) $('prCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)}</div>`; }
 }
@@ -1860,7 +1897,7 @@ function desenharProblemas() {
 
 
 /* ===================== SACAS ===================== */
-const estSac = { ...novoEstadoPeriodo('hoje'), estado: 'and', cidade: '', op: '', busca: '', sel: null, pac: null };
+const estSac = { ...novoEstadoPeriodo('hoje'), estado: 'and', cidade: '', op: '', busca: '', sel: null, pac: null, alvo: null };
 let tokenSac = 0, dadosSac = [], fantasmasSac = [], pacotesSac = { id: null, lista: [], produtos: new Map() }, timerSac = null;
 function telaSacas() {
   raizTela().innerHTML = cabecalho('Sacas', 'Cada saca é de um motorista. Veja quem está nela agora e o histórico de quem bipou.', seletorPeriodo(estSac) + '<button class="btn" id="sacAtualizar" type="button">Atualizar</button>') + datasLivres(estSac) + '<div id="sacCorpo">' + esqueleto() + '</div>';
@@ -1941,7 +1978,7 @@ function desenharSacas() {
       ${lista.length ? '<div style="margin-top:10px"><button class="btn mini" id="sacCsv" type="button">Baixar CSV</button></div>' : ''}</div>
       <div class="cartao gaveta" id="sacGaveta" tabindex="-1" aria-label="Detalhes da saca"></div></div>`;
   ligarFecharSacas(corpo, ativas, paradas);
-  corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); if (window.innerWidth <= 1280) { const g = $('sacGaveta'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
+  corpo.querySelectorAll('[data-saca]').forEach((b) => b.addEventListener('click', () => { estSac.sel = b.dataset.saca; estSac.pac = null; estSac.alvo = null; desenharSacas(); carregarPacotesSaca(estSac.sel, true); if (window.innerWidth <= 1280) { const g = $('sacGaveta'); if (g) g.scrollIntoView({ behavior: 'smooth', block: 'start' }); } }));
   $('sacEst').addEventListener('click', (ev) => { const b = ev.target.closest('button[data-e]'); if (b) { estSac.estado = b.dataset.e; desenharSacas(); } });
   $('sacCid').addEventListener('change', () => { estSac.cidade = $('sacCid').value; desenharSacas(); });
   $('sacOp').addEventListener('change', () => { estSac.op = $('sacOp').value; desenharSacas(); });
@@ -1984,8 +2021,9 @@ function desenharGavetaSaca() {
       <div class="prob zero" style="cursor:default;padding:10px"><b style="font-size:24px">${s.ultimo_bipe_em ? esc(horaCurta(s.ultimo_bipe_em)) : '—'}</b><span>Último bipe</span></div>
       <div class="prob ${Number(s.erros) ? 'erro' : 'zero'}" style="cursor:default;padding:10px"><b style="font-size:24px">${s.erros}</b><span>Erros</span></div></div>
     <div class="sub" style="text-transform:uppercase;letter-spacing:.8px;font-weight:800">Pacotes da saca <span style="font-weight:500;text-transform:none;letter-spacing:0">· clique para ver detalhes</span></div>
-    ${lista === null ? '<div class="esq" style="height:120px;margin-top:8px"></div>' : lista.length ? `<div class="pk-lista">${lista.slice(0, 300).map((p) => `<button type="button" class="pk" data-awb="${esc(p.awb)}"><time>${esc(horaCurta(p.hora))}</time><span><span class="awb">${esc(p.awb)}</span>${prod.get(p.awb) ? ` <span class="sub">· ${esc(String(prod.get(p.awb)).slice(0, 38))}</span>` : (p.det && p.det.bairro ? ` <span class="sub">· ${esc(p.det.bairro)}</span>` : '')}</span>${p.estado === 'ok' ? '<span class="sub">›</span>' : `<span class="etq ${esc(p.estado)}">${p.estado === 'erro' ? 'erro' : 'diverg.'}</span>`}</button>`).join('')}</div>` : '<div class="vazio" style="margin-top:8px">Nenhum pacote visível nesta saca para o seu acesso.</div>'}`;
+    ${lista === null ? '<div class="esq" style="height:120px;margin-top:8px"></div>' : lista.length ? `<div class="pk-lista">${lista.slice(0, 300).map((p) => `<button type="button" class="pk${p.awb === estSac.alvo ? ' alvo' : ''}" data-awb="${esc(p.awb)}"><time>${esc(horaCurta(p.hora))}</time><span><span class="awb">${esc(p.awb)}</span>${prod.get(p.awb) ? ` <span class="sub">· ${esc(String(prod.get(p.awb)).slice(0, 38))}</span>` : (p.det && p.det.bairro ? ` <span class="sub">· ${esc(p.det.bairro)}</span>` : '')}</span>${p.estado === 'ok' ? '<span class="sub">›</span>' : `<span class="etq ${esc(p.estado)}">${p.estado === 'erro' ? 'erro' : 'diverg.'}</span>`}</button>`).join('')}</div>` : '<div class="vazio" style="margin-top:8px">Nenhum pacote visível nesta saca para o seu acesso.</div>'}`;
   g.querySelectorAll('.pk').forEach((b) => b.addEventListener('click', () => { estSac.pac = b.dataset.awb; desenharGavetaSaca(); }));
+  const alvoEl = g.querySelector('.pk.alvo'); if (alvoEl && lista !== null) { alvoEl.scrollIntoView({ block: 'center' }); const gi = $('sacGaveta'); if (gi && window.innerWidth <= 1280) gi.scrollIntoView({ block: 'start' }); }
   const bf = $('sacFechar'); if (bf) bf.addEventListener('click', () => fecharSacas([s], 'Fechar esta saca'));
 }
 
@@ -2518,11 +2556,27 @@ function confirmarAcao(o) {
 
 /* ===================== CHEGADA E CONCILIAÇÃO ===================== */
 // Cruza os pacotes que deram chegada com os que foram atribuídos, por cidade.
-const estChe = { dia: null, filtro: 'todas', abertas: new Set(), todos: new Set(), verTodos: new Set(), soFaltam: new Set() };
+const estChe = { dia: null, modo: 'saca', filtro: 'todas', abertas: new Set(), todos: new Set(), verTodos: new Set(), soFaltam: new Set() };
 let tokenChe = 0, dadosChe = null, timerChe = null;
+const prodChe = { mapa: new Map(), tentou: new Set() };
+const prodCelula = (awb) => { const v = prodChe.mapa.get(awb); return v ? `<b>${esc(v)}</b>` : '<span class="sub">' + (prodChe.tentou.has(awb) ? 'ainda não consultado' : '…') + '</span>'; };
+// Nome do produto de cada pacote (guardado quando alguém toca em "Mostrar produto" no app).
+async function buscarProdutosChe() {
+  const celulas = [...document.querySelectorAll('#cheCorpo [data-prod]')];
+  const falta = [...new Set(celulas.map((c) => c.dataset.prod))].filter((a) => !prodChe.mapa.has(a) && !prodChe.tentou.has(a)).slice(0, 300);
+  for (let i = 0; i < falta.length; i += 100) {
+    const lote = falta.slice(i, i + 100);
+    try {
+      const pr = await api('GET', '/rest/v1/produtos?select=awb,produto&awb=in.(' + lote.map((a) => '"' + eFiltroSeguro(a) + '"').join(',') + ')');
+      for (const x of pr || []) prodChe.mapa.set(x.awb, x.produto);
+    } catch (_) { /* segue sem produto */ }
+    lote.forEach((a) => prodChe.tentou.add(a));
+  }
+  document.querySelectorAll('#cheCorpo [data-prod]').forEach((c) => { c.innerHTML = prodCelula(c.dataset.prod); });
+}
 function telaChegada() {
   if (!estChe.dia) estChe.dia = hojeSP();
-  $('conteudo').innerHTML = cabecalho('Chegada e conciliação', 'Quem deu chegada x quem foi atribuído, por cidade <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
+  $('conteudo').innerHTML = cabecalho('Chegada e conciliação', 'Quem deu chegada x quem foi atribuído, por saca ou por cidade <span class="ao-vivo" id="nrVivo"><i></i><span>Conectando…</span></span>',
     '<div class="seg" id="cheAtalhos"><button type="button" data-d="hoje">Hoje</button><button type="button" data-d="ontem">Ontem</button></div><input type="date" id="cheDia" value="' + esc(estChe.dia) + '" aria-label="Dia" /><button class="btn" id="cheAtualizar" type="button">Atualizar</button>') + '<div id="cheCorpo">' + esqueleto() + '</div>';
   mostrarVivo();
   $('cheDia').addEventListener('change', () => { if ($('cheDia').value) { estChe.dia = $('cheDia').value; estChe.abertas.clear(); carregarChegada(false); } });
@@ -2539,12 +2593,38 @@ async function carregarChegada(silencioso) {
     const [cd, cc, pf] = await Promise.all([
       api('GET', '/rest/v1/chegada_dia?select=dia,pacotes,primeiro_bipe_em,ultimo_bipe_em,pessoas&dia=eq.' + d),
       lerTudo('/rest/v1/conciliacao_cidade?select=dia,cidade,chegaram,atribuidos,faltam,primeira_chegada_em,ultima_chegada_em,concluida_em&dia=eq.' + d + '&order=cidade.asc', 5),
-      lerTudo(colPac(',atribuido_por'), 12).catch(() => lerTudo(colPac(''), 12)), // sem o SQL 14 ainda: some só o nome de quem atribuiu
+      lerTudo(colPac(',atribuido_por,saca_id,saca_numero,saca_status,saca_fechada_em'), 12).catch(() => lerTudo(colPac(',atribuido_por'), 12)).catch(() => lerTudo(colPac(''), 12)), // sem o SQL 15/14: some a saca / o nome de quem atribuiu
     ]);
     if (meu !== tokenChe || !$('cheCorpo')) return;
-    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, todos: pf.itens, pend: pf.itens.filter((x) => !x.atribuido), completo: pf.completo, semQuem: pf.itens.length > 0 && !('atribuido_por' in pf.itens[0]) };
+    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, todos: pf.itens, pend: pf.itens.filter((x) => !x.atribuido), completo: pf.completo, semQuem: pf.itens.length > 0 && !('atribuido_por' in pf.itens[0]), semSaca: pf.itens.length > 0 && !('saca_id' in pf.itens[0]) };
     desenharChegada();
   } catch (e) { if (meu === tokenChe && $('cheCorpo') && !silencioso) $('cheCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09-chegada-conciliacao-locais.sql no Supabase.</div>`; }
+}
+
+// Monta as sacas da Chegada: cada saca é uma linha, sem juntar distrito e município.
+// Atribuídos = pacotes cuja última atribuição ficou na saca. "Faltam" = pacotes que chegaram e ainda não
+// foram atribuídos, ligados à saca pelo bairro (a saca que já levou pacotes daquele bairro). Sem bairro
+// conhecido, o pacote fica em "Sem saca definida" da cidade.
+function montarSacasChe(todos) {
+  const norm = (v) => String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim();
+  const sacas = new Map(), pend = [];
+  for (const p of todos || []) {
+    if (!p.atribuido) { pend.push(p); continue; }
+    const cidade = p.cidade || 'Sem cidade';
+    const chave = p.saca_id || ('m:' + cidade + '|' + (p.motorista || ''));
+    if (!sacas.has(chave)) sacas.set(chave, { chave, cidade, motorista: p.motorista || 'Sem motorista', numero: p.saca_numero || null, status: p.saca_status || '', fechada_em: p.saca_fechada_em || null, atribuidos: [], provaveis: [], bairros: new Map(), ultima: '' });
+    const x = sacas.get(chave); x.atribuidos.push(p);
+    const b = norm(p.bairro); if (b) x.bairros.set(b, (x.bairros.get(b) || 0) + 1);
+    if ((p.atribuido_em || '') > x.ultima) x.ultima = p.atribuido_em || '';
+  }
+  const porCid = new Map(); sacas.forEach((x) => { if (!porCid.has(x.cidade)) porCid.set(x.cidade, []); porCid.get(x.cidade).push(x); });
+  const orfaos = new Map();
+  for (const p of pend) {
+    const cidade = p.cidade || 'Sem cidade', b = norm(p.bairro); let melhor = null, n = 0;
+    if (b) for (const x of porCid.get(cidade) || []) { const c = x.bairros.get(b) || 0; if (c > n || (c === n && c > 0 && melhor && x.status !== 'fechada' && melhor.status === 'fechada')) { melhor = x; n = c; } }
+    if (melhor) melhor.provaveis.push(p); else { if (!orfaos.has(cidade)) orfaos.set(cidade, []); orfaos.get(cidade).push(p); }
+  }
+  return { sacas: [...sacas.values()], orfaos };
 }
 function desenharChegada() {
   const corpo = $('cheCorpo'); if (!corpo || !dadosChe) return;
@@ -2571,8 +2651,8 @@ function desenharChegada() {
       const itens = (verTodos ? todosPorCidade.get(c.cidade) : porCidade.get(c.cidade)) || [], mostra = estChe.todos.has(c.cidade) ? itens : itens.slice(0, 50);
       const quem = (p) => p.atribuido ? `<b>${esc(nomeCurto(p.atribuido_por || '') || '—')}</b>${p.atribuido_em ? '<div class="sub">' + esc(horaCurta(p.atribuido_em)) + '</div>' : ''}` : '<span class="sub">ainda ninguém</span>';
       det = `<div class="corpo2"><div class="filtros" style="margin-bottom:8px"><div class="seg" role="group" aria-label="Pacotes da cidade"><button type="button" data-vt="${esc(c.cidade)}" data-v="0" aria-pressed="${!verTodos}">Só os que faltam · ${(porCidade.get(c.cidade) || []).length}</button><button type="button" data-vt="${esc(c.cidade)}" data-v="1" aria-pressed="${verTodos}">Todos · ${(todosPorCidade.get(c.cidade) || []).length}</button></div></div>
-        ${itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem atribuiu</th><th>Motorista</th><th>Chegada por</th><th>Situação</th><th></th></tr></thead><tbody>
-        ${mostra.map((p) => `<tr><td class="mono"><b>${esc(p.awb)}</b></td><td>${esc(horaCurta(p.chegou_em))}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${quem(p)}</td><td>${esc(p.motorista || '—')}</td><td>${esc(nomeCurto(p.operador || nomeOperador(p.operador_id)))}</td><td>${p.atribuido ? '<span class="etq neutro">Atribuído</span>' : '<span class="etq divergencia">Não atribuído</span>'}</td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('')}
+        ${itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Produto</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem atribuiu</th><th>Motorista</th><th>Chegada por</th><th>Situação</th><th></th></tr></thead><tbody>
+        ${mostra.map((p) => `<tr><td class="mono"><a class="awb" data-awb="${esc(p.awb)}" tabindex="0" role="link">${esc(p.awb)}</a></td><td>${esc(horaCurta(p.chegou_em))}</td><td data-prod="${esc(p.awb)}">${prodCelula(p.awb)}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${quem(p)}</td><td>${esc(p.motorista || '—')}</td><td>${esc(nomeCurto(p.operador || nomeOperador(p.operador_id)))}</td><td>${p.atribuido ? '<span class="etq neutro">Atribuído</span>' : '<span class="etq divergencia">Não atribuído</span>'}</td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('')}
         </tbody></table></div>` : '<div class="vazio"><b>Nada aqui</b></div>'}
         ${dadosChe.semQuem ? '<div class="sub" style="margin-top:6px">Para mostrar <b>quem atribuiu</b>, rode o script 14-quem-atribuiu.sql no Supabase.</div>' : ''}
         <div class="sub" style="margin-top:8px">${itens.length > mostra.length ? `<button class="btn mini" type="button" data-todos="${esc(c.cidade)}">Mostrar todos (${itens.length})</button> ` : ''}<button class="btn mini" type="button" data-csvcid="${esc(c.cidade)}">Baixar CSV da cidade</button></div></div>`;
@@ -2582,6 +2662,30 @@ function desenharChegada() {
       <div><div class="num"><span><b>${c.chegaram}</b>chegaram</span><span><b>${c.atribuidos}</b>atribuídos</span><span><b style="color:${ok ? 'var(--ok)' : 'var(--alerta)'}">${falta}</b>faltam</span></div><div class="barra-c ${ok ? 'ok' : ''}"><i style="width:${pctConc(c)}%"></i></div></div>
       ${badge}<span class="chev" aria-hidden="true">${aberta ? '▾' : '▸'}</span></button>${det}</div>`;
   };
+  const quemP = (p) => p.atribuido ? `<b>${esc(nomeCurto(p.atribuido_por || '') || '—')}</b>${p.atribuido_em ? '<div class="sub">' + esc(horaCurta(p.atribuido_em)) + '</div>' : ''}` : '<span class="sub">ainda ninguém</span>';
+  const tabelaP = (itens, chaveTodos) => { const mostra = estChe.todos.has(chaveTodos) ? itens : itens.slice(0, 50); return itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Produto</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem atribuiu</th><th>Chegada por</th><th>Situação</th><th></th></tr></thead><tbody>${mostra.map((p) => `<tr><td class="mono"><a class="awb" data-awb="${esc(p.awb)}" tabindex="0" role="link">${esc(p.awb)}</a></td><td>${esc(horaCurta(p.chegou_em))}</td><td data-prod="${esc(p.awb)}">${prodCelula(p.awb)}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${quemP(p)}</td><td>${esc(nomeCurto(p.operador || nomeOperador(p.operador_id)))}</td><td>${p.atribuido ? '<span class="etq neutro">Atribuído</span>' : '<span class="etq divergencia">Não atribuído</span>'}</td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('')}</tbody></table></div>${itens.length > mostra.length ? `<div class="sub" style="margin-top:8px"><button class="btn mini" type="button" data-todos="${esc(chaveTodos)}">Mostrar todos (${itens.length})</button></div>` : ''}` : '<div class="vazio"><b>Nada aqui</b></div>'; };
+  const SC = montarSacasChe(todos);
+  const cartaoSaca = (x, orfaCidade) => {
+    const orfa = !!orfaCidade, chave = orfa ? 'O:' + orfaCidade : 'S:' + x.chave, aberta = estChe.abertas.has(chave);
+    const prov = orfa ? SC.orfaos.get(orfaCidade) : x.provaveis, atr = orfa ? [] : x.atribuidos, nA = atr.length, nF = prov.length, ok = nF === 0;
+    const fechada = !orfa && x.status === 'fechada';
+    const titulo = orfa ? 'Sem saca definida · ' + orfaCidade : x.motorista + (x.numero ? ' · nº ' + x.numero : '');
+    const sub = orfa ? 'Chegaram e ainda não foram atribuídos; o bairro não bate com nenhuma saca da cidade' : esc(x.cidade) + ' · ' + (fechada ? 'Fechada' + (x.fechada_em ? ' às ' + esc(horaCurta(x.fechada_em)) : '') : x.status ? 'Aberta' : 'Saca') + (x.ultima ? ' · último pacote ' + esc(horaCurta(x.ultima)) : '');
+    const badge = ok ? (fechada ? '<span class="badge v">✓ Completa</span>' : '<span class="badge v">Sem faltas até agora</span>') : `<span class="badge a">Faltando ${nF} pacote${nF > 1 ? 's' : ''}</span>`;
+    const pct = nA + nF ? Math.round(nA / (nA + nF) * 100) : 100;
+    const itens = [...atr, ...prov].sort((a, b) => Number(!!a.atribuido) - Number(!!b.atribuido) || String(a.chegou_em).localeCompare(String(b.chegou_em)));
+    const det = aberta ? `<div class="corpo2">${!orfa && nF ? `<div class="sub" style="margin-bottom:8px">Os ${nF} que faltam foram ligados a esta saca pelo bairro (já levou pacotes de lá).</div>` : ''}${tabelaP(itens, chave)}<div class="sub" style="margin-top:8px"><button class="btn mini" type="button" data-csvsaca="${esc(chave)}">Baixar CSV da saca</button></div></div>` : '';
+    return `<div class="cid ${ok ? 'ok2' : 'falta'}"><button type="button" class="cab" data-cid="${esc(chave)}" aria-expanded="${aberta}">
+      <div><b class="nome">${esc(titulo)}</b><div class="sub">${sub}</div></div>
+      <div><div class="num"><span><b>${nA + nF}</b>chegaram</span><span><b>${nA}</b>atribuídos</span><span><b style="color:${ok ? 'var(--ok)' : 'var(--alerta)'}">${nF}</b>faltam</span></div><div class="barra-c ${ok ? 'ok' : ''}"><i style="width:${pct}%"></i></div></div>
+      ${badge}<span class="chev" aria-hidden="true">${aberta ? '▾' : '▸'}</span></button>${det}</div>`;
+  };
+  const listaSacas = (() => {
+    const itens = [...SC.sacas.map((x) => ({ x, falta: x.provaveis.length, cid: x.cidade })), ...[...SC.orfaos.entries()].map(([c, v]) => ({ orfa: c, falta: v.length, cid: c }))];
+    const vis = itens.filter((i) => estChe.filtro === 'todas' || (estChe.filtro === 'faltando') === (i.falta > 0));
+    vis.sort((a, b) => Number(b.falta > 0) - Number(a.falta > 0) || a.cid.localeCompare(b.cid) || String(a.x ? a.x.motorista : '').localeCompare(String(b.x ? b.x.motorista : '')) || (a.x && b.x ? (a.x.numero || 0) - (b.x.numero || 0) : 0));
+    return { vis, total: itens.length, comFalta: itens.filter((i) => i.falta > 0).length };
+  })();
   corpo.innerHTML = `
     <div class="cartao" style="margin-bottom:16px"><h2>Chegada do dia ${t.total === '—' ? '' : `<span class="pill ${t.ativo && estChe.dia === hojeSP() ? 'andamento' : 'fechada'}">${t.ativo && estChe.dia === hojeSP() ? 'Em andamento · último bipe há ' + esc(haTempo(agora - new Date(cd.ultimo_bipe_em).getTime())) : 'Encerrada'}</span>`}</h2>
       <div class="tempo grande"><div><small>Primeiro bipe</small><b>${esc(t.inicio || '—')}</b></div><div><small>Último bipe</small><b>${esc(t.fim || '—')}</b></div><div class="tt"><small>Tempo total</small><b>${esc(t.total)}</b></div><div><small>Ritmo</small><b>${ritmo ? String(ritmo).replace('.', ',') + '/min' : '—'}</b></div></div>
@@ -2591,17 +2695,21 @@ function desenharChegada() {
       <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${tot.atr}</b><span>Atribuídos</span><small>${tot.che ? Math.round(tot.atr / tot.che * 100) : 0}% dos que chegaram</small></div>
       <div class="prob ${tot.fal ? 'diverg' : 'zero'}" style="cursor:default"><b>${tot.fal}</b><span>Faltando atribuir</span><small>${tot.fal ? 'em ' + comFalta + ' cidade' + (comFalta > 1 ? 's' : '') : 'nenhum'}</small></div>
       <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${concl}<span class="sub"> de ${cc.length}</span></b><span>Cidades concluídas</span><small>100% atribuídas</small></div></div>
-    <div class="filtros"><div class="seg" id="cheFiltro" role="group" aria-label="Situação"><button type="button" data-f="todas" aria-pressed="${estChe.filtro === 'todas'}">Todas (${cc.length})</button><button type="button" data-f="faltando" aria-pressed="${estChe.filtro === 'faltando'}">Faltando (${comFalta})</button><button type="button" data-f="concluidas" aria-pressed="${estChe.filtro === 'concluidas'}">Concluídas (${concl})</button></div>
+    <div class="filtros"><div class="seg" id="cheModo" role="group" aria-label="Agrupar por"><button type="button" data-m="saca" aria-pressed="${estChe.modo === 'saca'}">Por saca</button><button type="button" data-m="cidade" aria-pressed="${estChe.modo === 'cidade'}">Por cidade</button></div><div class="seg" id="cheFiltro" role="group" aria-label="Situação"><button type="button" data-f="todas" aria-pressed="${estChe.filtro === 'todas'}">Todas (${estChe.modo === 'saca' ? listaSacas.total : cc.length})</button><button type="button" data-f="faltando" aria-pressed="${estChe.filtro === 'faltando'}">Faltando (${estChe.modo === 'saca' ? listaSacas.comFalta : comFalta})</button><button type="button" data-f="concluidas" aria-pressed="${estChe.filtro === 'concluidas'}">${estChe.modo === 'saca' ? 'Sem faltas' : 'Concluídas'} (${estChe.modo === 'saca' ? listaSacas.total - listaSacas.comFalta : concl})</button></div>
       <button class="btn mini" id="cheCsv" type="button">Baixar CSV</button></div>
     ${dadosChe.completo ? '' : '<div class="aviso">Há muitos pacotes pendentes: mostrando só parte da lista.</div>'}
-    ${lista.map(cartao).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>'}`;
+    ${dadosChe.semSaca && estChe.modo === 'saca' ? '<div class="aviso">Para separar por saca de verdade, rode o script <b>15-saca-na-conciliacao.sql</b> no Supabase. Até lá, cada motorista aparece como uma saca só.</div>' : ''}
+    ${estChe.modo === 'saca' ? (listaSacas.vis.map((i) => cartaoSaca(i.x, i.orfa)).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>') : (lista.map(cartao).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>')}`;
+  $('cheModo').addEventListener('click', (e) => { const b = e.target.closest('button[data-m]'); if (b) { estChe.modo = b.dataset.m; desenharChegada(); } });
+  corpo.querySelectorAll('[data-csvsaca]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.csvsaca; let itens = []; if (k.startsWith('O:')) itens = SC.orfaos.get(k.slice(2)) || []; else { const x = SC.sacas.find((y) => 'S:' + y.chave === k); if (x) itens = [...x.atribuidos, ...x.provaveis]; } baixar('chegada-' + estChe.dia + '-saca.csv', paraCsv(cab, linhasCsv(itens))); }));
   $('cheFiltro').addEventListener('click', (e) => { const b = e.target.closest('button[data-f]'); if (b) { estChe.filtro = b.dataset.f; desenharChegada(); } });
   corpo.querySelectorAll('button.cab[data-cid]').forEach((b) => b.addEventListener('click', () => { const k = b.dataset.cid; if (estChe.abertas.has(k)) estChe.abertas.delete(k); else estChe.abertas.add(k); desenharChegada(); }));
   corpo.querySelectorAll('[data-vt]').forEach((b) => b.addEventListener('click', (e) => { e.stopPropagation(); const k = b.dataset.vt, tudo = b.dataset.v === '1'; if (tudo) { estChe.verTodos.add(k); estChe.soFaltam.delete(k); } else { estChe.verTodos.delete(k); estChe.soFaltam.add(k); } estChe.todos.delete(k); desenharChegada(); }));
   corpo.querySelectorAll('[data-todos]').forEach((b) => b.addEventListener('click', () => { estChe.todos.add(b.dataset.todos); desenharChegada(); }));
   corpo.querySelectorAll('[data-ficha]').forEach((b) => b.addEventListener('click', () => irPara('pacote', b.dataset.ficha)));
-  const linhasCsv = (itens) => itens.map((p) => [p.cidade || 'Sem cidade', p.awb, dataHoraBR(p.chegou_em), p.endereco || '', p.bairro || '', p.cep || '', p.operador || nomeOperador(p.operador_id), p.atribuido ? 'Atribuído' : 'Não atribuído', p.atribuido_por || '', p.motorista || '', p.atribuido_em ? dataHoraBR(p.atribuido_em) : '']);
-  const cab = ['Cidade', 'AWB', 'Chegou em', 'Endereço', 'Bairro', 'CEP', 'Quem deu chegada', 'Situação', 'Quem atribuiu', 'Motorista', 'Atribuído em'];
+  buscarProdutosChe();
+  const linhasCsv = (itens) => itens.map((p) => [p.cidade || 'Sem cidade', p.awb, dataHoraBR(p.chegou_em), p.endereco || '', p.bairro || '', p.cep || '', p.operador || nomeOperador(p.operador_id), p.atribuido ? 'Atribuído' : 'Não atribuído', p.atribuido_por || '', p.motorista || '', p.atribuido_em ? dataHoraBR(p.atribuido_em) : '', prodChe.mapa.get(p.awb) || '']);
+  const cab = ['Cidade', 'AWB', 'Chegou em', 'Endereço', 'Bairro', 'CEP', 'Quem deu chegada', 'Situação', 'Quem atribuiu', 'Motorista', 'Atribuído em', 'Produto'];
   $('cheCsv').addEventListener('click', () => baixar('chegada-pendentes-' + estChe.dia + '.csv', paraCsv(cab, linhasCsv(pend))));
   corpo.querySelectorAll('[data-csvcid]').forEach((b) => b.addEventListener('click', () => baixar('chegada-' + estChe.dia + '-' + b.dataset.csvcid.toLowerCase().replace(/\s+/g, '-') + '.csv', paraCsv(cab, linhasCsv(todosPorCidade.get(b.dataset.csvcid) || [])))));
 }
@@ -2846,6 +2954,137 @@ async function telaEquipe() {
 
 /* ===================== UX 1.18 (apresentação e interação) ===================== */
 const uxEdicoes = new Set();
+
+/* ===== Voltar da ficha: lembra onde estava e marca os pacotes já abertos ===== */
+let uxClique = null, uxRetorno = null, uxPendente = null, uxUltimoVisto = null;
+const uxVistos = new Set();
+try { const sv = JSON.parse(sessionStorage.getItem('pacotesVistos') || 'null'); if (sv && sv.dia === hojeSP()) { sv.lista.forEach((a) => uxVistos.add(a)); uxUltimoVisto = sv.ultimo || null; } } catch (_) { /* sem armazenamento */ }
+function uxMarcarVisto(awb) {
+  uxVistos.add(awb); uxUltimoVisto = awb;
+  try { sessionStorage.setItem('pacotesVistos', JSON.stringify({ dia: hojeSP(), lista: [...uxVistos].slice(-500), ultimo: awb })); } catch (_) { /* segue sem guardar */ }
+}
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('a.awb[data-awb], [data-ficha]');
+  if (a) uxClique = { awb: a.dataset.awb || a.dataset.ficha, y: window.scrollY, t: Date.now() };
+}, true);
+function uxAplicarMarcas() {
+  const alvos = [...document.querySelectorAll('#conteudo a.awb[data-awb], #conteudo [data-ficha]')];
+  for (const a of alvos) {
+    const awb = a.dataset.awb || a.dataset.ficha, linha = a.closest('tr') || a.closest('li');
+    if (a.matches('a.awb')) a.classList.toggle('visto', uxVistos.has(awb));
+    if (linha) { linha.classList.toggle('ultimo-aberto', awb === uxUltimoVisto); linha.classList.toggle('ja-aberto', uxVistos.has(awb) && awb !== uxUltimoVisto); }
+  }
+  if (uxPendente && uxPendente.aba === E.aba) {
+    if (Date.now() > uxPendente.ate) { uxPendente = null; return; }
+    const alvo = alvos.find((a) => (a.dataset.awb || a.dataset.ficha) === uxPendente.awb);
+    if (alvo) { (alvo.closest('tr') || alvo).scrollIntoView({ block: 'center' }); uxPendente = null; }
+    else if (alvos.length && uxPendente.y > 0) { window.scrollTo(0, uxPendente.y); uxPendente = null; }
+  }
+}
+let uxMarcasAgendado = false;
+new MutationObserver(() => { if (uxMarcasAgendado) return; uxMarcasAgendado = true; requestAnimationFrame(() => { uxMarcasAgendado = false; uxAplicarMarcas(); }); }).observe(document.getElementById('conteudo'), { childList: true, subtree: true });
+
+/* ===== Prévia do pacote: pairar mostra o resumo, clicar abre a ficha numa gaveta ===== */
+const pkCache = new Map();
+async function dadosPacote(awb) {
+  const c = pkCache.get(awb);
+  if (c && Date.now() - c.t < 60000) return c.p;
+  const p = (async () => {
+    const q = eFiltroSeguro(awb);
+    const ev = await api('GET', '/rest/v1/eventos?select=id,ocorreu_em,tipo,operador_id,origem,cidade,rota,motorista,motivo,detalhe,saca_id&awb=eq.' + q + '&order=ocorreu_em.asc&limit=500');
+    const [pr, cob] = await Promise.all([
+      api('GET', '/rest/v1/produtos?select=produto&awb=eq.' + q).catch(() => []),
+      E.perfil.papel !== 'bipador' ? api('GET', '/rest/v1/cobrancas?select=status,motorista,prazo_ate,enviada_em&awb=eq.' + q + '&order=enviada_em.desc&limit=3').catch(() => []) : Promise.resolve([]),
+    ]);
+    const comSaca = [...ev].reverse().find((x) => x.saca_id); let saca = null;
+    if (comSaca) { try { const r = await api('GET', '/rest/v1/sacas_resumo?select=numero,status,fechada_em,motorista,dia&id=eq.' + eFiltroSeguro(comSaca.saca_id)); saca = r && r[0] || null; } catch (_) { /* sem saca */ } }
+    const det = (t) => { const x = ev.find((e) => e.detalhe && e.detalhe[t]); return x ? x.detalhe[t] : ''; };
+    const cheg = ev.find((e) => e.tipo === 'chegada'), atr = [...ev].reverse().find((e) => e.tipo === 'atribuicao');
+    const evVis = ev.filter((e) => !repetidoDeChegada(e));
+    return { ev: evVis, produto: pr && pr[0] ? pr[0].produto : '', cob: cob || [], saca, sacaId: comSaca ? comSaca.saca_id : null, cheg, atr, reps: evVis.filter((e) => e.tipo === 'repetido'),
+      endereco: det('endereco'), bairro: det('bairro'), cep: det('cep'), cidade: (cheg && cheg.cidade) || (atr && atr.cidade) || '', rota: (atr && atr.rota) || '', motorista: (atr && atr.motorista) || (ev.length && ev[ev.length - 1].motorista) || '' };
+  })();
+  pkCache.set(awb, { t: Date.now(), p });
+  p.catch(() => pkCache.delete(awb));
+  return p;
+}
+const pkHora = (iso) => horaCurta(iso);
+const pkLinhaTempo = (d) => `<ul class="pk-tempo">${d.ev.map((e) => `<li class="${e.tipo === 'erro' ? 'er' : e.tipo === 'repetido' ? 'rep' : e.tipo === 'divergencia' ? 'dv' : 'ok'}"><b>${esc(pkHora(e.ocorreu_em))}</b> · <span class="etq ${esc(e.tipo)}">${esc(ROTULO_TIPO[e.tipo] || e.tipo)}</span> ${esc(nomeCurto(nomeOperador(e.operador_id)) || '')} <span class="sub">(${e.origem === 'app' ? 'app' : 'extensão'})</span>${e.motorista ? ' · ' + esc(e.motorista) : ''}${e.motivo ? '<div class="sub">' + esc(e.motivo) + '</div>' : ''}</li>`).join('')}</ul>`;
+let pkTimer = null, pkAwbPop = null, pkFoco = null;
+function pkEsconderPop() { clearTimeout(pkTimer); const el = $('pkPop'); if (el) el.classList.remove('on'); pkAwbPop = null; }
+async function pkMostrarPop(a) {
+  const awb = a.dataset.awb; if (!awb) return;
+  let el = $('pkPop'); if (!el) { el = document.createElement('div'); el.id = 'pkPop'; el.className = 'pk-pop'; el.setAttribute('role', 'tooltip'); document.body.appendChild(el); }
+  const r = a.getBoundingClientRect(); pkAwbPop = awb;
+  el.innerHTML = `<h4><span>${esc(awb)}</span></h4><div class="sub">Carregando…</div>`;
+  const x = Math.max(8, Math.min(r.left, innerWidth - 346)); let y = r.bottom + 8; if (y + 260 > innerHeight) y = Math.max(8, r.top - 270);
+  el.style.left = x + 'px'; el.style.top = y + 'px'; el.classList.add('on');
+  try {
+    const d = await dadosPacote(awb); if (pkAwbPop !== awb) return;
+    el.innerHTML = `<h4><span>${esc(awb)}</span>${d.reps.length ? `<span class="etq repetido">${d.reps.length} repetiç${d.reps.length === 1 ? 'ão' : 'ões'}</span>` : ''}</h4>
+      <div class="l"><span>Chegou</span><b>${d.cheg ? esc(pkHora(d.cheg.ocorreu_em)) + ' · ' + esc(nomeCurto(nomeOperador(d.cheg.operador_id))) : 'sem registro de chegada'}</b></div>
+      ${d.motorista ? `<div class="l"><span>Motorista</span><b>${esc(d.motorista)}</b></div>` : ''}
+      <div class="l"><span>Produto</span><b>${d.produto ? esc(d.produto) : '<span class="sub">ainda não consultado</span>'}</b></div>
+      ${d.reps.length ? `<ul>${d.reps.map((e) => `<li><span>Repetido</span><b>${esc(pkHora(e.ocorreu_em))} · ${esc(nomeCurto(nomeOperador(e.operador_id)))}</b></li>`).join('')}</ul>` : ''}
+      <div class="dica">Clique no número para ver a ficha completa.</div>`;
+  } catch (e) { if (pkAwbPop === awb) el.innerHTML = `<h4><span>${esc(awb)}</span></h4><div class="sub">Não consegui carregar agora.</div>`; }
+}
+// Leva à aba Sacas já com a saca do pacote aberta e o pacote destacado na lista.
+function pkVerNaSaca(awb, sacaId, dia) {
+  pkFecharGaveta(); pkFoco = null;
+  const dd = /^\d{4}-\d{2}-\d{2}$/.test(dia) ? dia : hojeSP();
+  Object.assign(estSac, { tipo: 'livre', de: dd, ate: dd, estado: 'todas', cidade: '', op: '', busca: '', sel: sacaId, pac: null, alvo: awb });
+  irPara('sacas');
+}
+function pkFecharGaveta() {
+  const g = $('pkGaveta'); if (!g || !g.classList.contains('on')) return;
+  g.classList.remove('on'); $('pkVeu').classList.remove('on'); g.setAttribute('aria-hidden', 'true');
+  if (pkFoco && pkFoco.isConnected) pkFoco.focus({ preventScroll: true }); pkFoco = null;
+}
+async function pkAbrirGaveta(awb, origem) {
+  pkEsconderPop(); pkFoco = origem || null; uxMarcarVisto(awb); uxAplicarMarcas();
+  let g = $('pkGaveta');
+  if (!g) {
+    const v = document.createElement('div'); v.id = 'pkVeu'; v.className = 'pk-veu'; v.addEventListener('click', pkFecharGaveta); document.body.appendChild(v);
+    g = document.createElement('aside'); g.id = 'pkGaveta'; g.className = 'pk-gaveta'; g.setAttribute('role', 'dialog'); g.setAttribute('aria-modal', 'true'); g.setAttribute('aria-label', 'Ficha do pacote'); document.body.appendChild(g);
+    g.addEventListener('click', (e) => {
+      if (e.target.closest('[data-pkx]')) pkFecharGaveta();
+      const vs = e.target.closest('[data-pksaca]'); if (vs) pkVerNaSaca(vs.dataset.pksaca, vs.dataset.saca, vs.dataset.dia);
+      const cp = e.target.closest('[data-pkcopia]'); if (cp) { try { navigator.clipboard.writeText(cp.dataset.pkcopia); aviso('Código copiado.'); } catch (_) { aviso('Não consegui copiar.', true); } }
+    });
+  }
+  g.innerHTML = `<button class="btn pk-x" type="button" data-pkx>Fechar ✕</button><h2>${esc(awb)}</h2><div class="sub">Carregando a ficha…</div>`;
+  g.classList.add('on'); g.setAttribute('aria-hidden', 'false'); $('pkVeu').classList.add('on'); g.querySelector('[data-pkx]').focus({ preventScroll: true });
+  try {
+    const d = await dadosPacote(awb); if (!g.classList.contains('on') || !g.querySelector('h2') || g.querySelector('h2').textContent !== awb) return;
+    const cob = d.cob[0], campos = [
+      ['Produto', d.produto ? esc(d.produto) : '<span class="sub">ainda não consultado (use “Mostrar produto” no app)</span>'],
+      ['Endereço', d.endereco ? esc(d.endereco) : '—'], ['Bairro / CEP', esc([d.bairro, d.cep].filter(Boolean).join(' · ') || '—')], ['Cidade', esc(d.cidade || '—')],
+      ['Motorista', esc(d.motorista || '—')], ['Saca', d.saca ? esc('nº ' + d.saca.numero + ' · ' + (d.saca.status === 'fechada' ? 'Fechada' + (d.saca.fechada_em ? ' às ' + pkHora(d.saca.fechada_em) : '') : 'Aberta')) : '—'],
+      ['Rota', esc(d.rota || '—')], ['Cobrança', cob ? esc(cob.status + (cob.prazo_ate ? ' · prazo ' + cob.prazo_ate : '')) : '—']];
+    g.innerHTML = `<button class="btn pk-x" type="button" data-pkx>Fechar ✕</button><h2>${esc(awb)}</h2><div class="sub">${d.produto ? esc(d.produto) : 'Produto ainda não consultado'}</div>
+      <div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${d.reps.length ? `<span class="etq repetido">${d.reps.length} repetiç${d.reps.length === 1 ? 'ão' : 'ões'}</span>` : ''}${d.atr ? '<span class="etq atribuicao">Atribuído</span>' : '<span class="etq divergencia">Não atribuído</span>'}${cob ? '<span class="etq erro">Cobrança</span>' : ''}</div>
+      <div class="pk-bloco"><h3>Pacote</h3><dl class="pk-grade">${campos.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl></div>
+      <div class="pk-bloco"><h3>Linha do tempo</h3>${d.ev.length ? pkLinhaTempo(d) : '<div class="sub">Nenhum registro deste pacote.</div>'}</div>
+      <div class="pk-acoes">${d.sacaId && d.saca ? `<button class="btn main" type="button" data-pksaca="${esc(awb)}" data-saca="${esc(d.sacaId)}" data-dia="${esc(d.saca.dia || '')}">Ver na saca</button>` : '<button class="btn" type="button" disabled title="Este pacote não tem saca registrada">Sem saca registrada</button>'}<button class="btn" type="button" data-pkcopia="${esc(awb)}">Copiar AWB</button></div>`;
+    g.querySelector('[data-pkx]').focus({ preventScroll: true });
+  } catch (e) { g.innerHTML = `<button class="btn pk-x" type="button" data-pkx>Fechar ✕</button><h2>${esc(awb)}</h2><div class="aviso erro">${esc(e.message)}</div>`; }
+}
+// Pairar ~0,7 s no número mostra a prévia; clicar abre a gaveta (em vez de sair da lista).
+document.addEventListener('mouseover', (e) => {
+  const a = e.target.closest && e.target.closest('#conteudo a.awb[data-awb]');
+  if (!a) { if (!(e.target.closest && e.target.closest('#pkPop'))) pkEsconderPop(); return; }
+  if (pkAwbPop === a.dataset.awb || !window.matchMedia('(hover:hover)').matches) return;
+  pkEsconderPop(); pkTimer = setTimeout(() => pkMostrarPop(a), 700);
+});
+document.addEventListener('scroll', pkEsconderPop, true);
+document.addEventListener('keydown', (e) => { if (e.key === 'Escape') { pkFecharGaveta(); pkEsconderPop(); } });
+document.addEventListener('click', (e) => {
+  const a = e.target.closest && e.target.closest('#conteudo a.awb[data-awb]'); if (!a) return;
+  e.preventDefault(); e.stopPropagation(); e.stopImmediatePropagation();
+  pkAbrirGaveta(a.dataset.awb, a);
+}, true);
+document.addEventListener('keydown', (e) => { if (e.key === 'Enter' && document.activeElement && document.activeElement.matches && document.activeElement.matches('#conteudo a.awb[data-awb]')) { e.preventDefault(); pkAbrirGaveta(document.activeElement.dataset.awb, document.activeElement); } });
 let uxUltimaResposta = null, uxFalhaRede = false, uxMenuOrigem = null, uxPacoteAnterior='painel';
 function uxValor(el) { return el.type === 'checkbox' ? String(el.checked) : el.value; }
 function uxTemEdicao() { return [...uxEdicoes].some((el) => el.isConnected); }
