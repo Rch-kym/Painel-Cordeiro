@@ -643,7 +643,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.21.0</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.23.0</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2593,12 +2593,38 @@ async function carregarChegada(silencioso) {
     const [cd, cc, pf] = await Promise.all([
       api('GET', '/rest/v1/chegada_dia?select=dia,pacotes,primeiro_bipe_em,ultimo_bipe_em,pessoas&dia=eq.' + d),
       lerTudo('/rest/v1/conciliacao_cidade?select=dia,cidade,chegaram,atribuidos,faltam,primeira_chegada_em,ultima_chegada_em,concluida_em&dia=eq.' + d + '&order=cidade.asc', 5),
-      lerTudo(colPac(',atribuido_por,saca_id,saca_numero,saca_status,saca_fechada_em'), 12).catch(() => lerTudo(colPac(',atribuido_por'), 12)).catch(() => lerTudo(colPac(''), 12)), // sem o SQL 15/14: some a saca / o nome de quem atribuiu
+      lerTudo(colPac(',atribuido_por,saca_id,saca_numero,saca_status,saca_fechada_em,lugar'), 12).catch(() => lerTudo(colPac(',atribuido_por,saca_id,saca_numero,saca_status,saca_fechada_em'), 12)).catch(() => lerTudo(colPac(',atribuido_por'), 12)).catch(() => lerTudo(colPac(''), 12)), // sem o SQL 17/15/14: some o local / a saca / o nome de quem atribuiu
     ]);
     if (meu !== tokenChe || !$('cheCorpo')) return;
-    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, todos: pf.itens, pend: pf.itens.filter((x) => !x.atribuido), completo: pf.completo, semQuem: pf.itens.length > 0 && !('atribuido_por' in pf.itens[0]), semSaca: pf.itens.length > 0 && !('saca_id' in pf.itens[0]) };
+    const lug = porLugarChe(pf.itens, d);
+    if (lug) { pf.itens = lug.todos; cc.itens = lug.cc; }
+    dadosChe = { cd: cd && cd[0] ? cd[0] : null, cc: cc.itens, todos: pf.itens, pend: pf.itens.filter((x) => !x.atribuido), completo: pf.completo, semLugar: pf.itens.length > 0 && !lug, semQuem: pf.itens.length > 0 && !('atribuido_por' in pf.itens[0]), semSaca: pf.itens.length > 0 && !('saca_id' in pf.itens[0]) };
     desenharChegada();
   } catch (e) { if (meu === tokenChe && $('cheCorpo') && !silencioso) $('cheCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09-chegada-conciliacao-locais.sql no Supabase.</div>`; }
+}
+
+// LOCAL = rota/destino do pacote (Rota 3, Rota 5, Itabatã…), gravado pelo app 1.15.0 (SQL 17).
+// Cada local é conferido separado, mesmo dentro da mesma cidade. Sem a coluna, segue por cidade.
+function semAcentoChe(v) { return String(v || '').normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase().trim(); }
+function rotuloLugar(cidade, lugar, dividida) {
+  const c = String(cidade || '').trim() || 'Sem cidade', l = String(lugar || '').trim();
+  if (!l) return dividida ? c + ' · rota não definida' : c;
+  return semAcentoChe(l) === semAcentoChe(c) ? c : l + ' · ' + c;
+}
+function porLugarChe(brutos, dia) {
+  if (!brutos.some((p) => String(p.lugar || '').trim())) return null;
+  const divididas = new Set();
+  for (const p of brutos) { const l = String(p.lugar || '').trim(); if (l && semAcentoChe(l) !== semAcentoChe(p.cidade)) divididas.add(semAcentoChe(p.cidade)); }
+  const todos = brutos.map((p) => ({ ...p, cidade_real: p.cidade, cidade: rotuloLugar(p.cidade, p.lugar, divididas.has(semAcentoChe(p.cidade))) }));
+  const por = new Map();
+  for (const p of todos) {
+    if (!por.has(p.cidade)) por.set(p.cidade, { dia, cidade: p.cidade, chegaram: 0, atribuidos: 0, faltam: 0, primeira_chegada_em: null, ultima_chegada_em: null, concluida_em: null, _ult: '' });
+    const m = por.get(p.cidade); m.chegaram += 1;
+    const ch = p.chegou_em || ''; if (ch) { if (!m.primeira_chegada_em || ch < m.primeira_chegada_em) m.primeira_chegada_em = ch; if (!m.ultima_chegada_em || ch > m.ultima_chegada_em) m.ultima_chegada_em = ch; }
+    if (p.atribuido) { m.atribuidos += 1; if ((p.atribuido_em || '') > m._ult) m._ult = p.atribuido_em || ''; } else m.faltam += 1;
+  }
+  const cc = [...por.values()].map((m) => { const { _ult, ...r } = m; if (!r.faltam) r.concluida_em = _ult || null; return r; }).sort((a, b) => a.cidade.localeCompare(b.cidade, 'pt-BR'));
+  return { todos, cc };
 }
 
 // Monta as sacas da Chegada: cada saca é uma linha, sem juntar distrito e município.
@@ -2612,16 +2638,17 @@ function montarSacasChe(todos) {
     if (!p.atribuido) { pend.push(p); continue; }
     const cidade = p.cidade || 'Sem cidade';
     const chave = p.saca_id || ('m:' + cidade + '|' + (p.motorista || ''));
-    if (!sacas.has(chave)) sacas.set(chave, { chave, cidade, motorista: p.motorista || 'Sem motorista', numero: p.saca_numero || null, status: p.saca_status || '', fechada_em: p.saca_fechada_em || null, atribuidos: [], provaveis: [], bairros: new Map(), ultima: '' });
-    const x = sacas.get(chave); x.atribuidos.push(p);
+    if (!sacas.has(chave)) sacas.set(chave, { chave, cidade, motorista: p.motorista || 'Sem motorista', numero: p.saca_numero || null, status: p.saca_status || '', fechada_em: p.saca_fechada_em || null, atribuidos: [], provaveis: [], bairros: new Map(), lugares: new Set(), ultima: '' });
+    const x = sacas.get(chave); x.atribuidos.push(p); x.lugares.add(cidade);
     const b = norm(p.bairro); if (b) x.bairros.set(b, (x.bairros.get(b) || 0) + 1);
     if ((p.atribuido_em || '') > x.ultima) x.ultima = p.atribuido_em || '';
   }
-  const porCid = new Map(); sacas.forEach((x) => { if (!porCid.has(x.cidade)) porCid.set(x.cidade, []); porCid.get(x.cidade).push(x); });
   const orfaos = new Map();
   for (const p of pend) {
     const cidade = p.cidade || 'Sem cidade', b = norm(p.bairro); let melhor = null, n = 0;
-    if (b) for (const x of porCid.get(cidade) || []) { const c = x.bairros.get(b) || 0; if (c > n || (c === n && c > 0 && melhor && x.status !== 'fechada' && melhor.status === 'fechada')) { melhor = x; n = c; } }
+    const doLocal = [...sacas.values()].filter((x) => x.lugares.has(cidade));
+    if (doLocal.length === 1) melhor = doLocal[0]; // só uma saca levou pacotes deste local: é a dela
+    else if (b) for (const x of doLocal) { const c = x.bairros.get(b) || 0; if (c > n || (c === n && c > 0 && melhor && x.status !== 'fechada' && melhor.status === 'fechada')) { melhor = x; n = c; } }
     if (melhor) melhor.provaveis.push(p); else { if (!orfaos.has(cidade)) orfaos.set(cidade, []); orfaos.get(cidade).push(p); }
   }
   return { sacas: [...sacas.values()], orfaos };
@@ -2629,7 +2656,7 @@ function montarSacasChe(todos) {
 function desenharChegada() {
   const corpo = $('cheCorpo'); if (!corpo || !dadosChe) return;
   const { cd, cc, pend, todos } = dadosChe, agora = Date.now();
-  if (!cc.length) { corpo.innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Os pacotes bipados no modo Chegada aparecem aqui, agrupados por cidade.</div></div>'; return; }
+  if (!cc.length) { corpo.innerHTML = '<div class="cartao"><div class="vazio"><b>Nenhuma chegada neste dia</b>Os pacotes bipados no modo Chegada aparecem aqui, agrupados por local (rota ou cidade).</div></div>'; return; }
   const t = resumoTempo(cd && cd.primeiro_bipe_em, cd && cd.ultimo_bipe_em, agora);
   const tot = cc.reduce((a, c) => ({ che: a.che + Number(c.chegaram), atr: a.atr + Number(c.atribuidos), fal: a.fal + Number(c.faltam) }), { che: 0, atr: 0, fal: 0 });
   const concl = cc.filter((c) => estadoCidadeConc(c) === 'concluida').length, comFalta = cc.length - concl;
@@ -2650,12 +2677,12 @@ function desenharChegada() {
       const verTodos = ok ? !estChe.soFaltam.has(c.cidade) : estChe.verTodos.has(c.cidade);
       const itens = (verTodos ? todosPorCidade.get(c.cidade) : porCidade.get(c.cidade)) || [], mostra = estChe.todos.has(c.cidade) ? itens : itens.slice(0, 50);
       const quem = (p) => p.atribuido ? `<b>${esc(nomeCurto(p.atribuido_por || '') || '—')}</b>${p.atribuido_em ? '<div class="sub">' + esc(horaCurta(p.atribuido_em)) + '</div>' : ''}` : '<span class="sub">ainda ninguém</span>';
-      det = `<div class="corpo2"><div class="filtros" style="margin-bottom:8px"><div class="seg" role="group" aria-label="Pacotes da cidade"><button type="button" data-vt="${esc(c.cidade)}" data-v="0" aria-pressed="${!verTodos}">Só os que faltam · ${(porCidade.get(c.cidade) || []).length}</button><button type="button" data-vt="${esc(c.cidade)}" data-v="1" aria-pressed="${verTodos}">Todos · ${(todosPorCidade.get(c.cidade) || []).length}</button></div></div>
+      det = `<div class="corpo2"><div class="filtros" style="margin-bottom:8px"><div class="seg" role="group" aria-label="Pacotes do local"><button type="button" data-vt="${esc(c.cidade)}" data-v="0" aria-pressed="${!verTodos}">Só os que faltam · ${(porCidade.get(c.cidade) || []).length}</button><button type="button" data-vt="${esc(c.cidade)}" data-v="1" aria-pressed="${verTodos}">Todos · ${(todosPorCidade.get(c.cidade) || []).length}</button></div></div>
         ${itens.length ? `<div class="rolagem"><table class="tabela"><thead><tr><th>AWB</th><th>Chegou</th><th>Produto</th><th>Endereço completo</th><th>Bairro / CEP</th><th>Quem atribuiu</th><th>Motorista</th><th>Chegada por</th><th>Situação</th><th></th></tr></thead><tbody>
         ${mostra.map((p) => `<tr><td class="mono"><a class="awb" data-awb="${esc(p.awb)}" tabindex="0" role="link">${esc(p.awb)}</a></td><td>${esc(horaCurta(p.chegou_em))}</td><td data-prod="${esc(p.awb)}">${prodCelula(p.awb)}</td><td>${esc(p.endereco || '—')}</td><td>${esc([p.bairro, p.cep].filter(Boolean).join(' · ') || '—')}</td><td>${quem(p)}</td><td>${esc(p.motorista || '—')}</td><td>${esc(nomeCurto(p.operador || nomeOperador(p.operador_id)))}</td><td>${p.atribuido ? '<span class="etq neutro">Atribuído</span>' : '<span class="etq divergencia">Não atribuído</span>'}</td><td><button class="btn mini" type="button" data-ficha="${esc(p.awb)}">ver ficha</button></td></tr>`).join('')}
         </tbody></table></div>` : '<div class="vazio"><b>Nada aqui</b></div>'}
         ${dadosChe.semQuem ? '<div class="sub" style="margin-top:6px">Para mostrar <b>quem atribuiu</b>, rode o script 14-quem-atribuiu.sql no Supabase.</div>' : ''}
-        <div class="sub" style="margin-top:8px">${itens.length > mostra.length ? `<button class="btn mini" type="button" data-todos="${esc(c.cidade)}">Mostrar todos (${itens.length})</button> ` : ''}<button class="btn mini" type="button" data-csvcid="${esc(c.cidade)}">Baixar CSV da cidade</button></div></div>`;
+        <div class="sub" style="margin-top:8px">${itens.length > mostra.length ? `<button class="btn mini" type="button" data-todos="${esc(c.cidade)}">Mostrar todos (${itens.length})</button> ` : ''}<button class="btn mini" type="button" data-csvcid="${esc(c.cidade)}">Baixar CSV do local</button></div></div>`;
     }
     return `<div class="cid ${ok ? 'ok2' : 'falta'}"><button type="button" class="cab" data-cid="${esc(c.cidade)}" aria-expanded="${aberta}">
       <div><b class="nome">${esc(c.cidade)}</b><div class="sub">${sub}</div>${nota}</div>
@@ -2670,11 +2697,11 @@ function desenharChegada() {
     const prov = orfa ? SC.orfaos.get(orfaCidade) : x.provaveis, atr = orfa ? [] : x.atribuidos, nA = atr.length, nF = prov.length, ok = nF === 0;
     const fechada = !orfa && x.status === 'fechada';
     const titulo = orfa ? 'Sem saca definida · ' + orfaCidade : x.motorista + (x.numero ? ' · nº ' + x.numero : '');
-    const sub = orfa ? 'Chegaram e ainda não foram atribuídos; o bairro não bate com nenhuma saca da cidade' : esc(x.cidade) + ' · ' + (fechada ? 'Fechada' + (x.fechada_em ? ' às ' + esc(horaCurta(x.fechada_em)) : '') : x.status ? 'Aberta' : 'Saca') + (x.ultima ? ' · último pacote ' + esc(horaCurta(x.ultima)) : '');
+    const sub = orfa ? 'Chegaram e ainda não foram atribuídos; nenhuma saca levou pacotes deste local ainda' : esc([...x.lugares].join(' + ') || x.cidade) + ' · ' + (fechada ? 'Fechada' + (x.fechada_em ? ' às ' + esc(horaCurta(x.fechada_em)) : '') : x.status ? 'Aberta' : 'Saca') + (x.ultima ? ' · último pacote ' + esc(horaCurta(x.ultima)) : '');
     const badge = ok ? (fechada ? '<span class="badge v">✓ Completa</span>' : '<span class="badge v">Sem faltas até agora</span>') : `<span class="badge a">Faltando ${nF} pacote${nF > 1 ? 's' : ''}</span>`;
     const pct = nA + nF ? Math.round(nA / (nA + nF) * 100) : 100;
     const itens = [...atr, ...prov].sort((a, b) => Number(!!a.atribuido) - Number(!!b.atribuido) || String(a.chegou_em).localeCompare(String(b.chegou_em)));
-    const det = aberta ? `<div class="corpo2">${!orfa && nF ? `<div class="sub" style="margin-bottom:8px">Os ${nF} que faltam foram ligados a esta saca pelo bairro (já levou pacotes de lá).</div>` : ''}${tabelaP(itens, chave)}<div class="sub" style="margin-top:8px"><button class="btn mini" type="button" data-csvsaca="${esc(chave)}">Baixar CSV da saca</button></div></div>` : '';
+    const det = aberta ? `<div class="corpo2">${!orfa && nF ? `<div class="sub" style="margin-bottom:8px">Os ${nF} que faltam foram ligados a esta saca pelo local/bairro (já levou pacotes de lá).</div>` : ''}${tabelaP(itens, chave)}<div class="sub" style="margin-top:8px"><button class="btn mini" type="button" data-csvsaca="${esc(chave)}">Baixar CSV da saca</button></div></div>` : '';
     return `<div class="cid ${ok ? 'ok2' : 'falta'}"><button type="button" class="cab" data-cid="${esc(chave)}" aria-expanded="${aberta}">
       <div><b class="nome">${esc(titulo)}</b><div class="sub">${sub}</div></div>
       <div><div class="num"><span><b>${nA + nF}</b>chegaram</span><span><b>${nA}</b>atribuídos</span><span><b style="color:${ok ? 'var(--ok)' : 'var(--alerta)'}">${nF}</b>faltam</span></div><div class="barra-c ${ok ? 'ok' : ''}"><i style="width:${pct}%"></i></div></div>
@@ -2693,11 +2720,12 @@ function desenharChegada() {
     <div class="cards" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:14px">
       <div class="prob zero" style="cursor:default"><b>${tot.che}</b><span>Chegaram</span><small>lista geral do dia</small></div>
       <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${tot.atr}</b><span>Atribuídos</span><small>${tot.che ? Math.round(tot.atr / tot.che * 100) : 0}% dos que chegaram</small></div>
-      <div class="prob ${tot.fal ? 'diverg' : 'zero'}" style="cursor:default"><b>${tot.fal}</b><span>Faltando atribuir</span><small>${tot.fal ? 'em ' + comFalta + ' cidade' + (comFalta > 1 ? 's' : '') : 'nenhum'}</small></div>
-      <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${concl}<span class="sub"> de ${cc.length}</span></b><span>Cidades concluídas</span><small>100% atribuídas</small></div></div>
-    <div class="filtros"><div class="seg" id="cheModo" role="group" aria-label="Agrupar por"><button type="button" data-m="saca" aria-pressed="${estChe.modo === 'saca'}">Por saca</button><button type="button" data-m="cidade" aria-pressed="${estChe.modo === 'cidade'}">Por cidade</button></div><div class="seg" id="cheFiltro" role="group" aria-label="Situação"><button type="button" data-f="todas" aria-pressed="${estChe.filtro === 'todas'}">Todas (${estChe.modo === 'saca' ? listaSacas.total : cc.length})</button><button type="button" data-f="faltando" aria-pressed="${estChe.filtro === 'faltando'}">Faltando (${estChe.modo === 'saca' ? listaSacas.comFalta : comFalta})</button><button type="button" data-f="concluidas" aria-pressed="${estChe.filtro === 'concluidas'}">${estChe.modo === 'saca' ? 'Sem faltas' : 'Concluídas'} (${estChe.modo === 'saca' ? listaSacas.total - listaSacas.comFalta : concl})</button></div>
+      <div class="prob ${tot.fal ? 'diverg' : 'zero'}" style="cursor:default"><b>${tot.fal}</b><span>Faltando atribuir</span><small>${tot.fal ? 'em ' + comFalta + ' ' + (comFalta > 1 ? 'locais' : 'local') : 'nenhum'}</small></div>
+      <div class="prob zero" style="cursor:default;color:var(--ok)"><b>${concl}<span class="sub"> de ${cc.length}</span></b><span>Locais concluídos</span><small>100% atribuídos</small></div></div>
+    <div class="filtros"><div class="seg" id="cheModo" role="group" aria-label="Agrupar por"><button type="button" data-m="saca" aria-pressed="${estChe.modo === 'saca'}">Por saca</button><button type="button" data-m="cidade" aria-pressed="${estChe.modo === 'cidade'}">Por local</button></div><div class="seg" id="cheFiltro" role="group" aria-label="Situação"><button type="button" data-f="todas" aria-pressed="${estChe.filtro === 'todas'}">Todas (${estChe.modo === 'saca' ? listaSacas.total : cc.length})</button><button type="button" data-f="faltando" aria-pressed="${estChe.filtro === 'faltando'}">Faltando (${estChe.modo === 'saca' ? listaSacas.comFalta : comFalta})</button><button type="button" data-f="concluidas" aria-pressed="${estChe.filtro === 'concluidas'}">${estChe.modo === 'saca' ? 'Sem faltas' : 'Concluídas'} (${estChe.modo === 'saca' ? listaSacas.total - listaSacas.comFalta : concl})</button></div>
       <button class="btn mini" id="cheCsv" type="button">Baixar CSV</button></div>
     ${dadosChe.completo ? '' : '<div class="aviso">Há muitos pacotes pendentes: mostrando só parte da lista.</div>'}
+    ${dadosChe.semLugar ? '<div class="aviso">Cada cidade aparece como um bloco só. Para separar por <b>rota</b> (ex.: as rotas de Teixeira), rode o script <b>17-lugar-na-conciliacao.sql</b> e use o app 1.15.0 na chegada.</div>' : ''}
     ${dadosChe.semSaca && estChe.modo === 'saca' ? '<div class="aviso">Para separar por saca de verdade, rode o script <b>15-saca-na-conciliacao.sql</b> no Supabase. Até lá, cada motorista aparece como uma saca só.</div>' : ''}
     ${estChe.modo === 'saca' ? (listaSacas.vis.map((i) => cartaoSaca(i.x, i.orfa)).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>') : (lista.map(cartao).join('') || '<div class="vazio"><b>Nada neste filtro</b></div>')}`;
   $('cheModo').addEventListener('click', (e) => { const b = e.target.closest('button[data-m]'); if (b) { estChe.modo = b.dataset.m; desenharChegada(); } });
@@ -2835,15 +2863,16 @@ function telaMeta() {
 async function carregarMeta(silencioso) {
   const meu = ++tokenMeta, d = eFiltroSeguro(estMeta.dia);
   try {
-    const [cc, pk, cm, sla, slaCol] = await Promise.all([
+    const [cc, pk, cm, sla, slaCol, sacasAb] = await Promise.all([
       lerTudo('/rest/v1/conciliacao_cidade?select=cidade,chegaram,atribuidos,faltam&dia=eq.' + d, 5),
       lerTudo('/rest/v1/conciliacao_pacotes?select=motorista,atribuido&atribuido=eq.true&dia=eq.' + d, 12),
       api('GET', '/rest/v1/meta_dia?select=*&dia=eq.' + d).catch(() => null),
       api('GET', '/rest/v1/sla_dia?select=*&dia=eq.' + d).catch(() => null),
       api('GET', '/rest/v1/sla_coletas?select=coletado_em,universo,baixas_universo,pendentes&order=coletado_em.asc&limit=300&dia=eq.' + d).catch(() => []),
+      api('GET', '/rest/v1/sacas_resumo?select=numero,motorista,pacotes,ultimo_bipe_em&status=eq.em_andamento&dia=eq.' + d + '&order=numero.asc&limit=100').catch(() => []),
     ]);
     if (meu !== tokenMeta || !$('metCorpo')) return;
-    dadosMeta = { cc: cc.itens, pk: pk.itens, cm: Array.isArray(cm) && cm[0] ? cm[0] : null, semTabela: cm === null, sla: Array.isArray(sla) && sla[0] ? sla[0] : null, slaSemTabela: sla === null, slaCol: Array.isArray(slaCol) ? slaCol : [] };
+    dadosMeta = { cc: cc.itens, pk: pk.itens, cm: Array.isArray(cm) && cm[0] ? cm[0] : null, semTabela: cm === null, sla: Array.isArray(sla) && sla[0] ? sla[0] : null, slaSemTabela: sla === null, slaCol: Array.isArray(slaCol) ? slaCol : [], sacasAb: Array.isArray(sacasAb) ? sacasAb : [] };
     if (!uxTemEdicao()) desenharMeta();
   } catch (e) { if (meu === tokenMeta && $('metCorpo') && !silencioso) $('metCorpo').innerHTML = `<div class="aviso erro">${esc(e.message)} Se for a primeira vez, rode o script 09 e depois o 10-meta-dia.sql no Supabase.</div>`; }
 }
@@ -2874,6 +2903,28 @@ function blocoSla(sla, col, semTabela, hoje, pct) {
       <div style="position:relative;height:16px;background:var(--linha);border-radius:9px;overflow:hidden"><div style="height:100%;width:${Math.min(100, taxa).toFixed(1)}%;background:var(${bateu ? '--ok' : cor === 'erro' ? '--erro' : '--ambar'})"></div>
       <div style="position:absolute;top:0;bottom:0;left:${Math.min(100, pct)}%;width:2px;background:var(--tinta)"></div></div>
       <p class="sub" style="margin:10px 0 0">O universo é fixado ao longo do dia: todo pacote que aparece como “vence hoje” entra e continua contando depois de baixado. Baixas de ${esc(String(sla.baixas_total))} no total (inclui adiantadas, que não entram na conta). Pacotes que venciam hoje e foram baixados antes da primeira coleta (${esc(horaCurta(sla.primeira_coleta))}) não aparecem.</p></div>` + curva;
+}
+// RESUMO DO FIM DO DIA (só no painel): texto pronto para copiar e colar no WhatsApp.
+function textoResumoDia(dia, r, sla, cc, motoristas, abertas, pct) {
+  const L = ['*Resumo do dia ' + dataBR(dia) + ' — Cordeiro Transportes*', ''];
+  if (r.universo) L.push('Chegaram: ' + r.universo + ' · Atribuídos: ' + r.atribuidos + ' (' + fmtPct(r.taxa) + ') · Faltam: ' + r.faltam);
+  else L.push('Sem chegada registrada neste dia.');
+  if (sla && Number(sla.universo)) {
+    const U = Number(sla.universo), B = Number(sla.baixas_universo), meta = Math.ceil(U * pct / 100);
+    L.push('SLA: ' + fmtPct(B / U * 100) + ' (' + B + ' baixas de ' + U + ' vencimentos) — ' + (B >= meta ? 'meta de ' + pct + '% batida' : 'faltaram ' + (meta - B) + ' baixas para a meta de ' + pct + '%'));
+    if (Number(sla.atrasados)) L.push('Atrasados (venceram antes de hoje): ' + Number(sla.atrasados));
+  }
+  const pend = cc.filter((c) => Number(c.faltam) > 0).sort((a, b) => Number(b.faltam) - Number(a.faltam));
+  if (pend.length) { L.push('', '*Pacotes que chegaram e não foram atribuídos*'); for (const c of pend) L.push('• ' + c.cidade + ': ' + c.faltam); }
+  if (abertas.length) { L.push('', '*Sacas ainda abertas*'); for (const x of abertas) L.push('• ' + (x.numero ? 'Saca ' + x.numero : 'Saca') + ' · ' + String(x.motorista || '').replace(/^\([^)]*\)\s*/, '').trim() + ' · ' + Number(x.pacotes || 0) + ' pacote' + (Number(x.pacotes) === 1 ? '' : 's')); }
+  if (motoristas.length) { L.push('', '*Atribuídos por motorista*'); for (const [n, q] of motoristas) L.push('• ' + n + ': ' + q); }
+  return L.join('\n');
+}
+function blocoResumoDia(dia, r, sla, cc, motoristas, abertas, pct) {
+  const t = textoResumoDia(dia, r, sla, cc, motoristas, abertas, pct);
+  return `<div class="cartao"><div class="cartao-topo"><h2>Resumo do dia</h2><span class="sub">para colar no WhatsApp</span></div>
+    <pre id="resTexto" style="white-space:pre-wrap;margin:0 0 10px;font:inherit;font-size:13.5px">${esc(t)}</pre>
+    <button class="btn ambar" id="resCopiar" type="button">Copiar resumo</button></div>`;
 }
 function desenharMeta() {
   const corpo = $('metCorpo'); if (!corpo || !dadosMeta) return;
@@ -2913,6 +2964,7 @@ function desenharMeta() {
       <div style="position:absolute;top:0;bottom:0;left:${Math.min(100, r.pct)}%;width:2px;background:var(--tinta)"></div></div></div>` : '') +
     (motoristas.length ? `<div class="cartao"><div class="cartao-topo"><h2>Atribuídos por motorista</h2><span class="sub">${pk.length} pacote${pk.length === 1 ? '' : 's'}</span></div><div class="rolagem"><table class="tabela"><thead><tr><th>Motorista</th><th class="n">Pacotes</th><th class="n">% do total</th></tr></thead><tbody>
       ${motoristas.map(([n, q]) => `<tr><td><b>${esc(n)}</b></td><td class="n" data-r="Pacotes">${q}</td><td class="n" data-r="% do total">${esc(fmtPct(q / pk.length * 100))}</td></tr>`).join('')}</tbody></table></div></div>` : '') +
+    blocoResumoDia(estMeta.dia, r, dadosMeta.sla, cc, motoristas, dadosMeta.sacasAb, r.pct) +
     (gestao ? `<div class="cartao" id="metForm"><div class="cartao-topo"><h2>Ajuste manual deste dia</h2><span class="sub">${cm && cm.por_nome ? 'Último ajuste: ' + esc(cm.por_nome) + ' · ' + esc(horaCurta(cm.atualizado_em)) : 'Sem ajustes — vale a regra padrão'}</span></div>
       <div class="filtros">
         <label class="c">Percentual da meta (%)<input id="mfPct" type="number" min="1" max="100" step="0.5" value="${cm && cm.percentual != null ? esc(cm.percentual) : ''}" placeholder="${PCT_PADRAO}" style="width:130px" /></label>
@@ -2927,6 +2979,7 @@ function desenharMeta() {
         <button class="btn ambar" id="mfSalvar" type="button">Salvar ajuste</button>${cm ? '<button class="btn" id="mfLimpar" type="button">Voltar ao padrão</button>' : ''}
       </div>
       <p class="sub" style="margin:12px 0 0">Os campos do DS servem só para conferir com o nosso cálculo. Os ajustes ficam registrados com o seu nome.</p></div>` : '');
+  { const bc = $('resCopiar'); if (bc) bc.onclick = async () => { try { await navigator.clipboard.writeText($('resTexto').textContent); aviso('Resumo copiado'); } catch (_) { aviso('Não consegui copiar', true); } }; }
   if (gestao) {
     const num = (id) => { const v = $(id).value.trim(); return v === '' ? null : Number(v); };
     const gravar = async (corpoReq, msg) => {

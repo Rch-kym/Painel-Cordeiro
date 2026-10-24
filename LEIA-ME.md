@@ -178,6 +178,14 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 ## Versão 1.20.10
 - Na gaveta do pacote, o botão **Ver na saca** (no lugar de "Abrir ficha completa") leva à aba Sacas, abre a saca onde o pacote ficou (no dia dela) e destaca o pacote na lista, já rolado para ele. Sem saca registrada, o botão fica desligado.
 
+## Versão 1.23.0
+- **Resumo do dia** (em Meta do dia): texto pronto com chegada, atribuídos, SLA, atrasados, pendentes por cidade, sacas ainda abertas e atribuídos por motorista, com botão **Copiar resumo** para colar no WhatsApp. Só no painel.
+- Sem SQL novo.
+
+## Versão 1.22.0
+- **Chegada e conciliação por local**: cada rota (Rota 3, Rota 5 de Teixeira), distrito (Itabatã, Mucuri) e cidade aparece em cartão separado. Bairro fora das rotas aparece como "rota não definida".
+- Precisa do script `17-lugar-na-conciliacao.sql` e do app 1.15.0. Pacotes que chegaram antes continuam por cidade.
+
 ## Versão 1.21.0
 - **Meta do dia agora é o SLA**: baixas ÷ vencimentos do dia, meta 95% (mostra %, quantas baixas faltam, pendentes, atrasados e a evolução no dia). A meta de atribuição continua logo abaixo.
 - Precisa do script `16-sla-dia.sql` e da extensão 3.18.0 (lê o iMile a cada ~10 min com uma aba do DS aberta).
