@@ -178,6 +178,16 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 ## Versão 1.20.10
 - Na gaveta do pacote, o botão **Ver na saca** (no lugar de "Abrir ficha completa") leva à aba Sacas, abre a saca onde o pacote ficou (no dia dela) e destaca o pacote na lista, já rolado para ele. Sem saca registrada, o botão fica desligado.
 
+## Versão 1.24.0
+- **Reatribuição dos dois níveis**: o nível 2 (crítico, 5+ dias) agora também é reatribuído, junto com o nível 1 (4+ dias). Antes o crítico ficava de fora da reatribuição automática. Na tela de Extravio o nível 2 ganhou o botão **Reatribuição feita**, e a cobrança continua disponível.
+- Precisa da extensão 3.21.0 (a reatribuição automática roda nela).
+
+## Versão 1.23.2
+- Chegada: o mesmo lugar escrito de dois jeitos ("itabata" e "Itabatã") agora vira um cartão só.
+
+## Versão 1.23.1
+- Chegada "Por saca": uma saca com pacotes de dois locais agora aparece em dois cartões (um por local), em vez de juntar tudo ('Teixeira + Nova Viçosa').
+
 ## Versão 1.23.0
 - **Resumo do dia** (em Meta do dia): texto pronto com chegada, atribuídos, SLA, atrasados, pendentes por cidade, sacas ainda abertas e atribuídos por motorista, com botão **Copiar resumo** para colar no WhatsApp. Só no painel.
 - Sem SQL novo.

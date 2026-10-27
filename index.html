@@ -643,7 +643,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.23.0</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.24.0</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2031,7 +2031,7 @@ function desenharGavetaSaca() {
 // Base de dados: a última busca completa do Backlog (extensão/app → backlog_fotos).
 // Cada item: [awb, motorista, codigo, dias, cidade, bairro, erro]. "dias" = dias parado/em rota sem baixa.
 // Nível 1 (atenção): 4+ dias parados → reatribuir (rotina segunda/quarta/sexta).
-// Nível 2 (crítico): 5+ dias com motorista (em rota), sem baixa e sem tratativa → cobrança imediata.
+// Nível 2 (crítico): 5+ dias com motorista (em rota), sem baixa e sem tratativa → reatribuir também + cobrança imediata.
 // Sai do alerta quando: (a) some do Backlog (baixa), (b) tem nova atribuição depois da foto,
 // (c) tem tratativa justificada ainda válida (ou cobrança enviada nos últimos 2 dias).
 const EXTRAVIO = { dias1: 4, dias2: 5, diasCiclo: [1, 3, 5] /* seg, qua, sex */, validadeAcaoDias: 2, velhoHoras: 24 };
@@ -2179,12 +2179,12 @@ const linhaExt = (p, nivel) => `<tr><td data-r=""><input type="checkbox" class="
 function blocoExtravio(nivel, lista, limite) {
   const crit = nivel === 2;
   const vis = estExt.filtroMot ? lista.filter((p) => p.motorista === estExt.filtroMot) : lista;
-  const titulo = crit ? '🔴 Nível 2 · Crítico · 5+ dias em rota sem baixa e sem tratativa' : '🟡 Nível 1 · Atenção · 4+ dias parados · Reatribuição obrigatória';
-  const foco = crit ? 'Foco: cobrança imediata ao motorista ou tratativa urgente.' : 'Foco: reatribuir (rotina de segunda, quarta e sexta).' + (dadosExt && dadosExt.piso ? ` Não aparecem aqui ${dadosExt.piso} pacote(s) sem motorista (no piso).` : '');
+  const titulo = crit ? '🔴 Nível 2 · Crítico · 5+ dias em rota sem baixa e sem tratativa · Reatribuição obrigatória' : '🟡 Nível 1 · Atenção · 4+ dias parados · Reatribuição obrigatória';
+  const foco = crit ? 'Foco: reatribuir também (mesma rotina do nível 1) e cobrar o motorista ou registrar tratativa urgente.' : 'Foco: reatribuir (rotina de segunda, quarta e sexta).' + (dadosExt && dadosExt.piso ? ` Não aparecem aqui ${dadosExt.piso} pacote(s) sem motorista (no piso).` : '');
   const nSel = vis.filter((p) => estExt.sel.has(p.awb)).length;
   return `<section class="cartao ext-bloco ${crit ? 'crit' : 'aten'}" data-n="${nivel}"><div class="ext-bloco-topo"><div><h2>${titulo} <span class="ext-cont">${vis.length}</span></h2><div class="sub">${foco}</div></div></div>
     ${vis.length ? `<div class="ext-barra"><label class="ext-todos"><input type="checkbox" class="extTodos" data-n="${nivel}" ${nSel && nSel === vis.length ? 'checked' : ''}> Selecionar todos</label><span class="sub">${nSel ? nSel + ' selecionado(s)' : 'sem seleção: as ações valem para todos da lista'}</span>
-      <button class="btn mini" type="button" data-ac="codigos" data-n="${nivel}">Copiar códigos</button>${crit ? `<button class="btn mini ambar" type="button" data-ac="cobranca" data-n="${nivel}">Copiar cobrança</button>` : '<button class="btn mini ambar" type="button" data-ac="reatribuido" data-n="1">Reatribuição feita</button>'}<button class="btn mini" type="button" data-ac="tratativa" data-n="${nivel}">Registrar tratativa</button></div>
+      <button class="btn mini" type="button" data-ac="codigos" data-n="${nivel}">Copiar códigos</button><button class="btn mini ambar" type="button" data-ac="reatribuido" data-n="${nivel}">Reatribuição feita</button>${crit ? `<button class="btn mini" type="button" data-ac="cobranca" data-n="${nivel}">Copiar cobrança</button>` : ''}<button class="btn mini" type="button" data-ac="tratativa" data-n="${nivel}">Registrar tratativa</button></div>
       <div class="rolagem"><table class="tabela empilha"><thead><tr><th></th><th>AWB</th><th>Motorista</th><th class="n">Parado</th><th>Local</th></tr></thead><tbody>${vis.slice(0, limite).map((p) => linhaExt(p, nivel)).join('')}</tbody></table></div>
       ${vis.length > limite ? `<p style="text-align:center"><button class="btn" type="button" data-mais="${nivel}">Mostrar mais (${vis.length - limite})</button></p>` : ''}`
       : `<div class="vazio"><b>${crit ? 'Nenhum pacote crítico' : 'Fila de reatribuição limpa'}</b>${crit ? 'Nada com 5+ dias em rota sem tratativa.' : 'Nenhum pacote com 4+ dias parado sem tratativa.'}</div>`}</section>`;
@@ -2300,7 +2300,7 @@ function blocoReatribuicao(r) {
   const painelLista = atual ? `<div class="filtros" style="margin:10px 0"><div class="seg" id="reSeg" role="group" aria-label="Resultado">${abas.map(([k, n, c2]) => `<button type="button" data-f="${esc(k)}" aria-pressed="${estReat.filtro === k}">${esc(n)} · ${c2}</button>`).join('')}</div>${seletorRodada}<label class="c">Buscar<input id="reBusca" placeholder="AWB, motorista ou motivo" value="${esc(estReat.busca)}"></label><button class="btn mini" id="reCsv" type="button">Baixar CSV</button></div>
     ${estReat.filtro === 'pulado' ? `<ul class="sub" style="margin:4px 0 8px;padding-left:18px">${vis.map((x) => `<li>${esc(x.detalhe)}</li>`).join('') || '<li>Nenhum aviso.</li>'}</ul>` : vis.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>AWB</th><th>Motorista</th><th class="n">Dias</th><th>Resultado</th><th>Detalhe</th></tr></thead><tbody>${linhas}</tbody></table></div>${vis.length > estReat.limite ? `<p style="text-align:center"><button class="btn" type="button" id="reMais">Mostrar mais (${vis.length - estReat.limite})</button></p>` : ''}` : '<div class="vazio"><b>Nada neste filtro</b></div>'}` : '';
   return `<section class="cartao ext-reat" style="margin-top:12px"><div class="ext-bloco-topo"><div><h2 style="font-size:16px;margin:0">Reatribuição automática · <span class="ext-modo ${c.modo}${c.pausado ? ' pausa' : ''}">${esc(modoTxt)}</span></h2>
-    <div class="sub">Segunda, quarta e sexta, a partir das ${esc(c.hora)}: pacotes com 4+ dias e motorista voltam para o <b>mesmo motorista</b>, até ${c.limite} por rodada. Exige o iMile aberto e logado no computador com a extensão. Nível crítico (5+ dias) fica com a pessoa${c.incluir_criticos ? ' — <b>exceto: incluídos nesta configuração</b>' : ''}.</div></div></div>
+    <div class="sub">Segunda, quarta e sexta, a partir das ${esc(c.hora)}: pacotes com 4+ dias e motorista voltam para o <b>mesmo motorista</b>, até ${c.limite} por rodada. Exige o iMile aberto e logado no computador com a extensão. Vale para o nível 1 (4+ dias) e para o nível 2 (5+ dias): os dois são reatribuídos.</div></div></div>
     <div id="reFaixa">${faixaReat(r)}</div><div style="margin:8px 0">${resumo}</div>${painelLista}
     ${dono ? `<div class="filtros" style="margin-top:12px"><label class="c">Modo<select id="reModo"><option value="desligada" ${c.modo === 'desligada' ? 'selected' : ''}>Desligada</option><option value="teste" ${c.modo === 'teste' ? 'selected' : ''}>Teste (só simula)</option><option value="real" ${c.modo === 'real' ? 'selected' : ''}>Real</option></select></label>
       <label class="c">Horário<input id="reHora" type="time" value="${esc(c.hora)}"></label><label class="c">Limite por rodada<input id="reLimite" type="number" min="1" max="200" value="${c.limite}" style="width:90px"></label>
@@ -2611,8 +2611,15 @@ function rotuloLugar(cidade, lugar, dividida) {
   if (!l) return dividida ? c + ' · rota não definida' : c;
   return semAcentoChe(l) === semAcentoChe(c) ? c : l + ' · ' + c;
 }
+// "itabata" e "Itabatã" são o mesmo lugar: usa a escrita mais completa (maiúscula e acento).
+function melhoresNomesChe(nomes) {
+  const nota = (t) => (t && t[0] !== t[0].toLowerCase() ? 2 : 0) + (t !== semAcentoChe(t) ? 1 : 0), m = new Map();
+  for (const n of nomes) { const x = String(n || '').trim(); if (!x) continue; const k = semAcentoChe(x), a = m.get(k); if (a === undefined || nota(x) > nota(a)) m.set(k, x); }
+  return m;
+}
 function porLugarChe(brutos, dia) {
   if (!brutos.some((p) => String(p.lugar || '').trim())) return null;
+  { const mel = melhoresNomesChe(brutos.flatMap((p) => [p.lugar, p.cidade])); const nm = (v) => { const t = String(v || '').trim(); return mel.get(semAcentoChe(t)) || t; }; brutos = brutos.map((p) => ({ ...p, lugar: nm(p.lugar), cidade: nm(p.cidade) })); }
   const divididas = new Set();
   for (const p of brutos) { const l = String(p.lugar || '').trim(); if (l && semAcentoChe(l) !== semAcentoChe(p.cidade)) divididas.add(semAcentoChe(p.cidade)); }
   const todos = brutos.map((p) => ({ ...p, cidade_real: p.cidade, cidade: rotuloLugar(p.cidade, p.lugar, divididas.has(semAcentoChe(p.cidade))) }));
@@ -2637,7 +2644,7 @@ function montarSacasChe(todos) {
   for (const p of todos || []) {
     if (!p.atribuido) { pend.push(p); continue; }
     const cidade = p.cidade || 'Sem cidade';
-    const chave = p.saca_id || ('m:' + cidade + '|' + (p.motorista || ''));
+    const chave = (p.saca_id || ('m:' + (p.motorista || ''))) + '|' + cidade; // uma linha por saca E por local
     if (!sacas.has(chave)) sacas.set(chave, { chave, cidade, motorista: p.motorista || 'Sem motorista', numero: p.saca_numero || null, status: p.saca_status || '', fechada_em: p.saca_fechada_em || null, atribuidos: [], provaveis: [], bairros: new Map(), lugares: new Set(), ultima: '' });
     const x = sacas.get(chave); x.atribuidos.push(p); x.lugares.add(cidade);
     const b = norm(p.bairro); if (b) x.bairros.set(b, (x.bairros.get(b) || 0) + 1);
@@ -2696,8 +2703,8 @@ function desenharChegada() {
     const orfa = !!orfaCidade, chave = orfa ? 'O:' + orfaCidade : 'S:' + x.chave, aberta = estChe.abertas.has(chave);
     const prov = orfa ? SC.orfaos.get(orfaCidade) : x.provaveis, atr = orfa ? [] : x.atribuidos, nA = atr.length, nF = prov.length, ok = nF === 0;
     const fechada = !orfa && x.status === 'fechada';
-    const titulo = orfa ? 'Sem saca definida · ' + orfaCidade : x.motorista + (x.numero ? ' · nº ' + x.numero : '');
-    const sub = orfa ? 'Chegaram e ainda não foram atribuídos; nenhuma saca levou pacotes deste local ainda' : esc([...x.lugares].join(' + ') || x.cidade) + ' · ' + (fechada ? 'Fechada' + (x.fechada_em ? ' às ' + esc(horaCurta(x.fechada_em)) : '') : x.status ? 'Aberta' : 'Saca') + (x.ultima ? ' · último pacote ' + esc(horaCurta(x.ultima)) : '');
+    const titulo = orfa ? 'Sem saca definida · ' + orfaCidade : x.cidade + ' · ' + x.motorista + (x.numero ? ' · nº ' + x.numero : '');
+    const sub = orfa ? 'Chegaram e ainda não foram atribuídos; nenhuma saca levou pacotes deste local ainda' : esc(x.cidade) + ' · ' + (fechada ? 'Fechada' + (x.fechada_em ? ' às ' + esc(horaCurta(x.fechada_em)) : '') : x.status ? 'Aberta' : 'Saca') + (x.ultima ? ' · último pacote ' + esc(horaCurta(x.ultima)) : '');
     const badge = ok ? (fechada ? '<span class="badge v">✓ Completa</span>' : '<span class="badge v">Sem faltas até agora</span>') : `<span class="badge a">Faltando ${nF} pacote${nF > 1 ? 's' : ''}</span>`;
     const pct = nA + nF ? Math.round(nA / (nA + nF) * 100) : 100;
     const itens = [...atr, ...prov].sort((a, b) => Number(!!a.atribuido) - Number(!!b.atribuido) || String(a.chegou_em).localeCompare(String(b.chegou_em)));
