@@ -178,6 +178,15 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 ## Versão 1.20.10
 - Na gaveta do pacote, o botão **Ver na saca** (no lugar de "Abrir ficha completa") leva à aba Sacas, abre a saca onde o pacote ficou (no dia dela) e destaca o pacote na lista, já rolado para ele. Sem saca registrada, o botão fica desligado.
 
+## Versão 1.25.0
+- **Acareações** ganhou, no topo, o cartão **Acareações hoje**:
+  - a situação do robô de envio automático: ativo, fora do horário, WhatsApp desconectado, iMile precisando de login, falhas seguidas, ou "sem sinal" quando o computador para de responder por 15 min dentro do horário;
+  - números do dia: chegaram, confirmação enviada, aguardando envio e para tratar à mão;
+  - a lista **Para tratar à mão** dos últimos 7 dias (sem número, sem WhatsApp, ticket novo após o envio), com o prazo mais perto primeiro;
+  - acareações dos últimos 7 dias por cidade.
+- Nova situação: **Novo ticket após envio**.
+- Precisa do script `18-acareacao-automatica.sql` e da extensão 3.22.0.
+
 ## Versão 1.24.0
 - **Reatribuição dos dois níveis**: o nível 2 (crítico, 5+ dias) agora também é reatribuído, junto com o nível 1 (4+ dias). Antes o crítico ficava de fora da reatribuição automática. Na tela de Extravio o nível 2 ganhou o botão **Reatribuição feita**, e a cobrança continua disponível.
 - Precisa da extensão 3.21.0 (a reatribuição automática roda nela).

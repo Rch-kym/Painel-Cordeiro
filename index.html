@@ -643,7 +643,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.24.0</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.25.0</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -861,6 +861,49 @@ function agruparAcareacoes(linhas) {
     const g = por.get(nome); g.total += 1; g[grupoAcareacao(x.estado)] += 1;
   }
   return [...por.values()].sort((a, b) => (a.nome === SEM_BAIXA_AC) - (b.nome === SEM_BAIXA_AC) || b.total - a.total || a.nome.localeCompare(b.nome, 'pt-BR'));
+}
+// ---- Acareação automática (1.25) ----
+const A_MAO_AC = ['sem_telefone', 'sem_whatsapp', 'erro_contato', 'falha', 'reabriu'];
+// Saúde do robô: o estado que a extensão gravou, mais "sem sinal" se a batida parou dentro do horário.
+function saudeRobo(robo, agoraMs) {
+  if (!robo) return null;
+  const agora = agoraMs || Date.now();
+  const hm = new Date(agora).toLocaleTimeString('en-GB', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit', hourCycle: 'h23' });
+  const [ini, fim] = String(robo.horario || '08:00–18:00').split('–');
+  const noHorario = hm >= (ini || '08:00') && hm < (fim || '18:00');
+  const semSinalMin = Math.round((agora - new Date(robo.batida).getTime()) / 60000);
+  if (robo.ligado && noHorario && semSinalMin >= 15) return { tom: 'erro', codigo: 'sem_sinal', titulo: 'Robô sem sinal', detalhe: 'O computador do robô não dá sinal há ' + semSinalMin + ' min. Veja se está ligado, com o Chrome aberto.' };
+  const T = { ok: 'ok', desligado: 'neutro', fora: 'neutro', pausado: 'alerta', imile: 'alerta', zap: 'erro', falhas: 'erro' };
+  return { tom: T[robo.estado] || 'neutro', codigo: robo.estado, titulo: robo.estado === 'ok' ? 'Robô ativo' : robo.titulo || robo.estado, detalhe: robo.detalhe || '' };
+}
+function hojeAcareacoes(linhas, hoje) {
+  const r = { chegaram: 0, enviadas: 0, fila: 0, aMao: 0 };
+  for (const x of linhas || []) {
+    if (diaSPdeIso(x.primeira_vez) === hoje) r.chegaram += 1;
+    if (x.enviado_em && diaSPdeIso(x.enviado_em) === hoje) r.enviadas += 1;
+    if (x.estado === 'pronto') r.fila += 1;
+    if (A_MAO_AC.includes(x.estado)) r.aMao += 1;
+  }
+  return r;
+}
+// Para tratar à mão: problemas dos últimos 7 dias, o prazo mais perto primeiro.
+function aMaoAcareacoes(linhas, hoje) {
+  const de = somarDias(hoje, -6);
+  return (linhas || []).filter((x) => A_MAO_AC.includes(x.estado) && diaSPdeIso(x.atualizado_em) >= de)
+    .sort((a, b) => String(a.prazo || '9999').localeCompare(String(b.prazo || '9999')) || String(b.atualizado_em).localeCompare(String(a.atualizado_em)));
+}
+function porLocalAcareacoes(linhas, hoje) {
+  const de = somarDias(hoje, -6), m = new Map();
+  for (const x of linhas || []) { if (diaSPdeIso(x.primeira_vez) < de) continue; const k = x.cidade || 'Sem cidade'; m.set(k, (m.get(k) || 0) + 1); }
+  return [...m.entries()].map(([nome, n]) => ({ nome, n })).sort((a, b) => b.n - a.n || a.nome.localeCompare(b.nome, 'pt-BR'));
+}
+function rotuloPrazoAc(prazo, hoje) {
+  const d = String(prazo || '').slice(0, 10);
+  if (!d) return { t: '—', c: '' };
+  if (d < hoje) return { t: 'Atrasado', c: 'erro' };
+  if (d === hoje) return { t: 'Vence hoje', c: 'divergencia' };
+  if (d === somarDias(hoje, 1)) return { t: 'Amanhã', c: 'neutro' };
+  return { t: d.slice(8, 10) + '/' + d.slice(5, 7), c: 'neutro' };
 }
 function eFiltroSeguro(v) { return String(v || '').replace(/[^A-Za-z0-9_\-.]/g, ''); }
 // ---- Corrigido (1.15) ----
@@ -1445,7 +1488,7 @@ async function carregarFechamento() {
 /* ===================== ACAREAÇÕES ===================== */
 const estAC = { filtro: '', busca: '', dias: 7, visao: 'lista', limite: 100 };
 let tokenAC = 0, timerAC = null, dadosAC = null;
-const ROT_AC = { pronto: 'Pronta', enviado: 'Enviada', ja_enviado: 'Já enviada', sem_telefone: 'Sem telefone', sem_whatsapp: 'Sem WhatsApp', falha: 'Falhou', erro_contato: 'Sem contato' };
+const ROT_AC = { pronto: 'Pronta', enviado: 'Enviada', ja_enviado: 'Já enviada', sem_telefone: 'Sem telefone', sem_whatsapp: 'Sem WhatsApp', falha: 'Falhou', erro_contato: 'Sem contato', reabriu: 'Novo ticket após envio' };
 function telaAcareacoes() {
   $('conteudo').innerHTML = cabecalho('Acareações', '<span id="acSub"></span>', '<button class="btn" id="acAtualizar" type="button">Atualizar</button>') + '<div id="acCorpo">' + esqueleto() + '</div>';
   $('acAtualizar').addEventListener('click', () => carregarAC(false));
@@ -1456,11 +1499,14 @@ function telaAcareacoes() {
 async function carregarAC(silencioso) {
   const meu = ++tokenAC;
   try {
-    const r = await lerTudo('/rest/v1/acareacoes?select=*&order=atualizado_em.desc', 10);
+    const [r, rb] = await Promise.all([
+      lerTudo('/rest/v1/acareacoes?select=*&order=atualizado_em.desc', 10),
+      api('GET', '/rest/v1/acareacao_robo?select=*&id=eq.1').catch(() => null)]);
     if (meu !== tokenAC || !$('acCorpo')) return;
-    const assin = r.itens.length + '|' + (r.itens[0] ? r.itens[0].atualizado_em : '') + '|' + r.itens.reduce((n, x) => n + (x.obs ? 1 : 0), 0);
+    const robo = Array.isArray(rb) && rb.length ? rb[0] : null;
+    const assin = r.itens.length + '|' + (r.itens[0] ? r.itens[0].atualizado_em : '') + '|' + r.itens.reduce((n, x) => n + (x.obs ? 1 : 0), 0) + '|' + (robo ? robo.atualizado_em + robo.estado : '') + '|' + Math.floor(Date.now() / 300000);
     if (silencioso && dadosAC && dadosAC.assin === assin) return; // nada novo: não redesenha (preserva busca e foco)
-    dadosAC = { linhas: r.itens, completo: r.completo, assin };
+    dadosAC = { linhas: r.itens, completo: r.completo, assin, robo, semRobo: rb === null };
     const ult = r.itens[0];
     $('acSub').textContent = ult ? 'Última atualização: ' + dataBR(ult.atualizado_em) + ' às ' + horaCurta(ult.atualizado_em) + ' · ' + r.itens.length + ' pacote(s) no histórico' : '';
     desenharAC();
@@ -1492,7 +1538,7 @@ function desenharAC() {
   const listaGrupos = () => `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Quem deu a baixa</th><th class="n">Pacotes</th><th class="n">Enviadas</th><th class="n">Com problema</th><th class="n">Prontas</th></tr></thead><tbody>
     ${gr.map((g) => `<tr class="ac-grupo" data-b="${esc(g.nome)}" tabindex="0" role="button" title="Ver só estes pacotes"><td><b>${esc(g.nome)}</b></td><td class="n" data-r="Pacotes">${g.total}</td><td class="n" data-r="Enviadas">${g.enviadas}</td><td class="n ${g.problema ? 'txt-alerta' : ''}" data-r="Com problema">${g.problema}</td><td class="n" data-r="Prontas">${g.prontas}</td></tr>`).join('')}
     </tbody></table></div>`;
-  $('acCorpo').innerHTML = `
+  $('acCorpo').innerHTML = blocoAcHoje(todas) + `
     <div class="tiles">
       ${tile('', 'Acareações', res.total, 'no período · ver todas')}
       ${tile('enviadas', 'Enviadas', res.enviadas, res.total ? Math.round(res.enviadas / res.total * 100) + '% do período' : '—', 'ok')}
@@ -1525,6 +1571,31 @@ function desenharAC() {
   B.querySelectorAll('a.awb').forEach((a) => { a.addEventListener('click', () => irPara('pacote', a.dataset.awb)); a.addEventListener('keydown', (ev) => { if (ev.key === 'Enter') irPara('pacote', a.dataset.awb); }); });
   $('acCsv').addEventListener('click', () => baixar('acareacoes' + (filtrando ? '-filtrado' : '') + '-' + hojeSP() + '.csv', paraCsv(['AWB', 'Ticket', 'Situação', 'Cliente', 'Final do telefone', 'Cidade', 'Bairro', 'Baixa por', 'Enviada em', 'No grupo em', 'Observação', 'Atualizado em'],
     vis.map((x) => [x.awb, x.ticket, ROT_AC[x.estado] || x.estado, x.cliente, x.telefone_fim, x.cidade, x.bairro, x.baixa_por, x.enviado_em ? dataBR(x.enviado_em) + ' ' + horaCurta(x.enviado_em) : '', x.no_grupo_em ? dataBR(x.no_grupo_em) + ' ' + horaCurta(x.no_grupo_em) : '', x.obs, dataBR(x.atualizado_em) + ' ' + horaCurta(x.atualizado_em)]))));
+}
+
+// Cartão "Acareações hoje": robô, números do dia, lista à mão e 7 dias por local.
+function blocoAcHoje(todas) {
+  const hoje = hojeSP(), h = hojeAcareacoes(todas, hoje), sau = saudeRobo(dadosAC.robo);
+  const mao = aMaoAcareacoes(todas, hoje), loc = porLocalAcareacoes(todas, hoje);
+  const total7 = loc.reduce((n, x) => n + x.n, 0), maxN = loc.length ? loc[0].n : 1;
+  const top = loc.slice(0, 5), resto = loc.slice(5);
+  const pil = sau ? `<span class="etq ${sau.tom === 'ok' ? 'ok' : sau.tom === 'erro' ? 'erro' : sau.tom === 'alerta' ? 'divergencia' : 'neutro'}" style="font-size:13px;padding:6px 12px">${esc(sau.titulo)}</span>` : '';
+  const sub = sau ? (dadosAC.robo.ligado ? 'Automático ' + esc(dadosAC.robo.horario || '') + ' · último sinal ' + esc(horaCurta(dadosAC.robo.batida)) : 'Envio automático desligado: envio só manual') : (dadosAC.semRobo ? 'Rode o script 18 no Supabase para ver o robô aqui.' : 'Robô ainda não ligado. Na extensão 3.22.0: Acareações › Automático › Ligar.');
+  const alerta = sau && ['erro', 'alerta'].includes(sau.tom) ? `<div class="aviso ${sau.tom === 'erro' ? 'erro' : ''}" data-ux-retry="1" style="margin-top:12px"><b>${esc(sau.titulo)}.</b> ${esc(sau.detalhe)}</div>` : '';
+  const lin = (x) => { const pz = rotuloPrazoAc(x.prazo, hoje); return `<tr><td data-r="Pacote"><a class="awb" data-awb="${esc(x.awb)}" tabindex="0" role="link">${esc(x.awb)}</a></td><td data-r="Motivo"><span class="etq ${x.estado === 'reabriu' ? 'neutro' : 'erro'}">${esc(ROT_AC[x.estado] || x.estado)}</span></td><td data-r="Local">${esc([x.bairro, x.cidade].filter(Boolean).join(' · ') || '—')}</td><td data-r="Prazo"><span class="etq ${pz.c}">${esc(pz.t)}</span></td></tr>`; };
+  return `<section class="cartao" style="margin-bottom:16px">
+    <div class="cartao-topo"><div><h2>Acareações hoje</h2><span class="sub">${sub}</span></div>${pil}</div>${alerta}
+    <div class="tiles tiles4" style="margin-top:14px">
+      <div class="tile"><span>Chegaram hoje</span><b>${h.chegaram}</b><small>tickets novos</small></div>
+      <div class="tile ok"><span>Confirmação enviada</span><b>${h.enviadas}</b><small>hoje</small></div>
+      <div class="tile ${h.fila ? 'alerta' : ''}"><span>Aguardando envio</span><b>${h.fila}</b><small>prontas, com telefone</small></div>
+      <div class="tile ${h.aMao ? 'erro' : ''}"><span>Para tratar à mão</span><b>${h.aMao}</b><small>sem número, sem WhatsApp, ticket novo</small></div></div>
+    <div class="grade2" style="margin-top:14px">
+      <div><h3 style="margin:0 0 8px;font-size:14px">Para tratar à mão <span class="sub">· últimos 7 dias, o prazo mais perto primeiro</span></h3>
+        ${mao.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Pacote</th><th>Motivo</th><th>Local</th><th>Prazo</th></tr></thead><tbody>${mao.slice(0, 12).map(lin).join('')}</tbody></table></div>${mao.length > 12 ? `<p class="sub">e mais ${mao.length - 12}. Use o filtro "Com problema" abaixo.</p>` : ''}<p class="sub" style="margin-top:8px">Sem número: informe na extensão (Informar número). O envio sai sozinho na próxima rodada.</p>` : '<div class="vazio"><b>Nada à mão</b>Nenhuma acareação com problema nos últimos 7 dias.</div>'}</div>
+      <div><h3 style="margin:0 0 8px;font-size:14px">Últimos 7 dias por cidade <span class="sub">· ${total7} acareaç${total7 === 1 ? 'ão' : 'ões'}</span></h3>
+        ${loc.length ? `<div style="display:grid;gap:8px">${top.map((x) => `<div style="display:grid;grid-template-columns:minmax(0,140px) 1fr 32px;gap:10px;align-items:center;font-size:13px"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.nome)}</span><span style="height:10px;border-radius:5px;background:var(--superficie-2);border:1px solid var(--linha);overflow:hidden"><i style="display:block;height:100%;width:${Math.max(4, Math.round(x.n / maxN * 100))}%;background:var(--ambar)"></i></span><b style="text-align:right">${x.n}</b></div>`).join('')}${resto.length ? `<div class="sub">Outras ${resto.length} cidade(s): ${resto.reduce((n, x) => n + x.n, 0)}</div>` : ''}</div><p class="sub" style="margin-top:8px">Conta reclamações por cidade, não culpa: lugares maiores tendem a ter mais.</p>` : '<div class="vazio"><b>Sem acareações</b>Nada nos últimos 7 dias.</div>'}</div></div>
+  </section>`;
 }
 
 /* ===================== NÃO RECEBIDOS ===================== */
