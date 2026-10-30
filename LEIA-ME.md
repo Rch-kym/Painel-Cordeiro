@@ -178,6 +178,15 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 ## Versão 1.20.10
 - Na gaveta do pacote, o botão **Ver na saca** (no lugar de "Abrir ficha completa") leva à aba Sacas, abre a saca onde o pacote ficou (no dia dela) e destaca o pacote na lista, já rolado para ele. Sem saca registrada, o botão fica desligado.
 
+## Versão 1.26.0
+- **Melhor no navegador do celular**:
+  - corrigido um erro na aba **Equipe** (a busca da lista falhava ao abrir a tela);
+  - as listas em cartões (Acareações, Produtividade, Motoristas) ficam em duas colunas e ocupam bem menos rolagem;
+  - no toque, botões, campos e links têm altura confortável (44 px) e os campos não dão mais zoom automático no iPhone;
+  - o botão "Buscar seção" não mostra mais o atalho Ctrl K no celular;
+  - respeita o entalhe e a barra inferior dos aparelhos novos.
+- Sem SQL novo.
+
 ## Versão 1.25.0
 - **Acareações** ganhou, no topo, o cartão **Acareações hoje**:
   - a situação do robô de envio automático: ativo, fora do horário, WhatsApp desconectado, iMile precisando de login, falhas seguidas, ou "sem sinal" quando o computador para de responder por 15 min dentro do horário;
