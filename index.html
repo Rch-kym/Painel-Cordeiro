@@ -659,7 +659,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.26.0</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.26.1</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -2996,7 +2996,7 @@ function blocoSla(sla, col, semTabela, hoje, pct) {
     <div class="cartao"><div class="cartao-topo"><h2>SLA — progresso</h2><span class="sub">${esc(fmtPct(taxa))} de ${esc(String(pct))}% exigidos · atualizado ${esc(horaCurta(sla.atualizado_em))}</span></div>
       <div style="position:relative;height:16px;background:var(--linha);border-radius:9px;overflow:hidden"><div style="height:100%;width:${Math.min(100, taxa).toFixed(1)}%;background:var(${bateu ? '--ok' : cor === 'erro' ? '--erro' : '--ambar'})"></div>
       <div style="position:absolute;top:0;bottom:0;left:${Math.min(100, pct)}%;width:2px;background:var(--tinta)"></div></div>
-      <p class="sub" style="margin:10px 0 0">O universo é fixado ao longo do dia: todo pacote que aparece como “vence hoje” entra e continua contando depois de baixado. Baixas de ${esc(String(sla.baixas_total))} no total (inclui adiantadas, que não entram na conta). Pacotes que venciam hoje e foram baixados antes da primeira coleta (${esc(horaCurta(sla.primeira_coleta))}) não aparecem.</p></div>` + curva;
+      <p class="sub" style="margin:10px 0 0">Os números vêm do Relatório de Pontualidade do iMile (aba Detalhes): total = pacotes que vencem hoje; entregues = os que já tiveram baixa dentro do prazo; faltam = total menos entregues. Hoje há ${esc(String(sla.baixas_total))} baixa(s) com hora de entrega registrada.</p></div>` + curva;
 }
 // RESUMO DO FIM DO DIA (só no painel): texto pronto para copiar e colar no WhatsApp.
 function textoResumoDia(dia, r, sla, cc, motoristas, abertas, pct) {

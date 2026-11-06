@@ -220,3 +220,6 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 
 ## Versão 1.20.11
 - Repetidos bipados na etapa de **chegada** deixam de aparecer: a lista de Repetidos (Erros e divergências), a prévia e a gaveta do pacote mostram só os de **atribuição**. (A ficha completa continua com o histórico inteiro.) Repetidos antigos sem a marca da etapa continuam aparecendo.
+
+## 1.26.1
+- O texto do SLA agora explica que a fonte é o Relatório de Pontualidade do iMile (total do relatório menos entregues). Os números vêm da extensão 3.24.0.
