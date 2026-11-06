@@ -617,6 +617,70 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
   .tabela.empilha a{display:inline-block;padding:8px 0}
   input[type=checkbox]{width:24px;height:24px}
 }
+
+/* ===== Painel do dia e celular (1.27.0) ===== */
+.pd-placar{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,.8fr);gap:14px;margin-bottom:14px}
+.pd-placar>div{display:flex;min-width:0}.pd-placar>div>*{flex:1}
+.pd-card{border-radius:16px;padding:20px 22px;background:var(--superficie);color:var(--tinta);border:1px solid var(--linha);display:flex;flex-direction:column;min-width:0}
+.pd-sla,.pd-sla7{background:#0F2A43;color:#fff;border-color:#0F2A43}.pd-sla7{background:#16314A;border-color:#16314A}
+.pd-t{display:flex;justify-content:space-between;gap:8px;font-size:12.5px;font-weight:700;letter-spacing:.03em;color:var(--tinta-2)}
+.pd-sla .pd-t,.pd-sla7 .pd-t{color:#C8D4E0}
+.pd-n{font-size:60px;font-weight:800;line-height:1;margin:10px 0 4px;font-stretch:112%;color:var(--ambar);font-variant-numeric:tabular-nums}
+.pd-n.ok{color:#5CCB93}.pd-n-vazio{color:#8CA0B5}
+.pd-cheg .pd-n{color:var(--tinta);font-size:50px}
+.pd-l{margin:0;font-size:14px;color:inherit}.pd-cheg .pd-l{color:var(--tinta-2)}
+.pd-tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:99px;background:rgba(232,163,61,.2);color:#F0AE45}.pd-tag.ok{background:rgba(92,203,147,.2);color:#5CCB93}
+.pd-barra{height:12px;background:#33495E;border-radius:99px;position:relative;margin:14px 0 6px}.pd-barra i{display:block;height:100%;border-radius:99px;background:var(--ambar)}.pd-barra b{position:absolute;top:-4px;width:3px;height:20px;background:#fff;border-radius:2px}
+.pd-cheg .pd-barra{background:var(--linha)}.pd-cheg .pd-barra b{background:var(--tinta)}
+.pd-rod{display:flex;justify-content:space-between;gap:8px;font-size:12px;color:#C8D4E0}.pd-cheg .pd-rod{color:var(--tinta-2)}
+.pd-ritmo{margin:12px 0;font-size:13px;color:var(--tinta-2)}.pd-ritmo b{color:var(--tinta)}.pd-cheg .btn{align-self:flex-start;margin-top:auto}
+.pd-ex{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:14px;border-top:1px solid rgba(255,255,255,.18);padding-top:12px}.pd-ex div{font-size:12px;color:#C8D4E0}.pd-ex b{display:block;font-size:20px;color:#fff}
+.pd-fonte{margin:12px 0 0;font-size:11.5px;color:#9FB2C6}.pd-cheg .pd-fonte{color:var(--tinta-2)}
+.pd-mini{display:flex;align-items:flex-end;gap:6px;height:130px;position:relative;margin-top:16px}
+.pd-mini span{flex:1;background:#6F8399;border-radius:3px 3px 0 0;min-height:4px}.pd-mini span.ruim{background:var(--ambar)}.pd-mini span.hoje{background:#fff}.pd-mini span.hoje.ruim{background:#F0AE45}.pd-mini span.sem{background:#2B4259;opacity:.7}
+.pd-linha{position:absolute;left:0;right:0;border-top:1.5px dashed rgba(255,255,255,.7);pointer-events:none}
+.pd-dias{display:flex;gap:6px;margin-top:4px}.pd-dias span{flex:1;text-align:center;font-size:10.5px;color:#9FB2C6}
+.pd-faixa{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin-bottom:14px}.pd-faixa:empty{display:none}
+.pd-al{border-radius:12px;padding:11px 13px;border:1px solid var(--linha);background:var(--superficie);display:flex;flex-direction:column;gap:2px;text-align:left;cursor:pointer;min-height:84px;color:var(--tinta)}
+.pd-al small{font-size:11px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--tinta-2)}.pd-al b{font-size:26px;line-height:1.1}.pd-al span{font-size:12px;color:var(--tinta-2)}
+.pd-al.erro{background:var(--erro-fundo);border-color:var(--erro)}.pd-al.erro b,.pd-al.erro small{color:var(--erro)}
+.pd-al.alerta{background:var(--alerta-fundo);border-color:var(--alerta)}.pd-al.alerta b,.pd-al.alerta small{color:var(--alerta)}.pd-al.ok b{color:var(--ok)}
+.pd-grade{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(0,1fr);gap:14px;align-items:start}
+.pd-rota{display:grid;grid-template-columns:minmax(86px,.9fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:9px 0;border-top:1px solid var(--linha);font-size:13px;min-height:44px}.pd-rota:first-of-type{border-top:0}
+.pd-rota span{color:var(--tinta-2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.pd-rota em{font-style:normal;font-size:12px;color:var(--tinta-2);white-space:nowrap}
+.pd-rota.par em{color:var(--alerta);font-weight:700}.pd-rota.fim em{color:var(--ok)}
+.pd-grade .tabela th:nth-child(5),.pd-grade .tabela td.avanco{display:none}
+.pd-apoio{display:flex;flex-wrap:wrap;gap:8px 26px;padding-top:10px;margin-top:6px;border-top:1px dashed var(--linha);color:var(--tinta-2);font-size:12.5px}.pd-apoio b{color:var(--tinta);font-size:15px;margin-right:4px}
+@media (max-width:1100px){.pd-placar{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.pd-placar>div:last-child{grid-column:1/-1}.pd-grade{grid-template-columns:1fr}}
+.nav-inferior{display:none}
+@media (max-width:860px){
+  .pd-placar{grid-template-columns:1fr;gap:10px}.pd-card{padding:16px}.pd-n{font-size:52px}.pd-cheg .pd-n{font-size:42px}
+  .pd-faixa{grid-template-columns:1fr 1fr;gap:8px}.pd-al b{font-size:22px}
+  .pd-placar>div:last-child{grid-column:auto}
+  .menu-mobile{display:none!important}
+  .pagina-topo h1{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+  .pagina-topo{margin-bottom:14px;padding-bottom:12px}
+  .workspace-bar{min-height:0;padding:8px 16px}.workspace-bar strong{font-size:16px}.workspace-bar small,#uxAtalhos{display:none}
+  main{padding-top:14px!important}
+  #pdRotas{display:none}
+  #abas button{flex-direction:row;align-items:center;justify-content:flex-start;gap:12px;text-align:left}
+  #abas button svg{flex:none}
+  .topo-m{min-height:52px}
+  .nav-inferior{display:grid;grid-template-columns:repeat(var(--ni-n,5),1fr);position:fixed;left:0;right:0;bottom:0;z-index:200;background:var(--superficie);border-top:1px solid var(--linha);padding:4px 4px calc(6px + env(safe-area-inset-bottom,0px));box-shadow:0 -4px 16px rgba(16,24,40,.08)}
+  .nav-inferior[hidden]{display:none}
+  .nav-inferior button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:54px;border:0;background:none;border-radius:12px;color:var(--tinta-2);font-size:11px;font-weight:600;position:relative;cursor:pointer}
+  .nav-inferior svg{width:24px;height:24px;stroke:currentColor;fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+  .nav-inferior button[aria-current=page]{color:var(--azul)}.nav-inferior button[aria-current=page]::before{content:"";position:absolute;top:0;width:28px;height:3px;border-radius:0 0 3px 3px;background:var(--azul)}
+  .nav-inferior .ni-bd{position:absolute;top:3px;left:calc(50% + 6px);background:var(--erro);color:#fff;font-size:10px;font-weight:800;border-radius:99px;padding:0 5px;min-width:18px;height:16px;display:grid;place-items:center}
+  .nav-inferior .ni-bd[hidden]{display:none}
+  main{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important}
+  /* menu lateral vira folha "Mais" */
+  .lateral{inset:auto 0 0 0!important;width:100%!important;height:auto!important;max-height:88dvh;border-radius:22px 22px 0 0;transform:translateY(105%)!important;padding:14px 14px calc(10px + env(safe-area-inset-bottom,0px))!important;box-shadow:0 -10px 40px rgba(0,0,0,.35)}
+  .lateral.nav-open{transform:none!important}
+  .lateral .marca{display:none!important}
+  .lateral .menu-fechar{order:-1;margin-bottom:10px}
+  #abas{min-height:0}
+}
 </style>
 <link rel="icon" type="image/png" href="data:image/png;base64,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" />
 <link rel="apple-touch-icon" href="data:image/png;base64,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" />
@@ -659,7 +723,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <div class="nav-empty" id="navVazio" hidden>Nenhuma seção encontrada.</div>
     <div class="lateral-pe">
       <div class="eu"><span class="av" id="euAv"></span><div><b id="euNome"></b><span id="quemSou"></span></div></div>
-      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.26.1</div>
+      <div class="sub" style="color:var(--lateral-tinta);font-size:11px;text-align:center" id="versaoPainel">Painel 1.27.0</div>
       <div class="pe-botoes"><button id="btnTema" class="btn-lat" type="button">Tema auto</button><button id="btnSair" class="btn-lat" type="button">Sair</button></div>
     </div>
   </aside>
@@ -671,6 +735,7 @@ a.awb.visto{text-decoration:underline line-through;opacity:.62}
     <main id="conteudo" tabindex="-1"></main>
   </div>
 </div>
+<nav id="navInferior" class="nav-inferior" aria-label="Atalhos" hidden></nav>
 <button id="navBackdrop" class="nav-backdrop" aria-label="Fechar menu" tabindex="-1" type="button"></button>
 <div id="toasts" role="status" aria-live="polite"></div>
 
@@ -1165,6 +1230,7 @@ async function iniciarApp() {
     return cab + `<button type="button" data-aba="${a.id}" aria-current="false">${ICONES[a.id]}<span class="nome-longo">${esc(a.nome)}</span><span class="nome-curto">${esc(a.curto)}</span></button>`;
   }).join('');
   window.ABAS_OK = lista.map((a) => a.id);
+  montarNavInferior(lista);
   irPara(window.ABAS_OK.includes(E.aba) || SUBTELAS[E.aba] ? E.aba : lista[0].id);
   iniciarTempoReal();
   verificarExtravios(false); clearInterval(window.timerExtravioGlobal); window.timerExtravioGlobal = setInterval(() => { if (!document.hidden && E.sessao) verificarExtravios(false); }, 180000);
@@ -1325,14 +1391,84 @@ const ICO_FEITA = '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path
 let timerPainel = null, tokenPainel = 0;
 function telaPainel() {
   $('conteudo').innerHTML = cabecalho('Painel do dia', '<span id="pdSub"></span>',
-    '<button class="btn" id="pdHoje" type="button">Hoje</button><button class="btn" id="pdRotas" type="button">Todas as rotas</button><button class="btn main" id="pdCsv" type="button">Exportar relatório</button>') + '<div id="pdExtravio"></div><div id="pdMeta">' + esqueleto() + '</div><div id="pdCorpo">' + esqueleto() + '</div>';
-  $('pdHoje').addEventListener('click', () => { carregarPainel(false); uxCarregarMetaPainel(); });
+    '<button class="btn" id="pdHoje" type="button">Hoje</button><button class="btn" id="pdRotas" type="button">Todas as rotas</button><button class="btn main" id="pdCsv" type="button">Exportar relatório</button>') + '<div class="pd-placar"><div id="pdSla"></div><div id="pdMeta">' + esqueleto() + '</div><div id="pdSla7"></div></div><div id="pdFaixa" class="pd-faixa"></div><div id="pdCorpo">' + esqueleto() + '</div>';
+  $('pdHoje').addEventListener('click', () => { carregarPainel(false); uxCarregarMetaPainel(); uxCarregarSlaPainel(); });
   $('pdRotas').addEventListener('click', () => irPara('motoristas'));
   clearInterval(timerPainel);
-  timerPainel = setInterval(() => { if (E.aba === 'painel' && !document.hidden) carregarPainel(true); uxCarregarMetaPainel(); }, 60000);
+  timerPainel = setInterval(() => { if (E.aba === 'painel' && !document.hidden) carregarPainel(true); uxCarregarMetaPainel(); uxCarregarSlaPainel(); }, 60000);
   carregarPainel(false);
   uxCarregarMetaPainel();
+  uxCarregarSlaPainel();
   desenharWidgetExtravio();
+}
+
+/* ---------- Painel do dia 1.27: faixa de ação e SLA ---------- */
+let pdFx = null, uxSlaToken = 0;
+function desenharFaixa() {
+  const w = $('pdFaixa'); if (!w || E.aba !== 'painel') return;
+  const d = dadosExt, fx = pdFx, f = [];
+  const ficha = (cls, titulo, n, sub, alvo) => `<button type="button" class="pd-al ${cls}" data-pdir="${alvo}"><small>${esc(titulo)}</small><b>${esc(String(n))}</b><span>${esc(sub)}</span></button>`;
+  if (d && !d.erroSql && !d.semFoto) {
+    f.push(ficha(d.n2.length ? 'erro' : 'ok', 'Risco de extravio', d.n2.length, d.n2.length ? 'críticos · 5+ dias em rota' : 'nenhum crítico', 'extravio'));
+    const c = d.ciclo || {};
+    f.push(ficha(c.estado === 'ok' ? 'ok' : 'alerta', 'Auditoria 4+ dias', c.estado === 'ok' ? 'Em dia' : (c.estado === 'atrasada' ? 'Atrasada' : 'Pendente'), (d.n1.length || 0) + ' em atenção · ' + (c.texto || ''), 'extravio'));
+  } else if (d && d.erroSql) {
+    f.push(ficha('alerta', 'Risco de extravio', '!', 'rode 12-extravio.sql no Supabase', 'extravio'));
+  }
+  if (fx) {
+    f.push(ficha(fx.paradas.length ? 'alerta' : 'ok', 'Rotas paradas', fx.paradas.length, fx.paradas.length ? 'sem bipe há +3h · ' + fx.paradas.join(', ') : 'nenhuma agora', 'motoristas'));
+    if (fx.adm) f.push(ficha(fx.vencidas ? 'erro' : 'ok', 'Cobranças vencidas', fx.vencidas, 'de ' + fx.abertas + ' abertas', 'cobrancas'));
+    const oc = fx.erro + fx.div;
+    f.push(ficha(oc ? 'erro' : 'ok', 'Ocorrências', oc, oc ? fx.erro + ' erro(s) · ' + fx.div + ' divergência(s)' : 'nenhuma hoje', oc ? (fx.erro ? 'erro' : 'divergencia') : 'problemas'));
+  }
+  w.innerHTML = f.join('');
+  w.querySelectorAll('[data-pdir]').forEach((b) => b.addEventListener('click', () => {
+    const a = b.dataset.pdir;
+    if (a === 'erro' || a === 'divergencia') { estPro.tipo2 = a; estPro.de = hojeSP(); estPro.ate = hojeSP(); estPro.tipo = 'hoje'; irPara('problemas'); }
+    else irPara(a);
+  }));
+}
+const SLA_META = 95;
+function slaCalc(x) {
+  const u = Number(x.universo) || 0, n = Number(x.baixas_universo) || 0, tot = Number(x.baixas_total) || 0, pend = Number(x.pendentes) || 0;
+  const alvo = Math.ceil(u * SLA_META / 100 - 1e-9);
+  return { u, n, tot, pend, pct: u ? n * 100 / u : 0, alvo, faltam: Math.max(0, alvo - n), atraso: Math.max(0, tot - n), melhor: u ? (n + pend) * 100 / u : 0 };
+}
+async function uxCarregarSlaPainel() {
+  const a = $('pdSla'), b = $('pdSla7'); if (!a || !b || E.aba !== 'painel') return;
+  const tk = ++uxSlaToken, hoje = hojeSP(), de = somarDias(hoje, -6);
+  try {
+    const itens = await api('GET', '/rest/v1/sla_dia?select=dia,universo,baixas_universo,baixas_total,pendentes,atrasados,atualizado_em&dia=gte.' + eFiltroSeguro(de) + '&dia=lte.' + eFiltroSeguro(hoje) + '&order=dia.asc');
+    if (tk !== uxSlaToken || !a.isConnected) return;
+    const por = new Map((itens || []).map((x) => [x.dia, x]));
+    const h = por.get(hoje);
+    if (!h || !(Number(h.universo) > 0)) {
+      a.innerHTML = `<section class="pd-card pd-sla"><div class="pd-t"><span>SLA DE ENTREGA — HOJE</span><span>meta ${SLA_META}%</span></div><div class="pd-n pd-n-vazio">—</div><p class="pd-l">A extensão ainda não enviou o SLA de hoje. Abra o iMile com a extensão ligada.</p></section>`;
+    } else {
+      const c = slaCalc(h), ok = c.pct >= SLA_META;
+      const hora = h.atualizado_em ? new Intl.DateTimeFormat('pt-BR', { timeZone: 'America/Sao_Paulo', hour: '2-digit', minute: '2-digit' }).format(new Date(h.atualizado_em)) : '';
+      a.innerHTML = `<section class="pd-card pd-sla" aria-label="SLA de entrega de hoje"><div class="pd-t"><span>SLA DE ENTREGA — HOJE</span><span>meta ${SLA_META}%</span></div>
+        <div class="pd-n ${ok ? 'ok' : ''}">${esc(fmtPct(Math.floor(c.pct * 10) / 10))}</div>
+        <p class="pd-l">${c.n} no prazo de ${c.u} pacotes · ${ok ? '<span class="pd-tag ok">meta batida</span>' : '<span class="pd-tag">faltam ' + c.faltam + ' para a meta</span>'}</p>
+        <div class="pd-barra" role="progressbar" aria-label="SLA de hoje" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.round(c.pct)}" aria-valuetext="${esc(fmtPct(c.pct))}; meta ${SLA_META}%"><i style="width:${Math.min(100, c.pct)}%"></i><b style="left:${SLA_META}%"></b></div>
+        <div class="pd-rod"><span>meta: ${c.alvo} no prazo</span><span>${c.u}</span></div>
+        <div class="pd-ex"><div><b>${c.pend}</b>pendentes</div><div><b>${c.atraso}</b>entregues com atraso</div><div><b>${esc(fmtPct(Math.floor(c.melhor * 10) / 10))}</b>melhor resultado possível</div></div>
+        ${hora ? `<p class="pd-fonte">Relatório de Pontualidade do iMile · coletado às ${esc(hora)}</p>` : ''}</section>`;
+    }
+    // últimos 7 dias
+    const dias = []; for (let i = 6; i >= 0; i--) dias.push(somarDias(hoje, -i));
+    const barras = dias.map((dia) => {
+      const x = por.get(dia), sem = !x || !(Number(x.universo) > 0), c = sem ? null : slaCalc(x);
+      const alt = sem ? 6 : Math.max(8, Math.min(100, (c.pct - 70) / 30 * 100));
+      const dsem = new Intl.DateTimeFormat('pt-BR', { weekday: 'short', timeZone: 'UTC' }).format(new Date(dia + 'T12:00:00Z')).replace('.', '');
+      const tit = sem ? dia + ': sem dado' : dia + ': ' + fmtPct(c.pct) + ' (' + c.n + ' de ' + c.u + ')';
+      return `<span class="${sem ? 'sem' : c.pct < SLA_META ? 'ruim' : ''} ${dia === hoje ? 'hoje' : ''}" style="height:${alt}%" title="${esc(tit)}"></span>`;
+    }).join('');
+    const rot = dias.map((dia) => `<span>${esc(dia === hoje ? 'hoje' : new Intl.DateTimeFormat('pt-BR', { weekday: 'short', timeZone: 'UTC' }).format(new Date(dia + 'T12:00:00Z')).replace('.', ''))}</span>`).join('');
+    b.innerHTML = `<section class="pd-card pd-sla7"><div class="pd-t"><span>SLA — ÚLTIMOS 7 DIAS</span></div><div class="pd-mini"><div class="pd-linha" style="bottom:${(SLA_META - 70) / 30 * 100}%"></div>${barras}</div><div class="pd-dias">${rot}</div><p class="pd-fonte">Linha tracejada = meta ${SLA_META}%. Dias sem barra: a extensão não enviou o SLA.</p></section>`;
+  } catch (e) {
+    if (tk === uxSlaToken && a.isConnected) { a.innerHTML = `<section class="pd-card pd-sla"><div class="pd-t"><span>SLA DE ENTREGA — HOJE</span></div><p class="pd-l">SLA indisponível agora. ${esc(e.message)}</p></section>`; b.innerHTML = ''; }
+  }
 }
 async function carregarPainel(silencioso) {
   const meu = ++tokenPainel, hoje = hojeSP();
@@ -1354,15 +1490,6 @@ async function carregarPainel(silencioso) {
     const vencidas = (cob || []).filter((c) => c.prazo_ate && c.prazo_ate < hoje).length;
     const ocorr = t.erro + t.divergencia;
     $('pdSub').textContent = dataExtenso(hoje) + ' · atualizado às ' + horaAgora();
-    const tile = (nome, n, sub, cls, alvo) => `<${alvo ? 'button type="button" data-ir="' + alvo + '"' : 'div'} class="tile ${cls || ''}"><span>${esc(nome)}</span><b>${esc(n)}</b><small>${esc(sub)}</small></${alvo ? 'button' : 'div'}>`;
-    const tiles = [
-      tile('Registros por etapa', t.pacotes, 'chegadas + atribuições; não são pacotes únicos'),
-      tile('Atribuídos', t.atribuicao, t.chegada + ' chegada' + (t.chegada === 1 ? '' : 's')),
-      tile('Ocorrências', ocorr, ocorr ? t.erro + ' erro(s) · ' + t.divergencia + ' divergência(s)' : 'nenhuma hoje', ocorr ? 'erro' : 'ok', 'problemas'),
-      tile('Rotas em andamento', and.length, feitas + ' concluída' + (feitas === 1 ? '' : 's'), paradas.length ? 'alerta' : '', 'motoristas'),
-      adm ? tile('Cobranças abertas', (cob || []).length, vencidas ? vencidas + ' com prazo vencido' : 'nenhuma vencida', vencidas ? 'erro' : '', 'cobrancas')
-          : tile('Repetidos', t.repetido, t.repetido ? 'pacotes bipados de novo' : 'nenhum hoje'),
-    ].join('');
     const h = porHora(ev.itens), pk = pico(h);
     let barras = '';
     if (ev.itens.length) {
@@ -1370,28 +1497,31 @@ async function carregarPainel(silencioso) {
       const ini = Math.max(0, Math.min(8, de)), fim = Math.min(23, Math.max(17, ate)), mh = Math.max(1, ...h);
       for (let i = ini; i <= fim; i++) barras += `<div class="${h[i] === pk.valor && pk.valor ? 'pico' : ''}" title="${i}h: ${h[i]} pacotes"><em>${h[i] || ''}</em><i style="height:${Math.round(h[i] / mh * 100)}%"></i><span>${String(i).padStart(2, '0')}h</span></div>`;
     }
-    const atencao = [];
-    if (t.erro) atencao.push(['erro', `${t.erro} erro${t.erro > 1 ? 's' : ''} de bipagem hoje`, 'Veja quem errou e corrija com a equipe.', 'erro']);
-    if (t.divergencia) atencao.push(['alerta', `${t.divergencia} divergência${t.divergencia > 1 ? 's' : ''} de rota`, 'Pacotes bipados fora da rota esperada.', 'divergencia']);
-    if (paradas.length) atencao.push(['alerta', `${paradas.length} rota${paradas.length > 1 ? 's' : ''} sem bipe há mais de 3 horas`, paradas.map((r) => r.rota).join(', ') + '.', null]);
-    if (vencidas) atencao.push(['erro', `${vencidas} cobrança${vencidas > 1 ? 's' : ''} com prazo vencido`, 'Cobre o motorista ou atualize a situação.', null]);
-    // A meta individual não mede a operação: a meta da chegada está no resumo de conciliação.
-    if (!atencao.length) atencao.push(['ok', 'Nada pendente agora', lista.length ? 'Sem erros, divergências ou rotas paradas.' : 'Ainda não há bipes hoje.', null]);
     const rotaDe = new Map(); for (const r of sr) for (const p of r.pessoas) if (!rotaDe.has(p.id) || !p.concluida) rotaDe.set(p.id, r.rota);
     const escala = Math.max(1, meta, ...lista.map((o) => o.atribuicao)) * 1.02;
-    const linhas = lista.slice(0, 8).map((o) => `<tr><td><b>${esc(o.nome)}</b></td><td data-r="Rota">${esc(rotaDe.get(o.id) || '—')}</td><td class="n" data-r="Atribuídos">${o.atribuicao}</td><td class="n" data-r="Ocorrências">${o.erro + o.divergencia}</td>
+    const linhas = lista.slice(0, 5).map((o) => `<tr><td><b>${esc(o.nome)}</b></td><td data-r="Rota">${esc(rotaDe.get(o.id) || '—')}</td><td class="n" data-r="Atribuídos">${o.atribuicao}</td><td class="n" data-r="Ocorrências">${o.erro + o.divergencia}</td>
       <td class="avanco"><span class="barra-av"><i style="width:${(o.atribuicao / escala * 100).toFixed(1)}%"></i></span></td></tr>`).join('');
+    const ult = new Map(); for (const r of rotas || []) { if (!r.concluida_em) { const tt = new Date(r.atualizada_em).getTime(); if (!ult.has(r.rota) || tt > ult.get(r.rota)) ult.set(r.rota, tt); } }
+    const faz = (tt) => { if (!tt) return '—'; const m = Math.max(0, Math.round((Date.now() - tt) / 60000)); return m < 60 ? m + ' min' : Math.floor(m / 60) + 'h' + String(m % 60).padStart(2, '0'); };
+    const ordemR = (r) => (r.estado === 'concluida' ? 2 : paradas.includes(r) ? 0 : 1);
+    const rotaLinhas = sr.slice().sort((a, b) => ordemR(a) - ordemR(b)).slice(0, 6).map((r) => {
+      const par = paradas.includes(r), cls = r.estado === 'concluida' ? 'fim' : par ? 'par' : 'and';
+      const txt = r.estado === 'concluida' ? 'concluída' : (par ? 'parada há ' : 'último bipe há ') + faz(ult.get(r.rota));
+      return `<div class="pd-rota ${cls}"><b>${esc(r.rota)}</b><span>${esc(r.pessoas.map((x) => x.nome).join(', '))}</span><em>${esc(txt)}</em></div>`;
+    }).join('');
+    pdFx = { erro: t.erro, div: t.divergencia, paradas: paradas.map((r) => r.rota), vencidas, abertas: (cob || []).length, adm };
+    desenharFaixa();
     $('pdCorpo').innerHTML = `
-      <div class="tiles">${tiles}</div>
-      <div class="grade2">
-        <section class="cartao"><div class="cartao-topo"><h2>Bipagens por hora</h2><span class="sub">Eventos de chegada e atribuição${pk.valor ? ' · pico às ' + pk.hora + 'h' : ''}</span></div>
-          ${ev.itens.length ? `<div class="ritmo alto">${barras}</div>` : '<div class="vazio">Sem bipes por enquanto. Os bipes aparecem aqui assim que alguém bipar.</div>'}</section>
-        <section class="cartao"><div class="cartao-topo"><h2>Precisa de atenção</h2></div>
-          <ul class="atencao">${atencao.map(([c, a, b, alvo]) => `<li class="${c}"><${alvo ? 'button type="button" data-ir="' + alvo + '"' : 'div'}><b>${esc(a)}</b><span>${esc(b)}</span></${alvo ? 'button' : 'div'}></li>`).join('')}</ul></section>
+      <div class="pd-grade">
+        <section class="cartao"><div class="cartao-topo"><h2>Rotas em andamento</h2><span class="sub">${and.length} em andamento · ${feitas} concluída${feitas === 1 ? '' : 's'}</span></div>
+          ${rotaLinhas || '<div class="vazio">Nenhuma rota iniciada hoje.</div>'}</section>
+        <section class="cartao"><div class="cartao-topo"><h2>Produtividade por motorista</h2><button class="btn mini" id="pdVer" type="button">Ver todos</button></div>
+          ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Colaborador</th><th>Rota</th><th class="n">Atribuídos</th><th class="n">Ocorrências</th><th>Atribuições${meta ? ' (meta individual ' + meta + ')' : ''}</th></tr></thead><tbody>${linhas}</tbody></table></div>`
+            : '<div class="vazio"><b>Nenhum bipe hoje</b>O ranking aparece assim que alguém bipar com a Nuvem Cordeiro ligada.</div>'}</section>
       </div>
-      <section class="cartao"><div class="cartao-topo"><h2>Produtividade por motorista</h2><button class="btn mini" id="pdVer" type="button">Ver todos</button></div>
-        ${lista.length ? `<div class="rolagem"><table class="tabela empilha"><thead><tr><th>Colaborador</th><th>Rota</th><th class="n">Atribuídos</th><th class="n">Ocorrências</th><th>Atribuições${meta ? ' (meta individual ' + meta + ')' : ''}</th></tr></thead><tbody>${linhas}</tbody></table></div>`
-          : '<div class="vazio"><b>Nenhum bipe hoje</b>O ranking aparece assim que alguém bipar com a Nuvem Cordeiro ligada.</div>'}</section>`;
+      <section class="cartao"><div class="cartao-topo"><h2>Bipagens por hora</h2><span class="sub">Eventos de chegada e atribuição${pk.valor ? ' · pico às ' + pk.hora + 'h' : ''}</span></div>
+        ${ev.itens.length ? `<div class="ritmo alto">${barras}</div>` : '<div class="vazio">Sem bipes por enquanto. Os bipes aparecem aqui assim que alguém bipar.</div>'}
+        <div class="pd-apoio"><span><b>${t.pacotes}</b> registros por etapa</span><span><b>${t.atribuicao}</b> atribuídos</span><span><b>${t.chegada}</b> chegadas</span><span><b>${and.length}</b> rotas em andamento</span><span><b>${t.repetido}</b> repetidos</span></div></section>`;
     document.querySelectorAll('#pdCorpo [data-ir]').forEach((b) => b.addEventListener('click', () => {
       const a = b.dataset.ir;
       if (a === 'erro' || a === 'divergencia') { estPro.tipo2 = a; estPro.de = hoje; estPro.ate = hoje; estPro.tipo = 'hoje'; irPara('problemas'); }
@@ -2216,6 +2346,7 @@ function desenharExtravioGlobal() {
   const d = dadosExt, caixa = $('alertaExtravio');
   if (E.aba === 'extravio' && $('extCorpo')) desenharExtravio();
   desenharWidgetExtravio();
+  navInfBadge(d && !d.semFoto && !d.erroSql ? d.n2.length + d.n1.length : 0);
   const nav = document.querySelector('#abas [data-aba="extravio"]');
   if (nav) { let b = nav.querySelector('.nav-extravio'); const t = d && !d.semFoto && !d.erroSql ? d.n2.length + d.n1.length : 0; if (!b) { b = document.createElement('span'); b.className = 'nav-extravio'; nav.appendChild(b); } b.textContent = t || ''; b.hidden = !t; b.classList.toggle('crit', !!(d && d.n2 && d.n2.length)); }
   if (!caixa) return;
@@ -2241,17 +2372,7 @@ function modalCriticoExtravio(d) {
 }
 
 /* ---- Widget no Painel do dia ---- */
-function desenharWidgetExtravio() {
-  const w = $('pdExtravio'); if (!w) return;
-  const d = dadosExt; if (!d) { w.innerHTML = ''; return; }
-  if (d.erroSql) { w.innerHTML = '<div class="aviso erro">Risco de extravio: rode o script <b>12-extravio.sql</b> no Supabase.</div>'; return; }
-  if (d.semFoto) { w.innerHTML = '<button type="button" class="ext-widget" data-ir="extravio"><b>Risco de extravio</b><span>Nenhum Backlog enviado ainda. Gere a lista na extensão.</span></button>'; const b0 = w.querySelector('button'); if (b0) b0.addEventListener('click', () => irPara('extravio')); return; }
-  const c = d.ciclo, cls = c.estado === 'ok' ? 'ok' : c.estado === 'atrasada' ? 'crit' : 'aten';
-  w.innerHTML = `<button type="button" class="ext-widget ${d.n2.length ? 'tem-crit' : ''}" data-ir="extravio" aria-label="Abrir Risco de extravio"><div class="ew-tit">Risco de extravio</div>
-    <div class="ew-nums"><span class="ew-n crit"><b>${d.n2.length}</b><small>🔴 crítico · 5+ dias em rota</small></span><span class="ew-n aten"><b>${d.n1.length}</b><small>🟡 atenção · 4+ dias parados</small></span></div>
-    <div class="ew-ciclo ${cls}">${esc(c.texto)}</div>${d.velho ? '<div class="ew-vel">Backlog com mais de 24 h — gere uma lista nova na extensão.</div>' : ''}</button>`;
-  const bt = w.querySelector('[data-ir]'); if (bt) bt.addEventListener('click', () => irPara('extravio'));
-}
+function desenharWidgetExtravio() { desenharFaixa(); }
 
 /* ---- Tela ---- */
 function telaExtravio() {
@@ -3286,7 +3407,7 @@ function uxAbrirMenu() {
   $('menuLateral').setAttribute('role','dialog'); $('menuLateral').setAttribute('aria-modal','true');
   $('navBackdrop').classList.add('show'); $('btnMenu').setAttribute('aria-expanded','true');
   $('telaApp').querySelector('.coluna').inert = true;
-  document.body.style.overflow = 'hidden'; $('navBusca').focus();
+  document.body.style.overflow = 'hidden'; $('btnMenuFechar').focus();
 }
 function uxFecharMenu() {
   const aberto = $('menuLateral')?.classList.contains('nav-open');
@@ -3297,7 +3418,37 @@ function uxFecharMenu() {
   document.body.style.overflow = '';
   if (aberto && uxMenuOrigem?.isConnected) uxMenuOrigem.focus();
 }
+const NAVINF_IC = {
+  painel: '<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"/><rect x="14" y="3" width="7" height="5" rx="1.5"/><rect x="14" y="12" width="7" height="9" rx="1.5"/><rect x="3" y="16" width="7" height="5" rx="1.5"/></svg>',
+  motoristas: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h6a4 4 0 0 0 0-8h-4a4 4 0 0 1 0-8h6"/></svg>',
+  chegada: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 7l9-4 9 4-9 4-9-4z"/><path d="M3 7v10l9 4 9-4V7"/><path d="M12 11v10"/></svg>',
+  extravio: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l10 18H2L12 3z"/><path d="M12 10v5M12 18h.01"/></svg>',
+  bipagem: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 7V5a1 1 0 0 1 1-1h2M17 4h2a1 1 0 0 1 1 1v2M20 17v2a1 1 0 0 1-1 1h-2M7 20H5a1 1 0 0 1-1-1v-2"/><path d="M8 8v8M12 8v8M16 8v8"/></svg>',
+  mais: '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="5" cy="12" r="1.6"/><circle cx="12" cy="12" r="1.6"/><circle cx="19" cy="12" r="1.6"/></svg>'
+};
+function montarNavInferior(lista) {
+  const nav = $('navInferior'); if (!nav) return;
+  const ids = ['painel', 'motoristas', 'chegada', 'extravio', 'bipagem'].filter((i) => lista.some((a) => a.id === i)).slice(0, 4);
+  const curto = { painel: 'Painel', motoristas: 'Rotas', chegada: 'Chegada', extravio: 'Extravio', bipagem: 'Bipagem' };
+  nav.innerHTML = ids.map((i) => `<button type="button" data-ni="${i}" aria-current="false">${NAVINF_IC[i]}${i === 'extravio' ? '<span class="ni-bd" hidden></span>' : ''}<span>${curto[i]}</span></button>`).join('') +
+    `<button type="button" data-mais aria-haspopup="dialog">${NAVINF_IC.mais}<span>Mais</span></button>`;
+  nav.style.setProperty('--ni-n', ids.length + 1);
+  nav.hidden = false;
+  nav.querySelectorAll('[data-ni]').forEach((b) => b.addEventListener('click', () => irPara(b.dataset.ni)));
+  nav.querySelector('[data-mais]').addEventListener('click', uxAbrirMenu);
+  navInfAtual(E.aba);
+}
+function navInfAtual(id) {
+  const nav = $('navInferior'); if (!nav) return;
+  const alvo = id === 'produtividade' ? id : (SUBTELAS[id] ? 'bipagem' : id);
+  nav.querySelectorAll('[data-ni]').forEach((b) => b.setAttribute('aria-current', b.dataset.ni === alvo ? 'page' : 'false'));
+}
+function navInfBadge(n) {
+  const b = document.querySelector('#navInferior .ni-bd'); if (!b) return;
+  b.textContent = n > 99 ? '99+' : String(n); b.hidden = !n;
+}
 function uxAtualizarCabecalho(id) {
+  navInfAtual(id);
   const a = ABAS.find((a) => a.id === id), titulo = a?.nome || SUBTELAS[id] || 'Painel Cordeiro';
   if ($('uxSecao')) $('uxSecao').textContent = titulo;
   document.title = titulo + ' · Cordeiro';
@@ -3393,7 +3544,7 @@ async function uxCarregarMetaPainel(){
    const hora=new Intl.DateTimeFormat('pt-BR',{timeZone:'America/Sao_Paulo',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date());
    const [hh,mm]=hora.split(':').map(Number),[ch,cn]=r.corte.split(':').map(Number),resto=ch*60+cn-(hh*60+mm);
    const ritmo=batida?'Meta alcançada':resto>0?Math.ceil(r.faltam/(resto/60))+' pacotes/h':'Corte encerrado';
-   target.innerHTML=`<section class="meta-hero" aria-label="Meta da chegada de hoje"><div class="meta-hero-main"><div class="meta-hero-top"><h2>Meta da chegada do dia</h2><span>${esc(String(r.pct))}% exigidos</span></div><div class="meta-hero-value">${esc(fmtPct(r.taxa))}</div><p>${r.atribuidos} de ${r.universo} pacotes atribuídos${config?' · confira ajustes na meta':''}</p><div class="meta-progress" role="progressbar" aria-label="Percentual atribuído" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Math.round(r.taxa))}" aria-valuetext="${esc(fmtPct(r.taxa))} atribuídos; meta ${r.pct}%"><span style="width:${Math.min(100,r.taxa)}%"></span><i style="left:${Math.min(99,r.pct)}%"></i></div><div class="meta-hero-labels"><span>Meta: ${r.meta} pacotes</span><span>${batida?'Meta alcançada':'Faltam '+r.faltam+' para a meta'}</span></div></div><div class="meta-hero-side"><span class="sub">Até o corte das ${esc(r.corte)}</span><b>${esc(ritmo)}</b><p>${r.a_expedir} pacotes a expedir</p>${cm===null?'<p>Regra padrão; ajustes indisponíveis nesta consulta.</p>':''}<button class="btn" type="button" data-ux-meta>Detalhar meta do dia</button></div></section>`;
+   target.innerHTML=`<section class="pd-card pd-cheg" aria-label="Meta da chegada de hoje"><div class="pd-t"><span>META DA CHEGADA DO DIA</span><span>${esc(String(r.pct))}% exigidos</span></div><div class="pd-n">${esc(fmtPct(r.taxa))}</div><p class="pd-l">${r.atribuidos} de ${r.universo} pacotes atribuídos${config?' · confira ajustes na meta':''}</p><div class="pd-barra" role="progressbar" aria-label="Percentual atribuído" aria-valuemin="0" aria-valuemax="100" aria-valuenow="${Math.min(100,Math.round(r.taxa))}" aria-valuetext="${esc(fmtPct(r.taxa))} atribuídos; meta ${r.pct}%"><i style="width:${Math.min(100,r.taxa)}%"></i><b style="left:${Math.min(99,r.pct)}%"></b></div><div class="pd-rod"><span>Meta: ${r.meta} pacotes</span><span>${batida?'Meta alcançada':'Faltam '+r.faltam+' para a meta'}</span></div><p class="pd-ritmo">Até o corte das ${esc(r.corte)}: <b>${esc(ritmo)}</b> · ${r.a_expedir} a expedir</p>${cm===null?'<p class="pd-fonte">Regra padrão; ajustes indisponíveis nesta consulta.</p>':''}<button class="btn" type="button" data-ux-meta>Detalhar meta do dia</button></section>`;
   }
   target.querySelector('[data-ux-meta]')?.addEventListener('click',()=>irPara('meta'));
  }catch(e){if(token===uxMetaToken&&target.isConnected){target.innerHTML='<div class="meta-inline-empty"><p><b>Resumo da meta indisponível</b><br><span class="sub">'+esc(e.message)+'</span></p><button class="btn" type="button" data-ux-meta>Conferir meta</button></div>';target.querySelector('button').addEventListener('click',()=>irPara('meta'));}}

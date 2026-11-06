@@ -223,3 +223,9 @@ Alerta de saca fechada com pacote faltando: agora inclui **Teixeira de Freitas**
 
 ## 1.26.1
 - O texto do SLA agora explica que a fonte é o Relatório de Pontualidade do iMile (total do relatório menos entregues). Os números vêm da extensão 3.24.0.
+
+## 1.27.0 — Painel do dia reorganizado e navegação no celular
+- **Painel do dia (computador e celular):** SLA de entrega em primeiro, ao lado da meta da chegada e do SLA dos últimos 7 dias. Abaixo, uma faixa "agir agora" (extravio, auditoria, rotas paradas, cobranças vencidas, ocorrências), depois rotas, produtividade e bipagens por hora. Os números de apoio (registros por etapa etc.) ficam numa linha no fim.
+- **SLA:** lido da tabela `sla_dia`, preenchida pela extensão 3.24.0 (Relatório de Pontualidade do iMile). Sem dado de hoje, o cartão avisa. Dias sem registro aparecem sem barra.
+- **Celular:** barra de navegação embaixo (Painel, Rotas, Chegada, Extravio com contador, Mais). "Mais" abre de baixo todas as seções, com busca, usuário e tema. Cabeçalho mais compacto. No computador a barra lateral continua igual.
+- Nenhum SQL novo é necessário.
