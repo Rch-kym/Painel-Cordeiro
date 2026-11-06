@@ -1,3 +1,14 @@
+# 1.27.1 — correções da revisão (ChatGPT + Gemini), só o que foi confirmado no código
+- Renovação de sessão: várias consultas simultâneas agora dividem UMA renovação (antes podiam derrubar o login).
+- Painel do dia: o relógio de 60 s só atualiza Meta/SLA quando a aba Painel está aberta e visível (faltavam chaves no `if`).
+- Cobrança de backlog: a data "posição de" usa o fuso de São Paulo (antes podia sair 1 dia adiantada à noite).
+- SLA: mesmo critério (trunca, não arredonda para cima) no Painel do dia, na Meta do dia e no tooltip dos 7 dias.
+- Meta do dia: hora de São Paulo calculada sem depender de texto de data do navegador.
+- "Ver na saca" pergunta sobre alterações não salvas ANTES de mudar os filtros das Sacas.
+- Links de pacote no alerta de sacas agora abrem com clique e Enter.
+- Janelas de alerta crítico e de tratativa: Esc fecha, Tab fica preso na janela, fundo inerte.
+- Celular: faixa vermelha de extravio não fica mais atrás da barra do topo; tela de login rola com o teclado aberto; rótulos do login com mais contraste.
+
 # Painel Cordeiro
 
 Um único arquivo (`index.html`). Não precisa de servidor próprio nem de instalação.
